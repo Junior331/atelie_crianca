@@ -12,7 +12,12 @@ import { products } from "@/utils/products";
 import { useCart } from "@/hooks/use-cart";
 import { Product } from "@/types/product";
 import { Badge } from "@/components/atoms/Badge";
-import { CardHeader } from "@/components/organisms/Card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/organisms/Card";
 
 export default function Component() {
   const { addItem } = useCart();
@@ -35,25 +40,17 @@ export default function Component() {
   const getCategoryInfo = (category: string) => {
     switch (category) {
       case "essentials":
-        return { name: "Não Pode Faltar", color: "bg-yellow-500", icon: "⭐" }
+        return { name: "Não Pode Faltar", color: "bg-yellow-500", icon: "⭐" };
       case "favorites":
-        return { name: "As Queridinhas", color: "bg-pink-500", icon: "💖" }
+        return { name: "As Queridinhas", color: "bg-pink-500", icon: "💖" };
       case "weddings":
-        return { name: "Casamentos", color: "bg-purple-500", icon: "💒" }
+        return { name: "Casamentos", color: "bg-purple-500", icon: "💒" };
       case "souvenir":
-        return { name: "Lembrançinhas", color: "bg-purple-500", icon: "🎁" }
+        return { name: "Lembrançinhas", color: "bg-purple-500", icon: "🎁" };
       default:
-        return { name: "Geral", color: "bg-blue-500", icon: "🎉" }
+        return { name: "Geral", color: "bg-blue-500", icon: "🎉" };
     }
-  }
-
-  // if (loading) {
-  //   return (
-  //     <div className='flex justify-center items-center h-screen'>
-  //       <div className='animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500'></div>
-  //     </div>
-  //   );
-  // }
+  };
 
   return (
     <div className="min-h-screen bg-[#ffffff]">
@@ -96,39 +93,46 @@ export default function Component() {
         {/* Product Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
-            <div
+            <Card
               key={product.id}
-              className="bg-white rounded-lg overflow-hidden"
+              className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-pink-200 flex flex-col h-full"
             >
-              <div>
-                <CardHeader className="p-0">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
+              <CardHeader className="p-0">
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <Image
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="flex flex-wrap gap-1.5 absolute top-3 left-3">
                     <Badge
-                      className={`absolute top-3 left-3 ${getCategoryInfo(product.category).color} text-white`}
+                      className={`${
+                        getCategoryInfo(product.category).color
+                      } text-white`}
                     >
-                      <span className="mr-1">{getCategoryInfo(product.category).icon}</span>
-                      {getCategoryInfo(product.category).name}
+                      <span className="mr-1">
+                        {getCategoryInfo(product.category).icon}
+                      </span>
+                      {product.name}
                     </Badge>
                     {product.isPopular && (
-                      <Badge className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                      <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
                         <Star className="w-3 h-3 mr-1" />
                         Popular
                       </Badge>
                     )}
                   </div>
-                </CardHeader>
+                </div>
+              </CardHeader>
 
-                <h3 className="font-semibold text-[#000000] mb-2">
+              <CardContent className="flex-grow">
+                <h3 className="font-bold text-lg mb-2 text-gray-800 group-hover:text-pink-600 transition-colors">
                   {product.name}
                 </h3>
-                <p className="text-sm text-[#787885] mb-4 leading-relaxed">
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                   {product.description}
                 </p>
+
                 <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
                   <div className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
@@ -162,7 +166,9 @@ export default function Component() {
                     </div>
                   </div>
                 )}
+              </CardContent>
 
+              <CardFooter className="mt-auto">
                 <Button
                   disabled={isAdding}
                   onClick={() => handleAddToCart(product)}
@@ -180,8 +186,8 @@ export default function Component() {
                     </div>
                   )}
                 </Button>
-              </div>
-            </div>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       </main>

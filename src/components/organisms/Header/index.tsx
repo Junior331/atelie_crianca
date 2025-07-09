@@ -64,12 +64,12 @@ export const Header = ({
       </div>
 
       <div className="mx-auto pt-6 pb-5">
-        <div className="flex items-center justify-between gap-8">
+        <div className="flex items-center justify-between gap-8 overflow-auto">
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`text-sm font-medium text-[#000000]  rounded-full px-4 py-2 ${
+              className={`text-sm font-medium text-[#000000]  rounded-full px-4 py-2 text-nowrap ${
                 selectedCategory === category.id && "border border-[#000000]"
               }`}
             >

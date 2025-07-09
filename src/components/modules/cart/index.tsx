@@ -102,7 +102,7 @@ Aguardo retorno para orçamento! 😊`
             </h3>
 
             {items.length === 0 ? (
-              <Card className="p-6 text-center">
+              <Card className="p-6 text-center shadow-none">
                 <div className="text-4xl mb-2">🛒</div>
                 <p className="text-gray-500">Seu carrinho está vazio</p>
                 <p className="text-sm text-gray-400 mt-1">Adicione algumas oficinas incríveis!</p>
@@ -110,7 +110,7 @@ Aguardo retorno para orçamento! 😊`
             ) : (
               <div className="space-y-3">
                 {items.map((item) => (
-                  <Card key={item.id} className="p-3">
+                  <Card key={item.id} className="p-3 shadow-none">
                     <div className="flex items-start gap-3">
                       <Image
                         alt={item.name}
@@ -146,7 +146,7 @@ Aguardo retorno para orçamento! 😊`
 
           {/* Event Form */}
           {items.length > 0 && (
-            <Card className="p-4">
+            <Card className="!shadow-none border-0">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-pink-500" />
@@ -154,7 +154,7 @@ Aguardo retorno para orçamento! 😊`
                 </CardTitle>
               </CardHeader>
 
-              <CardContent className="p-0 space-y-4">
+              <CardContent className="p-2 space-y-4 border border-[#E5E7EB] rounded-lg">
                 <div className="grid grid-cols-1 gap-4">
                   <div>
                     <Label htmlFor="eventDate" className="flex items-center gap-2">
