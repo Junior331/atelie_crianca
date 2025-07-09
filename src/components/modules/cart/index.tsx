@@ -1,24 +1,42 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { useState } from "react"
-import { useCart } from "@/hooks/use-cart"
-import { Trash2, Calendar, Clock, MapPin, Users, MessageCircle, X } from "lucide-react"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/atoms/Sheet"
-import { Button, Input } from "@/components/atoms"
-import { Card } from "@/components/organisms"
-import { Label } from "@/components/atoms/Label"
-import { Textarea } from "@/components/atoms/Textarea"
-import { CardContent, CardHeader, CardTitle } from "@/components/organisms/Card"
-import { Badge } from "@/components/atoms/Badge"
+import Image from "next/image";
+import { useState } from "react";
+import { useCart } from "@/hooks/use-cart";
+import {
+  Trash2,
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  MessageCircle,
+  X,
+} from "lucide-react";
+
+import { Card } from "@/components/organisms";
+import { Label } from "@/components/atoms/Label";
+import { Button, Input } from "@/components/atoms";
+import { Textarea } from "@/components/atoms/Textarea";
+import {
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/organisms/Card";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/atoms/Sheet";
+import { getImage } from "@/assets/images";
 
 interface CartSheetProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function CartSheet({ isOpen, onClose }: CartSheetProps) {
-  const { items, removeItem, clearCart } = useCart()
+  const { items, removeItem, clearCart } = useCart();
   const [formData, setFormData] = useState({
     eventDate: "",
     startTime: "",
@@ -27,14 +45,14 @@ export function CartSheet({ isOpen, onClose }: CartSheetProps) {
     childrenCount: "",
     isReturningClient: "",
     additionalInfo: "",
-  })
+  });
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const generateWhatsAppMessage = () => {
-    const itemsList = items.map((item) => `• ${item.name}`).join("\n")
+    const itemsList = items.map((item) => `• ${item.name}`).join("\n");
 
     const message = `🎉 *SOLICITAÇÃO DE ORÇAMENTO - OFICINAS MÁGICAS*
 
@@ -53,20 +71,20 @@ ${itemsList}
 💬 *INFORMAÇÕES ADICIONAIS:*
 ${formData.additionalInfo || "Nenhuma informação adicional"}
 
-Aguardo retorno para orçamento! 😊`
+Aguardo retorno para orçamento! 😊`;
 
-    return encodeURIComponent(message)
-  }
+    return encodeURIComponent(message);
+  };
 
   const handleReserve = () => {
-    const whatsappNumber = "5521969927151"
-    const message = generateWhatsAppMessage()
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`
+    const whatsappNumber = "5521969927151";
+    const message = generateWhatsAppMessage();
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
-    window.open(whatsappUrl, "_blank")
-    clearCart()
-    onClose()
-  }
+    window.open(whatsappUrl, "_blank");
+    clearCart();
+    onClose();
+  };
 
   const isFormValid = () => {
     return (
@@ -76,8 +94,8 @@ Aguardo retorno para orçamento! 😊`
       formData.location &&
       formData.childrenCount &&
       formData.isReturningClient
-    )
-  }
+    );
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -105,7 +123,9 @@ Aguardo retorno para orçamento! 😊`
               <Card className="p-6 text-center shadow-none">
                 <div className="text-4xl mb-2">🛒</div>
                 <p className="text-gray-500">Seu carrinho está vazio</p>
-                <p className="text-sm text-gray-400 mt-1">Adicione algumas oficinas incríveis!</p>
+                <p className="text-sm text-gray-400 mt-1">
+                  Adicione algumas oficinas incríveis!
+                </p>
               </Card>
             ) : (
               <div className="space-y-3">
@@ -113,21 +133,17 @@ Aguardo retorno para orçamento! 😊`
                   <Card key={item.id} className="p-3 shadow-none">
                     <div className="flex items-start gap-3">
                       <Image
+                        width={300}
+                        height={200}
                         alt={item.name}
-                        src={item.image || "/placeholder.svg"}
+                        src={item.image || getImage("fallback")}
                         className="w-16 h-16 object-cover rounded-lg"
                       />
                       <div className="flex-1">
                         <h4 className="font-semibold text-sm">{item.name}</h4>
-                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">{item.description}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {item.duration}
-                          </Badge>
-                          <Badge variant="secondary" className="text-xs">
-                            {item.ageRange}
-                          </Badge>
-                        </div>
+                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                          {item.description}
+                        </p>
                       </div>
                       <Button
                         variant="ghost"
@@ -157,7 +173,10 @@ Aguardo retorno para orçamento! 😊`
               <CardContent className="p-2 space-y-4 border border-[#E5E7EB] rounded-lg">
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <Label htmlFor="eventDate" className="flex items-center gap-2">
+                    <Label
+                      htmlFor="eventDate"
+                      className="flex items-center gap-2"
+                    >
                       <Calendar className="w-4 h-4" />
                       Data do Evento *
                     </Label>
@@ -165,14 +184,19 @@ Aguardo retorno para orçamento! 😊`
                       id="eventDate"
                       type="date"
                       value={formData.eventDate}
-                      onChange={(e) => handleInputChange("eventDate", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("eventDate", e.target.value)
+                      }
                       className="mt-1"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <Label htmlFor="startTime" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="startTime"
+                        className="flex items-center gap-2"
+                      >
                         <Clock className="w-4 h-4" />
                         Início *
                       </Label>
@@ -180,12 +204,17 @@ Aguardo retorno para orçamento! 😊`
                         id="startTime"
                         type="time"
                         value={formData.startTime}
-                        onChange={(e) => handleInputChange("startTime", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("startTime", e.target.value)
+                        }
                         className="mt-1"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="startTime" className="flex items-center gap-2">
+                      <Label
+                        htmlFor="startTime"
+                        className="flex items-center gap-2"
+                      >
                         <Clock className="w-4 h-4" />
                         Término *
                       </Label>
@@ -193,21 +222,28 @@ Aguardo retorno para orçamento! 😊`
                         id="endTime"
                         type="time"
                         value={formData.endTime}
-                        onChange={(e) => handleInputChange("endTime", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("endTime", e.target.value)
+                        }
                         className="mt-1"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="location" className="flex items-center gap-2">
+                    <Label
+                      htmlFor="location"
+                      className="flex items-center gap-2"
+                    >
                       <MapPin className="w-4 h-4" />
                       Local (endereço completo) *
                     </Label>
                     <Textarea
                       id="location"
                       value={formData.location}
-                      onChange={(e) => handleInputChange("location", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("location", e.target.value)
+                      }
                       placeholder="Rua, número, bairro, cidade..."
                       className="mt-1"
                       rows={2}
@@ -215,7 +251,10 @@ Aguardo retorno para orçamento! 😊`
                   </div>
 
                   <div>
-                    <Label htmlFor="childrenCount" className="flex items-center gap-2">
+                    <Label
+                      htmlFor="childrenCount"
+                      className="flex items-center gap-2"
+                    >
                       <Users className="w-4 h-4" />
                       Quantidade estimada de crianças *
                     </Label>
@@ -224,18 +263,24 @@ Aguardo retorno para orçamento! 😊`
                       type="number"
                       min="1"
                       value={formData.childrenCount}
-                      onChange={(e) => handleInputChange("childrenCount", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("childrenCount", e.target.value)
+                      }
                       placeholder="Ex: 15"
                       className="mt-1"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="isReturningClient">Já foi nossa cliente? *</Label>
+                    <Label htmlFor="isReturningClient">
+                      Já foi nossa cliente? *
+                    </Label>
                     <select
                       id="isReturningClient"
                       value={formData.isReturningClient}
-                      onChange={(e) => handleInputChange("isReturningClient", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("isReturningClient", e.target.value)
+                      }
                       className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
                     >
                       <option value="">Selecione...</option>
@@ -245,14 +290,19 @@ Aguardo retorno para orçamento! 😊`
                   </div>
 
                   <div>
-                    <Label htmlFor="additionalInfo" className="flex items-center gap-2">
+                    <Label
+                      htmlFor="additionalInfo"
+                      className="flex items-center gap-2"
+                    >
                       <MessageCircle className="w-4 h-4" />
                       Informações adicionais
                     </Label>
                     <Textarea
                       id="additionalInfo"
                       value={formData.additionalInfo}
-                      onChange={(e) => handleInputChange("additionalInfo", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("additionalInfo", e.target.value)
+                      }
                       placeholder="Tema da festa, preferências, observações..."
                       className="mt-1"
                       rows={3}
@@ -274,11 +324,13 @@ Aguardo retorno para orçamento! 😊`
                 <MessageCircle className="w-5 h-5 mr-2" />
                 RESERVAR VIA WHATSAPP
               </Button>
-              <p className="text-xs text-gray-500 text-center mt-2">* Campos obrigatórios devem ser preenchidos</p>
+              <p className="text-xs text-gray-500 text-center mt-2">
+                * Campos obrigatórios devem ser preenchidos
+              </p>
             </div>
           )}
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

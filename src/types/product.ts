@@ -3,7 +3,7 @@ export interface Product {
     name: string
     description: string
     image: string
-    category: "essentials" | "favorites" | "weddings"
+    category: "essentials" | "favorites" | "weddings"  | "souvenir"  
     duration: string
     ageRange: string
     highlights?: string[]
