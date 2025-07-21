@@ -1,7 +1,7 @@
 import { getImage } from "@/assets/images"
 import type { Product } from "@/types/product"
 
-export const products: Product[] = [
+export const products_mock: Product[] = [
   {
     id: "1",
     name: "Pintura Facial Mágica",

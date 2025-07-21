@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Product } from "@/types/product";
+import { products_mock } from "@/utils/products";
 
 export const useProducts = () => {
   const [loading, setLoading] = useState(true);
@@ -10,7 +11,7 @@ export const useProducts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(products_mock);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -56,13 +57,13 @@ export const useProducts = () => {
         isPopular: item.is_popular || false,
       })) as Product[];
 
-      setProducts(formattedProducts || []);
-      setFilteredProducts(formattedProducts || []);
+      setProducts(formattedProducts || products_mock);
+      setFilteredProducts(formattedProducts || products_mock);
     } catch (err) {
       console.error("Error fetching products:", err);
       setError("Failed to load products");
-      setProducts([]);
-      setFilteredProducts([]);
+      setProducts(products_mock);
+      setFilteredProducts(products_mock);
     } finally {
       setLoading(false);
     }

@@ -24,7 +24,6 @@ export default function Component() {
   const [isAdding, setIsAdding] = useState(false);
   
   const {
-    error,
     loading,
     products,
     searchTerm,
@@ -68,24 +67,24 @@ export default function Component() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-500">
-            Erro ao carregar produtos
-          </h2>
-          <p className="text-gray-600">{error}</p>
-          <button
-            onClick={() => fetchProducts()}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Tentar novamente
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h2 className="text-2xl font-bold text-red-500">
+  //           Erro ao carregar produtos
+  //         </h2>
+  //         <p className="text-gray-600">{error}</p>
+  //         <button
+  //           onClick={() => fetchProducts()}
+  //           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+  //         >
+  //           Tentar novamente
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-[#ffffff]">
