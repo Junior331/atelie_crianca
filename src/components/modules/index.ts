@@ -1,3 +1,5 @@
-// import { Tabs } from "./Tabs";
+import { Footer } from "./Footer";
+import { HeroSection } from "./HeroSection";
+import { RentalCollection } from "./RentalCollection";
 
-// export { Tabs };
+export { Footer, HeroSection, RentalCollection };

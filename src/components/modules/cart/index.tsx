@@ -102,11 +102,17 @@ Aguardo retorno para orçamento! 😊`;
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
         <SheetHeader className="pb-4">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-2xl font-bold">
-              🛒 Seu Carrinho
+            <SheetTitle className="text-2xl font-bold text-white">
+              Seu Carrinho
             </SheetTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="w-4 h-4" />
+
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onClose}
+              className="text-white hover:text-yellow-400 hover:bg-white/10 p-2 relative"
+            >
+              <X className="w-5 h-5" />
             </Button>
           </div>
         </SheetHeader>
@@ -114,7 +120,7 @@ Aguardo retorno para orçamento! 😊`;
         <div className="space-y-6">
           {/* Cart Items */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-lg flex items-center gap-2">
+            <h3 className="font-semibold text-lg flex items-center gap-2 text-white">
               <span>🎨</span>
               Oficinas Selecionadas ({items.length})
             </h3>
@@ -122,8 +128,8 @@ Aguardo retorno para orçamento! 😊`;
             {items.length === 0 ? (
               <Card className="p-6 text-center shadow-none">
                 <div className="text-4xl mb-2">🛒</div>
-                <p className="text-gray-500">Seu carrinho está vazio</p>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-white">Seu carrinho está vazio</p>
+                <p className="text-sm text-white mt-1">
                   Adicione algumas oficinas incríveis!
                 </p>
               </Card>
@@ -140,8 +146,8 @@ Aguardo retorno para orçamento! 😊`;
                         className="w-16 h-16 object-cover rounded-lg"
                       />
                       <div className="flex-1">
-                        <h4 className="font-semibold text-sm">{item.name}</h4>
-                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                        <h4 className="font-semibold text-sm text-white">{item.name}</h4>
+                        <p className="text-xs text-white mt-1 line-clamp-2">
                           {item.description}
                         </p>
                       </div>
@@ -164,8 +170,8 @@ Aguardo retorno para orçamento! 😊`;
           {items.length > 0 && (
             <Card className="!shadow-none border-0">
               <CardHeader className="p-0 pb-4">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-pink-500" />
+                <CardTitle className="text-lg flex items-center gap-2 text-white">
+                  <Calendar className="w-5 h-5 text-white" />
                   Dados do Evento
                 </CardTitle>
               </CardHeader>
@@ -175,9 +181,9 @@ Aguardo retorno para orçamento! 😊`;
                   <div>
                     <Label
                       htmlFor="eventDate"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-white"
                     >
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="w-4 h-4 text-white" />
                       Data do Evento *
                     </Label>
                     <Input
@@ -187,7 +193,7 @@ Aguardo retorno para orçamento! 😊`;
                       onChange={(e) =>
                         handleInputChange("eventDate", e.target.value)
                       }
-                      className="mt-1"
+                      className="mt-1 text-white"
                     />
                   </div>
 
@@ -195,9 +201,9 @@ Aguardo retorno para orçamento! 😊`;
                     <div>
                       <Label
                         htmlFor="startTime"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 text-white"
                       >
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-4 h-4 text-white" />
                         Início *
                       </Label>
                       <Input
@@ -207,15 +213,15 @@ Aguardo retorno para orçamento! 😊`;
                         onChange={(e) =>
                           handleInputChange("startTime", e.target.value)
                         }
-                        className="mt-1"
+                        className="mt-1 text-white"
                       />
                     </div>
                     <div>
                       <Label
                         htmlFor="startTime"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 text-white"
                       >
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-4 h-4 text-white" />
                         Término *
                       </Label>
                       <Input
@@ -225,7 +231,7 @@ Aguardo retorno para orçamento! 😊`;
                         onChange={(e) =>
                           handleInputChange("endTime", e.target.value)
                         }
-                        className="mt-1"
+                        className="mt-1 text-white"
                       />
                     </div>
                   </div>
@@ -233,9 +239,9 @@ Aguardo retorno para orçamento! 😊`;
                   <div>
                     <Label
                       htmlFor="location"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-white"
                     >
-                      <MapPin className="w-4 h-4" />
+                      <MapPin className="w-4 h-4 text-white" />
                       Local (endereço completo) *
                     </Label>
                     <Textarea
@@ -245,7 +251,7 @@ Aguardo retorno para orçamento! 😊`;
                         handleInputChange("location", e.target.value)
                       }
                       placeholder="Rua, número, bairro, cidade..."
-                      className="mt-1"
+                      className="mt-1 text-white"
                       rows={2}
                     />
                   </div>
@@ -253,9 +259,9 @@ Aguardo retorno para orçamento! 😊`;
                   <div>
                     <Label
                       htmlFor="childrenCount"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-white"
                     >
-                      <Users className="w-4 h-4" />
+                      <Users className="w-4 h-4 text-white" />
                       Quantidade estimada de crianças *
                     </Label>
                     <Input
@@ -267,12 +273,12 @@ Aguardo retorno para orçamento! 😊`;
                         handleInputChange("childrenCount", e.target.value)
                       }
                       placeholder="Ex: 15"
-                      className="mt-1"
+                      className="mt-1 text-white"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="isReturningClient">
+                    <Label htmlFor="isReturningClient" className="text-white">
                       Já foi nossa cliente? *
                     </Label>
                     <select
@@ -281,20 +287,20 @@ Aguardo retorno para orçamento! 😊`;
                       onChange={(e) =>
                         handleInputChange("isReturningClient", e.target.value)
                       }
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                      className="w-full mt-1 px-3 py-2 border text-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
                     >
-                      <option value="">Selecione...</option>
-                      <option value="Sim">Sim, já contratei antes</option>
-                      <option value="Não">Não, é minha primeira vez</option>
+                      <option value="" className="text-black">Selecione...</option>
+                      <option value="Sim" className="text-black">Sim, já contratei antes</option>
+                      <option value="Não" className="text-black">Não, é minha primeira vez</option>
                     </select>
                   </div>
 
                   <div>
                     <Label
                       htmlFor="additionalInfo"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 text-white"
                     >
-                      <MessageCircle className="w-4 h-4" />
+                      <MessageCircle className="w-4 h-4 text-white" />
                       Informações adicionais
                     </Label>
                     <Textarea
@@ -304,7 +310,7 @@ Aguardo retorno para orçamento! 😊`;
                         handleInputChange("additionalInfo", e.target.value)
                       }
                       placeholder="Tema da festa, preferências, observações..."
-                      className="mt-1"
+                      className="mt-1 text-white"
                       rows={3}
                     />
                   </div>
@@ -315,7 +321,7 @@ Aguardo retorno para orçamento! 😊`;
 
           {/* Reserve Button */}
           {items.length > 0 && (
-            <div className="sticky -bottom-6 bg-white pt-4">
+            <div className="sticky -bottom-6 pt-4">
               <Button
                 onClick={handleReserve}
                 disabled={!isFormValid()}
@@ -324,7 +330,7 @@ Aguardo retorno para orçamento! 😊`;
                 <MessageCircle className="w-5 h-5 mr-2" />
                 RESERVAR VIA WHATSAPP
               </Button>
-              <p className="text-xs text-gray-500 text-center mt-2">
+              <p className="text-xs text-white text-center mt-2">
                 * Campos obrigatórios devem ser preenchidos
               </p>
             </div>

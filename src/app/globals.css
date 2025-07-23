@@ -48,3 +48,13 @@ body::-webkit-scrollbar-thumb {
 input:-webkit-autofill {
   transition: background-color 5000s ease-in-out 0s;
 }
+
+.line::after {
+  left: 0%;
+  width: 120px;
+  height: 3px;
+  content: "";
+  bottom: -12px;
+  position: absolute;
+  background-color: #f8d07a;
+}

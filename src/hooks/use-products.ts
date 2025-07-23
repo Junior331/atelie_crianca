@@ -57,7 +57,7 @@ export const useProducts = () => {
         isPopular: item.is_popular || false,
       })) as Product[];
 
-      setProducts(formattedProducts || products_mock);
+      // setProducts(formattedProducts || products_mock);
       setFilteredProducts(formattedProducts || products_mock);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -68,6 +68,11 @@ export const useProducts = () => {
       setLoading(false);
     }
   };
+
+  const filteredItems =
+    selectedCategory === "all"
+      ? products
+      : products.filter((product) => product.category === selectedCategory);
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -98,6 +103,7 @@ export const useProducts = () => {
     loading,
     isCartOpen,
     searchTerm,
+    filteredItems,
     fetchProducts,
     setSearchTerm,
     setIsCartOpen,
