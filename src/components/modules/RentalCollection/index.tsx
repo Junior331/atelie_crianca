@@ -24,9 +24,14 @@ const RentalCollection = () => {
   const ref = useRef(null);
   const { addItem } = useCart();
   const [isAdding, setIsAdding] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("all");
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const { searchTerm, setSearchTerm, filteredItems } = useProducts();
+  const {
+    searchTerm,
+    setSearchTerm,
+    filteredItems,
+    selectedCategory,
+    setSelectedCategory,
+  } = useProducts();
 
   const handleAddToCart = async (product: Product) => {
     setIsAdding(true);
@@ -63,10 +68,10 @@ const RentalCollection = () => {
           {categories.map((category) => (
             <Button
               key={category.id}
-              variant={activeCategory === category.id ? "default" : "outline"}
-              onClick={() => setActiveCategory(category.id)}
+              variant={selectedCategory === category.id ? "default" : "outline"}
+              onClick={() => setSelectedCategory(category.id)}
               className={`flex-1 md:max-w-32 ${
-                activeCategory === category.id
+                selectedCategory === category.id
                   ? "bg-[#f8d07a] hover:bg-[#e6b34c] text-black"
                   : "hover:bg-rose-50 hover:text-[#333]"
               }`}
