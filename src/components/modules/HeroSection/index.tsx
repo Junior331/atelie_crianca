@@ -13,7 +13,7 @@ const HeroSection = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/banner_02.jpeg"
+            src="/images/banner_02.HEIC"
             alt="Elegant wedding setup"
             fill
             className="object-cover"
