@@ -176,7 +176,7 @@ const RentalCollection = () => {
             <Button
               variant="outline"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="border-0 flex items-center gap-2 px-4 py-2 bg-[#f8d07a] hover:bg-[#e6b34c] text-gray-900 font-medium"
+              className="border-0 flex items-center gap-2 px-4 py-2 bg-[#d9037d] hover:bg-[#c00270] text-white font-medium"
             >
               <Filter size={16} />
               Filtros{" "}
@@ -197,7 +197,7 @@ const RentalCollection = () => {
                   placeholder="Buscar filtros..."
                   value={filterSearchTerm}
                   onChange={(e) => setFilterSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d9037d] focus:border-transparent"
                 />
               </div>
 
@@ -237,7 +237,7 @@ const RentalCollection = () => {
                               type="checkbox"
                               checked={selectedAdvancedFilters.includes(item)}
                               onChange={() => toggleAdvancedFilter(item)}
-                              className="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500"
+                              className="rounded border-gray-300 text-[ focus:ring-["
                             />
                             <span className="text-sm text-gray-700">
                               {item}
@@ -273,12 +273,12 @@ const RentalCollection = () => {
                 {selectedAdvancedFilters.map((filter) => (
                   <span
                     key={filter}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm"
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-[#d9037d] text-white rounded-full text-sm"
                   >
                     {filter}
                     <button
                       onClick={() => toggleAdvancedFilter(filter)}
-                      className="hover:bg-yellow-200 rounded-full p-0.5"
+                      className="hover:bg-[#c00270] rounded-full p-0.5"
                     >
                       <X size={12} />
                     </button>
@@ -326,7 +326,7 @@ const RentalCollection = () => {
                       size="sm"
                       disabled={isAdding}
                       onClick={() => handleAddToCart(item)}
-                      className="w-full bg-[#f8d07a] hover:bg-[#e6b34c] text-[#333]"
+                      className="w-full bg-[#d9037d] hover:bg-[#c00270] text-white"
                     >
                       {isAdding ? `Adicionando...` : `Adicionar ao orçamento`}
                     </Button>

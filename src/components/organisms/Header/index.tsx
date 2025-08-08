@@ -11,14 +11,15 @@ import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
 import { CartSheet } from "@/components/modules/cart";
 import { cn } from "@/utils/utils";
+import Image from "next/image";
 
 const navigationItems = [
   { name: "Quem somos", href: "/about" },
   { name: "Oficinas", href: "/workshops" },
   { name: "Brinquedoteca", href: "/playroom" },
   { name: "Casamento", href: "/wedding" },
-  { name: "Prontos", href: "/ready" },
-  { name: "Mesa de lembrancinhas", href: "/souvenirstable" },
+  { name: "Produtos", href: "/products" },
+  { name: "Mesa de lanchinhos", href: "/souvenirstable" },
   { name: "Portfólio", href: "/portfolio" },
   { name: "Mobiliário", href: "/furniture" },
   { name: "Grupo Ateliê", href: "/ateliegroup" },
@@ -50,7 +51,15 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
           >
             <Link href="/">
               <div className="flex items-center">
-                <div
+                <Image
+                  width={1000}
+                  height={1000}
+                  alt="Ateliê de Criança"
+                  src={isSecundary ? "/images/logo_dark.png" : "/images/logo_light.png"}
+                  className="size-20 object-contain"
+                />
+
+                {/* <div
                   className={cn(
                     "tetext-2xl font-bold text-white",
                     isSecundary && " text-[#333]"
@@ -65,7 +74,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                   >
                     DE CRIANÇA
                   </div>
-                </div>
+                </div> */}
               </div>
             </Link>
           </motion.div>
@@ -81,7 +90,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 <Link
                   href={item.href}
                   className={cn(
-                    "text-white hover:text-yellow-400 transition-colors duration-200 font-medium",
+                    "text-white hover:text-[#d9037d] transition-colors duration-200 font-medium",
                     isSecundary && "text-[#333]"
                   )}
                   passHref
@@ -89,7 +98,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 >
                   <a
                     className={cn(
-                      "block text-white hover:text-yellow-400 transition-colors duration-200 font-medium",
+                      "block text-white hover:text-[#d9037d] transition-colors duration-200 font-medium",
                       isSecundary && "text-[#333]"
                     )}
                   >
@@ -112,12 +121,12 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
               variant="ghost"
               onClick={() => setIsCartOpen(true)}
               className={cn(
-                "text-white hover:text-yellow-400 hover:bg-white/10 p-2 relative",
+                "text-white hover:text-[#d9037d] hover:bg-white/10 p-2 relative",
                 isSecundary && " !text-[#333] hover:bg-black/10"
               )}
             >
               <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 bg-[#d9037d] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                 {items.length}
               </span>
             </Button>
@@ -126,7 +135,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
               size="sm"
               variant="ghost"
               className={cn(
-                "xl:hidden text-white hover:text-yellow-400 hover:bg-white/10 p-2",
+                "xl:hidden text-white hover:text-[#d9037d] hover:bg-white/10 p-2",
                 isSecundary && " !text-[#333] hover:bg-black/10"
               )}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -155,7 +164,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    "text-white hover:text-yellow-400 transition-colors duration-200 font-medium py-2",
+                    "text-white hover:text-[#d9037d] transition-colors duration-200 font-medium py-2",
                     isSecundary && " !text-[#333]"
                   )}
                   initial={{ opacity: 0, x: -20 }}

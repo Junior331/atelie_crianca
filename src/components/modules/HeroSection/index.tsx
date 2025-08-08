@@ -13,7 +13,7 @@ const HeroSection = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/wedding-elegant.png"
+            src="/images/banner_02.jpeg"
             alt="Elegant wedding setup"
             fill
             className="object-cover"
@@ -34,14 +34,13 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <div className="flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-[96px] text-[#F0E9E1] font-extrabold leading-none tracking-[-0.48px]">
-                  Ateliê
-                </div>
-                <div className="text-[31px] text-[#F0E9E1] font-light tracking-[10.625px] uppercase">
-                  DE CRIANÇA
-                </div>
-              </div>
+              <Image
+                width={1000}
+                height={1000}
+                alt="Ateliê de Criança"
+                src="/images/logo_light.png"
+                className="size-72 object-contain"
+              />
             </div>
           </motion.h1>
 

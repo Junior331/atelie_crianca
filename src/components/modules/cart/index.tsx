@@ -110,7 +110,7 @@ Aguardo retorno para orçamento! 😊`;
               size="sm"
               variant="ghost"
               onClick={onClose}
-              className="text-white hover:text-yellow-400 hover:bg-white/10 p-2 relative"
+              className="text-white hover:text-[#d9037d] hover:bg-white/10 p-2 relative"
             >
               <X className="w-5 h-5" />
             </Button>
