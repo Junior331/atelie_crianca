@@ -39,7 +39,7 @@ const HeroSection = () => {
                 height={1000}
                 alt="Ateliê de Criança"
                 src="/images/logo_light.png"
-                className="size-72 object-contain"
+                className="size-96 object-contain"
               />
             </div>
           </motion.h1>
