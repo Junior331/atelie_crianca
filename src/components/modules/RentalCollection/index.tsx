@@ -2,8 +2,8 @@
 
 import { Search, ChevronDown, ChevronRight, X, Filter } from "lucide-react";
 import { SmartImage } from "@/components/atoms/SmartImage";
-import { useRef, useState, useMemo } from "react";
-import { motion, useInView } from "framer-motion";
+import { useRef, useState, useMemo, useEffect, useCallback } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
 import { Product } from "@/types/product";
 import { useCart } from "@/hooks/use-cart";
@@ -13,10 +13,133 @@ import { useProducts } from "@/hooks/use-products";
 import { CardContent } from "@/components/organisms/Card";
 import { workshopFolders, foldersWithSubfolders, folderImageCounts, subfolderImageCounts } from "@/utils/workshop-categories";
 
+// Componente para o card de oficina com hover infinito
+const WorkshopCard = ({ workshopName, onAddToCart }: { workshopName: string, onAddToCart: () => void }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Obter o número de imagens para esta oficina
+  const imageCount = folderImageCounts[workshopName] || 1;
+  
+  // Array com os índices das imagens (1, 2, 3, etc.)
+  const imageIndices = Array.from({ length: imageCount }, (_, i) => i + 1);
+
+  // Função para alternar imagens
+  const nextImage = useCallback(() => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageCount);
+  }, [imageCount]);
+
+  // Iniciar/parar o intervalo baseado no hover
+  useEffect(() => {
+    if (isHovered && imageCount > 1) {
+      intervalRef.current = setInterval(nextImage, 2000); // Troca a cada 2.8s (800ms + 2s)
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isHovered, imageCount, nextImage]);
+
+  // Reset para primeira imagem quando sai do hover
+  useEffect(() => {
+    if (!isHovered) {
+      setCurrentImageIndex(0);
+    }
+  }, [isHovered]);
+
+  // Lidar com subpastas especiais (como BRINQUEDOTECA)
+  const getImageBasePath = () => {
+    if (workshopName === "BRINQUEDOTECA") {
+      // Para BRINQUEDOTECA, usar a subpasta COLORIDA que tem mais imagens
+      return "/images/oficinas/BRINQUEDOTECA/COLORIDA";
+    }
+    return `/images/oficinas/${workshopName}`;
+  };
+
+  const formatWorkshopName = (name: string) => {
+    return name.toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card 
+        className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="relative h-48 overflow-hidden rounded-t-lg">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentImageIndex}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ 
+                duration: 0.6,
+                ease: [0.4, 0, 0.2, 1]
+              }}
+              className="absolute inset-0"
+            >
+              <SmartImage
+                basePath={getImageBasePath()}
+                imageName={imageIndices[currentImageIndex].toString()}
+                alt={workshopName}
+                fill={true}
+                className="rounded-t-lg object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+          {imageCount > 1 && (
+            <motion.div 
+              className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              {currentImageIndex + 1}/{imageCount}
+            </motion.div>
+          )}
+        </div>
+        <CardContent className="p-4 flex flex-col flex-grow">
+          <div className="mb-2">
+            <h3 className="font-semibold text-gray-900">{formatWorkshopName(workshopName)}</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Oficina de {formatWorkshopName(workshopName.toLowerCase())} com {imageCount} {imageCount === 1 ? 'opção' : 'opções'} disponíveis
+            </p>
+          </div>
+          <div className="mt-auto">
+            <Button
+              size="sm"
+              onClick={onAddToCart}
+              className="w-full bg-[#d9037d] hover:bg-[#c00270] text-white"
+            >
+              Adicionar ao orçamento
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
 const RentalCollection = () => {
   const ref = useRef(null);
   const { addItem } = useCart();
-  const [isAdding, setIsAdding] = useState(false);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const [expandedFolders, setExpandedFolders] = useState<
@@ -25,9 +148,42 @@ const RentalCollection = () => {
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const { searchTerm, setSearchTerm, filteredItems, selectedWorkshopFilters, setSelectedWorkshopFilters } = useProducts();
+  const { searchTerm, setSearchTerm, selectedWorkshopFilters, setSelectedWorkshopFilters } = useProducts();
 
-  // Filtrar pastas baseado na busca
+  // Filtrar oficinas baseado na busca e filtros selecionados
+  const filteredWorkshops = useMemo(() => {
+    let filtered = workshopFolders;
+
+    // Aplicar busca por termo
+    if (searchTerm) {
+      filtered = filtered.filter((workshop) =>
+        workshop.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Aplicar filtros selecionados
+    if (selectedWorkshopFilters.length > 0) {
+      filtered = filtered.filter((workshop) => {
+        // Verificar se a oficina está nos filtros selecionados
+        if (selectedWorkshopFilters.includes(workshop)) {
+          return true;
+        }
+        
+        // Verificar se é uma subpasta da BRINQUEDOTECA
+        if (workshop === "BRINQUEDOTECA") {
+          const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
+          const subfoldersFilters = subfolders.map(sub => `BRINQUEDOTECA-${sub}`);
+          return subfoldersFilters.some(filter => selectedWorkshopFilters.includes(filter));
+        }
+        
+        return false;
+      });
+    }
+
+    return filtered;
+  }, [searchTerm, selectedWorkshopFilters]);
+
+  // Filtrar pastas baseado na busca dos filtros
   const filteredFolders = useMemo(() => {
     if (!filterSearchTerm) return workshopFolders;
 
@@ -106,11 +262,25 @@ const RentalCollection = () => {
     return selectedWorkshopFilters.length;
   };
 
-  const handleAddToCart = async (product: Product) => {
-    setIsAdding(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    addItem(product);
-    setIsAdding(false);
+  const handleAddToCart = async (workshopName: string) => {
+    // Criar um produto temporário baseado na oficina
+    const workshop: Product = {
+      id: `workshop-${workshopName.toLowerCase().replace(/\s+/g, '-')}`,
+      name: workshopName.toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' '),
+      description: `Oficina de ${workshopName.toLowerCase()} com múltiplas opções disponíveis`,
+      category: "favorites",
+      image: `/images/oficinas/${workshopName}/1.jpg`,
+      workshopFolder: workshopName,
+      workshopSubfolder: workshopName === "BRINQUEDOTECA" ? "COLORIDA" : undefined,
+      duration: "1-2 horas",
+      ageRange: "5-12 anos",
+      highlights: ["Materiais inclusos", "Atividade criativa", "Lembrança especial"]
+    };
+    
+    addItem(workshop);
   };
 
   return (
@@ -291,47 +461,22 @@ const RentalCollection = () => {
         </motion.div>
 
         <motion.div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6" layout>
-          {filteredItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <Card className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col">
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
-                  <SmartImage
-                    basePath={item.workshopSubfolder ? `/images/oficinas/${item.workshopFolder}/${item.workshopSubfolder}` : `/images/oficinas/${item.workshopFolder}`}
-                    imageName={item.image.split('/').pop()?.split('.')[0] || '1'}
-                    alt={item.name}
-                    fill={true}
-                    className="rounded-t-lg"
-                  />
-                </div>
-                <CardContent className="p-4 flex flex-col flex-grow">
-                  <div className="mb-2">
-                    <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {item.description}
-                    </p>
-                  </div>
-                  <div className="mt-auto">
-                    <Button
-                      size="sm"
-                      disabled={isAdding}
-                      onClick={() => handleAddToCart(item)}
-                      className="w-full bg-[#d9037d] hover:bg-[#c00270] text-white"
-                    >
-                      {isAdding ? `Adicionando...` : `Adicionar ao orçamento`}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+          {filteredWorkshops.map((workshopName) => (
+            <WorkshopCard
+              key={workshopName}
+              workshopName={workshopName}
+              onAddToCart={() => handleAddToCart(workshopName)}
+            />
           ))}
         </motion.div>
+
+        {filteredWorkshops.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">
+              Nenhuma oficina encontrada com os filtros aplicados.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
