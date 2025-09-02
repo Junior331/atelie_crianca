@@ -11,64 +11,7 @@ import { Card } from "@/components/organisms";
 import { Button, Input } from "@/components/atoms";
 import { useProducts } from "@/hooks/use-products";
 import { CardContent } from "@/components/organisms/Card";
-
-// Dados organizados por categorias
-const filterCategories = {
-  "Personagens & Temas": [
-    "ARCO DISNEY",
-    "ASA DE BORBOLETA",
-    "BIJU COM CHAVEIROS",
-    "CAPA FROZEN",
-    "CAPA HARRY POTTER",
-    "CAPAS...",
-    "VARINHA HARRY...",
-    "TOTEM MDF",
-  ],
-  "Decoração & Festa": [
-    "BELEZA",
-    "BOLHAS DE SABÃO",
-    "BUCKET",
-    "CADERNINHOS",
-    "CARTOLA",
-    "COLAGEM E...",
-    "DONUTS",
-    "FANTOCHES",
-    "JARDINAGEM",
-    "MONTAGEM DE...",
-    "RECREAÇÕES",
-  ],
-  "Doces & Culinária": [
-    "BISCOTOS...",
-    "BISCUIT",
-    "BONE",
-    "CUPCAKE",
-    "MARSHMALLOW DO...",
-    "VARINHA E COROA",
-  ],
-  "Artesanato & Pintura": [
-    "BOLSAS DE PALHA",
-    "BRINCADEIRAS RAIZ",
-    "CIENTISTA",
-    "ESMALTAÇÃO",
-    "ESTOJO",
-    "MASCARA",
-    "PINTURA ARTÍSTICA",
-    "PINTURA EM BOBBIE...",
-    "PINTURA EM TELA",
-    "PINTURA NO CAVALETE",
-    "RECICLAGEM",
-  ],
-  "Brinquedos & Jogos": [
-    "BRINQUEDOTECA",
-    "CAMISAS",
-    "ESPAÇO SONINHO",
-    "SLIME",
-    "SLIME NEON",
-    "SPA",
-    "VISEIRA",
-  ],
-  "Acessórios & Moda": ["BODYS", "PERSONALIZADAS"],
-};
+import { workshopFolders, foldersWithSubfolders, folderImageCounts, subfolderImageCounts } from "@/utils/workshop-categories";
 
 const RentalCollection = () => {
   const ref = useRef(null);
@@ -80,39 +23,77 @@ const RentalCollection = () => {
   const [selectedAdvancedFilters, setSelectedAdvancedFilters] = useState<
     string[]
   >([]);
-  const [expandedCategories, setExpandedCategories] = useState<
+  const [expandedFolders, setExpandedFolders] = useState<
     Record<string, boolean>
   >({});
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const { searchTerm, setSearchTerm, filteredItems } = useProducts();
+  const { searchTerm, setSearchTerm, filteredItems, selectedWorkshopFilters, setSelectedWorkshopFilters } = useProducts();
 
-  // Filtrar categorias e itens baseado na busca
-  const filteredCategories = useMemo(() => {
-    if (!filterSearchTerm) return filterCategories;
+  // Filtrar pastas baseado na busca
+  const filteredFolders = useMemo(() => {
+    if (!filterSearchTerm) return workshopFolders;
 
-    const filtered: Record<string, string[]> = {};
-    Object.entries(filterCategories).forEach(([category, items]) => {
-      const filteredItems = items.filter((item) =>
-        item.toLowerCase().includes(filterSearchTerm.toLowerCase())
-      );
-      if (filteredItems.length > 0) {
-        filtered[category] = filteredItems;
-      }
-    });
-    return filtered;
+    return workshopFolders.filter((folder) =>
+      folder.toLowerCase().includes(filterSearchTerm.toLowerCase())
+    );
   }, [filterSearchTerm]);
 
-  const toggleCategory = (category: string) => {
-    setExpandedCategories((prev) => ({
+  const toggleFolder = (folder: string) => {
+    setExpandedFolders((prev) => ({
       ...prev,
-      [category]: !prev[category],
+      [folder]: !prev[folder],
     }));
   };
 
   const toggleAdvancedFilter = (filter: string) => {
-    setSelectedAdvancedFilters((prev) => {
+    setSelectedWorkshopFilters((prev) => {
+      // Se é BRINQUEDOTECA, marcar/desmarcar todas as subpastas
+      if (filter === "BRINQUEDOTECA") {
+        const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
+        const subfoldersFilters = subfolders.map(sub => `BRINQUEDOTECA-${sub}`);
+        
+        if (prev.includes(filter)) {
+          // Desmarcar BRINQUEDOTECA e todas as suas subpastas
+          return prev.filter(f => f !== filter && !subfoldersFilters.includes(f));
+        } else {
+          // Marcar BRINQUEDOTECA e todas as suas subpastas
+          const newFilters = [...prev, filter];
+          subfoldersFilters.forEach(subFilter => {
+            if (!newFilters.includes(subFilter)) {
+              newFilters.push(subFilter);
+            }
+          });
+          return newFilters;
+        }
+      }
+      
+      // Se é uma subpasta da BRINQUEDOTECA
+      if (filter.startsWith("BRINQUEDOTECA-")) {
+        let newFilters;
+        if (prev.includes(filter)) {
+          newFilters = prev.filter((f) => f !== filter);
+          // Se desmarcar uma subpasta, desmarcar também a pasta principal
+          newFilters = newFilters.filter(f => f !== "BRINQUEDOTECA");
+        } else {
+          newFilters = [...prev, filter];
+          
+          // Verificar se todas as subpastas estão marcadas para marcar a principal
+          const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
+          const subfoldersFilters = subfolders.map(sub => `BRINQUEDOTECA-${sub}`);
+          const allSubfoldersSelected = subfoldersFilters.every(subFilter => 
+            newFilters.includes(subFilter)
+          );
+          
+          if (allSubfoldersSelected && !newFilters.includes("BRINQUEDOTECA")) {
+            newFilters.push("BRINQUEDOTECA");
+          }
+        }
+        return newFilters;
+      }
+      
+      // Para outras pastas, comportamento normal
       if (prev.includes(filter)) {
         return prev.filter((f) => f !== filter);
       } else {
@@ -122,11 +103,11 @@ const RentalCollection = () => {
   };
 
   const clearAllAdvancedFilters = () => {
-    setSelectedAdvancedFilters([]);
+    setSelectedWorkshopFilters([]);
   };
 
   const getTotalAdvancedFilters = () => {
-    return selectedAdvancedFilters.length;
+    return selectedWorkshopFilters.length;
   };
 
   const handleAddToCart = async (product: Product) => {
@@ -202,52 +183,76 @@ const RentalCollection = () => {
               </div>
 
               <div className="space-y-2 max-h-80 overflow-y-auto">
-                {Object.entries(filteredCategories).map(([category, items]) => (
-                  <div
-                    key={category}
-                    className="border-b border-gray-200 last:border-b-0 pb-2"
-                  >
-                    <button
-                      onClick={() => toggleCategory(category)}
-                      className="flex items-center justify-between w-full py-2 text-left hover:bg-gray-100 rounded px-2"
+                {filteredFolders.map((folder) => {
+                  const hasSubfolders = folder === "BRINQUEDOTECA" ? foldersWithSubfolders["BRINQUEDOTECA"] : null;
+                  
+                  return (
+                    <div
+                      key={folder}
+                      className="border-b border-gray-200 last:border-b-0 pb-2"
                     >
-                      <span className="font-medium text-gray-900">
-                        {category}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">
-                          ({items.length})
-                        </span>
-                        {expandedCategories[category] ? (
-                          <ChevronDown size={16} className="text-gray-400" />
-                        ) : (
-                          <ChevronRight size={16} className="text-gray-400" />
+                      {/* Pasta principal */}
+                      <div 
+                        className={`flex items-center justify-between ${hasSubfolders ? 'cursor-pointer' : ''}`}
+                        onClick={hasSubfolders ? () => toggleFolder(folder) : undefined}
+                      >
+                        <label 
+                          className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-100 rounded px-2 flex-1"
+                          onClick={(e) => e.stopPropagation()} // Evita conflito com o clique da div pai
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedWorkshopFilters.includes(folder)}
+                            onChange={() => toggleAdvancedFilter(folder)}
+                            className="rounded border-gray-300 text-[#d9037d] focus:ring-[#d9037d]"
+                          />
+                          <span className="text-sm text-gray-700 font-medium">
+                            {folder}
+                          </span>
+                          <span className="text-xs text-gray-500 ml-auto">
+                            ({folderImageCounts[folder] || 1})
+                          </span>
+                        </label>
+                        
+                        {/* Ícone para indicar subpastas */}
+                        {hasSubfolders && (
+                          <div className="p-1">
+                            {expandedFolders[folder] ? (
+                              <ChevronDown size={16} className="text-gray-400" />
+                            ) : (
+                              <ChevronRight size={16} className="text-gray-400" />
+                            )}
+                          </div>
                         )}
                       </div>
-                    </button>
 
-                    {expandedCategories[category] && (
-                      <div className="ml-4 mt-2 space-y-1">
-                        {items.map((item) => (
-                          <label
-                            key={item}
-                            className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-100 rounded px-2"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selectedAdvancedFilters.includes(item)}
-                              onChange={() => toggleAdvancedFilter(item)}
-                              className="rounded border-gray-300 text-[ focus:ring-["
-                            />
-                            <span className="text-sm text-gray-700">
-                              {item}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      {/* Subpastas */}
+                      {hasSubfolders && expandedFolders[folder] && (
+                        <div className="ml-6 mt-2 space-y-1">
+                          {hasSubfolders.map((subfolder) => (
+                            <label
+                              key={`${folder}-${subfolder}`}
+                              className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-100 rounded px-2"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedWorkshopFilters.includes(`${folder}-${subfolder}`)}
+                                onChange={() => toggleAdvancedFilter(`${folder}-${subfolder}`)}
+                                className="rounded border-gray-300 text-[#d9037d] focus:ring-[#d9037d]"
+                              />
+                              <span className="text-sm text-gray-600">
+                                {subfolder}
+                              </span>
+                              <span className="text-xs text-gray-500 ml-auto">
+                                ({subfolderImageCounts[`${folder}-${subfolder}`] || 0})
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {getTotalAdvancedFilters() > 0 && (
@@ -270,7 +275,7 @@ const RentalCollection = () => {
                 <span className="text-sm text-gray-600 py-1">
                   Filtros ativos:
                 </span>
-                {selectedAdvancedFilters.map((filter) => (
+                {selectedWorkshopFilters.map((filter) => (
                   <span
                     key={filter}
                     className="inline-flex items-center gap-1 px-3 py-1 bg-[#d9037d] text-white rounded-full text-sm"

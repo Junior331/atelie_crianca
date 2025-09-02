@@ -8,5 +8,7 @@ export interface Product {
     ageRange: string
     highlights?: string[]
     isPopular?: boolean
+    workshopFolder?: string
+    workshopSubfolder?: string
   }
   
