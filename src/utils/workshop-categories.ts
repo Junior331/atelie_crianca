@@ -88,9 +88,9 @@ export const getWorkshopCategory = (workshop: string) => {
 // Função para obter path da imagem de uma oficina
 export const getWorkshopImagePath = (workshop: string, subcategory?: string) => {
   if (workshop === "BRINQUEDOTECA" && subcategory) {
-    return `/images/oficinas/BRINQUEDOTECA/${subcategory}`;
+    return `/images/workshops/BRINQUEDOTECA/${subcategory}`;
   }
-  return `/images/oficinas/${workshop}`;
+  return `/images/workshops/${workshop}`;
 };
 
 // Contagem estimada de imagens por pasta (baseado na verificação manual)

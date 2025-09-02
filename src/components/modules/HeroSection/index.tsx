@@ -9,7 +9,7 @@ import { Header } from "@/components/organisms";
 const HeroSection = () => {
   return (
     <>
-      <Header isSecundary={false} />
+      <Header />
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image

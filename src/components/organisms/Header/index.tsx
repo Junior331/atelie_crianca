@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { ShoppingCart, Menu, X, Heart, Search } from "lucide-react";
 
 import { HeaderProps } from "./@types";
 import { Button } from "@/components/atoms";
 import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
+import { useFavorites } from "@/hooks/use-favorites";
 import { CartSheet } from "@/components/modules/cart";
 import { cn } from "@/utils/utils";
 import Image from "next/image";
@@ -25,134 +26,135 @@ const navigationItems = [
   { name: "Grupo Ateliê", href: "/ateliegroup" },
 ];
 
-const Header = ({ isSecundary = true }: HeaderProps) => {
+const Header = ({}: HeaderProps) => {
   const { items } = useCart();
+  const { favoritesCount } = useFavorites();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isCartOpen, setIsCartOpen } = useProducts();
 
   return (
     <motion.header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-white/10",
-        isSecundary &&
-          "sticky bg-white/90 border-b border-[#eaeaea] shadow-[0px_2px_4px_0px_rgba(24,_27,_27,_0.15)]"
+        "sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm"
       )}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.2 }}
     >
-      <div className="mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
-          <motion.div
-            className="flex items-center space-x-2"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Link href="/">
-              <div className="flex items-center">
+      {/* Top bar with logo and icons */}
+      <div className="border-b border-gray-100">
+        <div className="mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left side - empty for balance */}
+            <div className="flex-1" />
+
+            {/* Center - Logo */}
+            <motion.div
+              className="flex-shrink-0"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Link href="/" className="block">
                 <Image
-                  width={1000}
-                  height={1000}
+                  width={180}
+                  height={60}
                   alt="Ateliê de Criança"
-                  src={isSecundary ? "/images/logo_dark.png" : "/images/logo_light.png"}
-                  className="size-20 object-contain"
+                  src="/images/logo_dark.png"
+                  className="h-12 w-auto object-contain"
                 />
+              </Link>
+            </motion.div>
 
-                {/* <div
-                  className={cn(
-                    "tetext-2xl font-bold text-white",
-                    isSecundary && " text-[#333]"
-                  )}
-                >
-                  Ateliê
-                  <div
-                    className={cn(
-                      "text-xs font-normal tracking-wider text-white",
-                      isSecundary && " text-[#333]"
-                    )}
-                  >
-                    DE CRIANÇA
-                  </div>
-                </div> */}
-              </div>
-            </Link>
-          </motion.div>
-
-          <nav className="hidden xl:flex items-center space-x-8">
-            {navigationItems.map((item, index) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+            {/* Right side - Icons */}
+            <motion.div
+              className="flex-1 flex items-center justify-end space-x-4"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              {/* Search Icon */}
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-gray-600 hover:text-[#d9037d] p-2"
               >
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "text-white hover:text-[#d9037d] transition-colors duration-200 font-medium",
-                    isSecundary && "text-[#333]"
-                  )}
-                  passHref
-                  legacyBehavior
+                <Search className="w-5 h-5" />
+              </Button>
+
+              {/* Favorites Icon */}
+              <Link href="/favorites">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-gray-600 hover:text-[#d9037d] p-2 relative"
                 >
-                  <a
-                    className={cn(
-                      "block text-white hover:text-[#d9037d] transition-colors duration-200 font-medium",
-                      isSecundary && "text-[#333]"
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                </Link>
-              </motion.div>
-            ))}
-          </nav>
+                  <Heart className="w-5 h-5" />
+                  {favoritesCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-[#d9037d] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                      {favoritesCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
-          {/* Right Side Icons */}
-          <motion.div
-            animate={{ opacity: 1, x: 0 }}
-            initial={{ opacity: 0, x: 20 }}
-            className="flex items-center space-x-4"
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setIsCartOpen(true)}
-              className={cn(
-                "text-white hover:text-[#d9037d] hover:bg-white/10 p-2 relative",
-                isSecundary && " !text-[#333] hover:bg-black/10"
-              )}
-            >
-              <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 bg-[#d9037d] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                {items.length}
-              </span>
-            </Button>
+              {/* Cart Icon */}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setIsCartOpen(true)}
+                className="text-gray-600 hover:text-[#d9037d] p-2 relative"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {items.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#d9037d] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {items.length}
+                  </span>
+                )}
+              </Button>
 
-            <Button
-              size="sm"
-              variant="ghost"
-              className={cn(
-                "xl:hidden text-white hover:text-[#d9037d] hover:bg-white/10 p-2",
-                isSecundary && " !text-[#333] hover:bg-black/10"
-              )}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </Button>
-          </motion.div>
+              {/* Mobile Menu Button */}
+              <Button
+                size="sm"
+                variant="ghost"
+                className="xl:hidden text-gray-600 hover:text-[#d9037d] p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
+              </Button>
+            </motion.div>
+          </div>
         </div>
+      </div>
+
+      {/* Navigation bar */}
+      <div className="mx-auto px-4">
+        <nav className="hidden xl:flex items-center justify-center space-x-8 py-4">
+          {navigationItems.map((item, index) => (
+            <motion.div
+              key={item.name}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+            >
+              <Link
+                href={item.href}
+                className="text-gray-700 hover:text-[#d9037d] transition-colors duration-200 font-medium text-sm uppercase tracking-wide"
+              >
+                {item.name}
+              </Link>
+            </motion.div>
+          ))}
+        </nav>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <motion.nav
-            className="xl:hidden py-4 border-t border-white/10"
+            className="xl:hidden py-4 border-t border-gray-100"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -160,20 +162,20 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
           >
             <div className="flex flex-col space-y-3">
               {navigationItems.map((item, index) => (
-                <motion.a
+                <motion.div
                   key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "text-white hover:text-[#d9037d] transition-colors duration-200 font-medium py-2",
-                    isSecundary && " !text-[#333]"
-                  )}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.name}
-                </motion.a>
+                  <Link
+                    href={item.href}
+                    className="text-gray-700 hover:text-[#d9037d] transition-colors duration-200 font-medium py-2 block text-sm uppercase tracking-wide"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </motion.nav>

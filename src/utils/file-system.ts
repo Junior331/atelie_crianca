@@ -8,7 +8,7 @@ export interface ImageFile {
 
 // Função para gerar lista de imagens baseada na estrutura conhecida
 export const getImagesFromFolder = async (folder: string, subfolder?: string): Promise<ImageFile[]> => {
-  const basePath = subfolder ? `/images/oficinas/${folder}/${subfolder}` : `/images/oficinas/${folder}`;
+  const basePath = subfolder ? `/images/workshops/${folder}/${subfolder}` : `/images/workshops/${folder}`;
   const images: ImageFile[] = [];
   
   // Extensões de imagem suportadas
@@ -104,7 +104,7 @@ export const getAllImagesFromWorkshop = async (folder: string): Promise<ImageFil
 // Função simplificada que não faz requisições HTTP - usa estrutura conhecida
 export const getKnownImages = (folder: string, subfolder?: string): ImageFile[] => {
   const images: ImageFile[] = [];
-  const basePath = subfolder ? `/images/oficinas/${folder}/${subfolder}` : `/images/oficinas/${folder}`;
+  const basePath = subfolder ? `/images/workshops/${folder}/${subfolder}` : `/images/workshops/${folder}`;
   
   if (folder === "BRINQUEDOTECA" && subfolder) {
     const counts = {
