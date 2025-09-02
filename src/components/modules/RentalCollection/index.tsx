@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Search, ChevronDown, ChevronRight, X, Filter } from "lucide-react";
+import { SmartImage } from "@/components/atoms/SmartImage";
 import { useRef, useState, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
 
@@ -305,20 +305,15 @@ const RentalCollection = () => {
               transition={{ duration: 0.3, delay: index * 0.1 }}
             >
               <Card className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col">
-                {item.image ? (
-                  <div className="relative h-48 overflow-hidden rounded-t-lg">
-                    <Image
-                      fill
-                      alt={item.name}
-                      src={item.image}
-                      className="object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  </div>
-                ) : (
-                  <div className="h-48 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                    <div className="text-6xl opacity-20">📸</div>
-                  </div>
-                )}
+                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                  <SmartImage
+                    basePath={item.workshopSubfolder ? `/images/oficinas/${item.workshopFolder}/${item.workshopSubfolder}` : `/images/oficinas/${item.workshopFolder}`}
+                    imageName={item.image.split('/').pop()?.split('.')[0] || '1'}
+                    alt={item.name}
+                    fill={true}
+                    className="rounded-t-lg"
+                  />
+                </div>
                 <CardContent className="p-4 flex flex-col flex-grow">
                   <div className="mb-2">
                     <h3 className="font-semibold text-gray-900">{item.name}</h3>

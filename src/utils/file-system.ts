@@ -118,9 +118,10 @@ export const getKnownImages = (folder: string, subfolder?: string): ImageFile[] 
     const count = counts[subfolder as keyof typeof counts] || 0;
     
     for (let i = 1; i <= count; i++) {
+      // Usar nome genérico, o SmartImage vai encontrar o formato correto
       images.push({
-        name: `${i}.jpeg`,
-        path: `${basePath}/${i}.jpeg`,
+        name: `${i}`,
+        path: `${basePath}/${i}`,
         folder,
         subfolder
       });
@@ -177,9 +178,10 @@ export const getKnownImages = (folder: string, subfolder?: string): ImageFile[] 
     const count = estimatedCounts[folder] || 1;
     
     for (let i = 1; i <= count; i++) {
+      // Usar nome genérico, o SmartImage vai encontrar o formato correto
       images.push({
-        name: `${i}.jpeg`,
-        path: `${basePath}/${i}.jpeg`,
+        name: `${i}`,
+        path: `${basePath}/${i}`,
         folder,
         subfolder
       });
