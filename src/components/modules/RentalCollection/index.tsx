@@ -532,11 +532,11 @@ const RentalCollection = () => {
         </div>
       </div>
 
-      <div className="min-h-screen flex">
-        <div className="w-full container max-w-none px-4 flex gap-8 min-h-full">
+      <div className="min-h-screen flex flex-col lg:flex-row">
+        <div className="w-full container max-w-none px-4 flex flex-col lg:flex-row gap-8 min-h-full">
           {/* Sidebar com Filtros */}
           <motion.div
-            className="max-w-80 w-full flex-shrink-0 min-h-full"
+            className="w-full lg:max-w-80 lg:w-full flex-shrink-0 lg:min-h-full"
             initial={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}

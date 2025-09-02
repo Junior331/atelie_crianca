@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Menu, X, Heart, Search } from "lucide-react";
+import { ShoppingCart, Menu, X, Heart } from "lucide-react";
 
+import { cn } from "@/utils/utils";
 import { HeaderProps } from "./@types";
 import { Button } from "@/components/atoms";
 import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
 import { useFavorites } from "@/hooks/use-favorites";
 import { CartSheet } from "@/components/modules/cart";
-import { cn } from "@/utils/utils";
-import Image from "next/image";
 
 const navigationItems = [
   { name: "Quem somos", href: "/about" },
@@ -42,7 +42,7 @@ const Header = ({}: HeaderProps) => {
       transition={{ duration: 0.8, delay: 0.2 }}
     >
       {/* Top bar with logo and icons */}
-      <div className="border-b border-gray-100">
+      <div>
         <div className="mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Left side - empty for balance */}
@@ -73,15 +73,6 @@ const Header = ({}: HeaderProps) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              {/* Search Icon */}
-              <Button
-                size="sm"
-                variant="ghost"
-                className="text-gray-600 hover:text-[#d9037d] p-2"
-              >
-                <Search className="w-5 h-5" />
-              </Button>
-
               {/* Favorites Icon */}
               <Link href="/favorites">
                 <Button
