@@ -72,7 +72,7 @@ export default function FavoritesPage() {
                   Explore nossas oficinas e adicione suas favoritas!
                 </p>
                 <Link href="/workshops">
-                  <Button className="bg-[#d9037d] hover:bg-[#c00270] text-white">
+                  <Button className="bg-[rgb(255,147,186)] hover:bg-[rgb(245,137,176)] text-white">
                     Explorar Oficinas
                   </Button>
                 </Link>
@@ -121,7 +121,7 @@ export default function FavoritesPage() {
                         href={`/workshop/${item.workshopFolder?.toLowerCase().replace(/\s+/g, '-') || ''}`}
                         className="block"
                       >
-                        <h3 className="font-semibold text-gray-900 mb-2 hover:text-[#d9037d] transition-colors">
+                        <h3 className="font-semibold text-gray-900 mb-2 hover:text-[rgb(255,147,186)] transition-colors">
                           {item.name}
                         </h3>
                       </Link>
@@ -148,7 +148,7 @@ export default function FavoritesPage() {
                       <div className="flex gap-2 mt-4">
                         <Button
                           onClick={() => handleAddToCart(item)}
-                          className="flex-1 bg-[#d9037d] hover:bg-[#c00270] text-white text-sm"
+                          className="flex-1 bg-[rgb(255,147,186)] hover:bg-[rgb(245,137,176)] text-white text-sm"
                           size="sm"
                         >
                           <ShoppingCart className="w-4 h-4 mr-1" />
@@ -160,7 +160,7 @@ export default function FavoritesPage() {
                         >
                           <Button
                             variant="outline"
-                            className="border-gray-300 text-gray-700 hover:border-[#d9037d] hover:text-[#d9037d] text-sm"
+                            className="border-gray-300 text-gray-700 hover:border-[rgb(255,147,186)] hover:text-[rgb(255,147,186)] text-sm"
                             size="sm"
                           >
                             Ver Detalhes

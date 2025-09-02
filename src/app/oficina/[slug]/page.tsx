@@ -84,7 +84,7 @@ export default function WorkshopDetailPage() {
           <div className="text-center">
             {isLoading ? (
               <>
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d9037d] mb-4"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[rgb(255,147,186)] mb-4"></div>
                 <p className="text-gray-600">Carregando oficina...</p>
               </>
             ) : (
@@ -123,24 +123,27 @@ export default function WorkshopDetailPage() {
   };
 
   // Criar produto baseado na oficina atual
-  const currentProduct: Product | null = workshop ? {
-    id: `workshop-${workshop.toLowerCase().replace(/\s+/g, "-")}`,
-    name: formatWorkshopName(workshop),
-    description: `Oficina de ${formatWorkshopName(
-      workshop.toLowerCase()
-    )} com múltiplas opções disponíveis`,
-    category: "favorites",
-    image: `/images/workshops/${workshop}/1.jpg`,
-    workshopFolder: workshop,
-    workshopSubfolder: workshop === "BRINQUEDOTECA" ? "COLORIDA" : undefined,
-    duration: "1-2 horas",
-    ageRange: "5-12 anos",
-    highlights: [
-      "Materiais inclusos",
-      "Atividade criativa",
-      "Lembrança especial",
-    ],
-  } : null;
+  const currentProduct: Product | null = workshop
+    ? {
+        id: `workshop-${workshop.toLowerCase().replace(/\s+/g, "-")}`,
+        name: formatWorkshopName(workshop),
+        description: `Oficina de ${formatWorkshopName(
+          workshop.toLowerCase()
+        )} com múltiplas opções disponíveis`,
+        category: "favorites",
+        image: `/images/workshops/${workshop}/1.jpg`,
+        workshopFolder: workshop,
+        workshopSubfolder:
+          workshop === "BRINQUEDOTECA" ? "COLORIDA" : undefined,
+        duration: "1-2 horas",
+        ageRange: "5-12 anos",
+        highlights: [
+          "Materiais inclusos",
+          "Atividade criativa",
+          "Lembrança especial",
+        ],
+      }
+    : null;
 
   const handleAddToCart = () => {
     if (!currentProduct) return;
@@ -156,7 +159,9 @@ export default function WorkshopDetailPage() {
     toggleFavorite(currentProduct);
   };
 
-  const isWorkshopFavorite = currentProduct ? isFavorite(currentProduct.id) : false;
+  const isWorkshopFavorite = currentProduct
+    ? isFavorite(currentProduct.id)
+    : false;
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % imageCount);
@@ -253,7 +258,7 @@ export default function WorkshopDetailPage() {
                         onClick={() => setCurrentImageIndex(index)}
                         className={`relative aspect-square rounded-md overflow-hidden border-2 ${
                           currentImageIndex === index
-                            ? "border-[#d9037d]"
+                            ? "border-[rgb(255,147,186)]"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
@@ -310,19 +315,19 @@ export default function WorkshopDetailPage() {
                   <h3 className="font-semibold text-gray-900 mb-3">Inclui:</h3>
                   <ul className="space-y-2">
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[#d9037d] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
                       Materiais inclusos
                     </li>
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[#d9037d] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
                       Atividade criativa
                     </li>
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[#d9037d] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
                       Lembrança especial
                     </li>
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[#d9037d] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
                       {imageCount}{" "}
                       {imageCount === 1
                         ? "opção disponível"
@@ -337,23 +342,23 @@ export default function WorkshopDetailPage() {
                     <span className="font-semibold text-gray-900">
                       Quantidade:
                     </span>
-                    <div className="flex items-center border border-gray-300 rounded-md">
+                    <div className="flex items-center bg-[rgb(255,147,186)] !text-[rgb(81, 78, 85)] rounded-md">
                       <button
                         disabled
+                        className="p-2"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="p-2 hover:bg-gray-100"
                       >
-                        <Minus size={16} />
+                        <Minus size={16} fill="rgb(81, 78, 85)" />
                       </button>
-                      <span className="px-4 py-2 min-w-[60px] text-center">
+                      <span className="px-4 py-2 min-w-[60px] text-center !text-[rgb(81, 78, 85)]">
                         {quantity}
                       </span>
                       <button
                         disabled
                         onClick={() => setQuantity(quantity + 1)}
-                        className="p-2 hover:bg-gray-100"
+                        className="p-2"
                       >
-                        <Plus size={16} />
+                        <Plus size={16} className="!text-[rgb(81, 78, 85)]"/>
                       </button>
                     </div>
                   </div>
@@ -361,9 +366,9 @@ export default function WorkshopDetailPage() {
                   <div className="flex gap-3">
                     <Button
                       onClick={handleAddToCart}
-                      className="flex-1 bg-[#d9037d] hover:bg-[#c00270] text-white py-3"
+                      className="flex-1 bg-[rgb(255,147,186)] hover:bg-[rgb(245,137,176)] text-[rgb(81,78,85)] py-3"
                     >
-                      Adicionar ao Orçamento
+                      Adicionar à sacola
                     </Button>
                     <Button
                       variant="outline"
@@ -378,9 +383,6 @@ export default function WorkshopDetailPage() {
                         size={20}
                         fill={isWorkshopFavorite ? "currentColor" : "none"}
                       />
-                    </Button>
-                    <Button variant="outline" className="p-3 text-gray-500">
-                      <Share2 size={20} />
                     </Button>
                   </div>
                 </div>
@@ -423,8 +425,8 @@ export default function WorkshopDetailPage() {
                       }}
                       className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${
                         currentImageIndex === index
-                          ? "border-[#d9037d] ring-2 ring-[#d9037d]/20"
-                          : "border-gray-200 hover:border-[#d9037d]/50"
+                          ? "border-[rgb(255,147,186)] ring-2 ring-[rgb(255,147,186)]/20"
+                          : "border-gray-200 hover:border-[rgb(255,147,186)]/50"
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -441,7 +443,7 @@ export default function WorkshopDetailPage() {
 
                       {/* Indicador atual */}
                       {currentImageIndex === index && (
-                        <div className="absolute top-2 right-2 bg-[#d9037d] text-white text-xs px-2 py-1 rounded-full font-semibold">
+                        <div className="absolute top-2 right-2 bg-[rgb(255,147,186)] text-white text-xs px-2 py-1 rounded-full font-semibold">
                           Atual
                         </div>
                       )}
@@ -453,7 +455,7 @@ export default function WorkshopDetailPage() {
                   <Button
                     onClick={() => router.push("/workshops")}
                     variant="outline"
-                    className="border-[#d9037d] text-[#d9037d] hover:bg-[#d9037d] hover:text-white"
+                    className="border-[rgb(255,147,186)] text-[rgb(81,78,85)] hover:bg-[rgb(255,147,186)] hover:text-white"
                   >
                     Ver Todas as Oficinas
                   </Button>
