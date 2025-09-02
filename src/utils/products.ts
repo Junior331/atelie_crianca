@@ -1,6 +1,5 @@
 import type { Product } from "@/types/product";
-import { workshopsList, foldersWithSubfolders } from "./workshop-categories";
-import { getAllKnownImages, getKnownImages, type ImageFile } from "./file-system";
+import { getAllKnownImages, type ImageFile } from "./file-system";
 
 // Função para converter ImageFile em Product
 const imageToProduct = (image: ImageFile, index: number): Product => {

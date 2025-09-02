@@ -63,8 +63,10 @@ export const useProducts = () => {
   return {
     error,
     loading,
+    setError,
     isCartOpen,
     searchTerm,
+    setLoading,
     filteredItems: filteredProducts,
     setSearchTerm,
     setIsCartOpen,

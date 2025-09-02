@@ -1,5 +1,4 @@
-// Utilitário para trabalhar com o sistema de arquivos de imagens das oficinas
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export interface ImageFile {
   name: string;
   path: string;
@@ -43,7 +42,6 @@ export const getImagesFromFolder = async (folder: string, subfolder?: string): P
             break; // Parar quando encontrar a primeira extensão válida
           }
         } catch (error) {
-          // Imagem não existe, continuar tentando outras extensões
           continue;
         }
       }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Utilitário para trabalhar com diferentes formatos de imagem, incluindo HEIC
 
 export const imageExtensions = ['.jpeg', '.jpg', '.png', '.webp', '.heic', '.HEIC'];
@@ -20,7 +21,6 @@ export const findAvailableImage = async (basePath: string, imageName: string): P
         return fullPath;
       }
     } catch (error) {
-      // Continuar testando outros formatos
       continue;
     }
   }
