@@ -19,10 +19,6 @@ const RentalCollection = () => {
   const [isAdding, setIsAdding] = useState(false);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  // Estados do sistema de filtros avançado
-  const [selectedAdvancedFilters, setSelectedAdvancedFilters] = useState<
-    string[]
-  >([]);
   const [expandedFolders, setExpandedFolders] = useState<
     Record<string, boolean>
   >({});
@@ -71,7 +67,7 @@ const RentalCollection = () => {
       
       // Se é uma subpasta da BRINQUEDOTECA
       if (filter.startsWith("BRINQUEDOTECA-")) {
-        let newFilters;
+        let newFilters: string[];
         if (prev.includes(filter)) {
           newFilters = prev.filter((f) => f !== filter);
           // Se desmarcar uma subpasta, desmarcar também a pasta principal
