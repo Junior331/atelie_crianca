@@ -26,7 +26,7 @@ const navigationItems = [
   { name: "Grupo Ateliê", href: "/ateliegroup" },
 ];
 
-const Header = ({}: HeaderProps) => {
+const Header = ({ isSecundary = true }: HeaderProps) => {
   const { items } = useCart();
   const { favoritesCount } = useFavorites();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,7 +35,9 @@ const Header = ({}: HeaderProps) => {
   return (
     <motion.header
       className={cn(
-        "sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm"
+        "fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm",
+        isSecundary &&
+          "sticky"
       )}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}

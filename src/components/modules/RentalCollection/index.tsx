@@ -128,26 +128,8 @@ const PortfolioCarousel = () => {
         <ChevronRight size={20} className="text-gray-800" />
       </button>
 
-      {/* Content Overlay */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-8">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-white"
-        >
-          <h3 className="text-2xl md:text-3xl font-light mb-2 tracking-wider">
-            {portfolioItems[currentIndex].title}
-          </h3>
-          <p className="text-white/90 text-lg font-light">
-            {portfolioItems[currentIndex].subtitle}
-          </p>
-        </motion.div>
-      </div>
-
       {/* Dots Indicator */}
-      <div className="absolute bottom-6 right-6 flex space-x-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
         {portfolioItems.map((_, index) => (
           <button
             key={index}
@@ -242,9 +224,10 @@ const WorkshopCard = ({
       transition={{ duration: 0.3 }}
     >
       <Card
-        className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col"
+        className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={onDetailsClick}
       >
         <div
           className="relative h-48 overflow-hidden rounded-t-lg cursor-pointer"
@@ -284,15 +267,33 @@ const WorkshopCard = ({
         </div>
         <CardContent className="p-4 flex flex-col flex-grow">
           <div className="mb-2">
-            <h3 className="font-semibold text-gray-900">
-              {formatWorkshopName(workshopName)}
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Oficina de {formatWorkshopName(workshopName.toLowerCase())} com{" "}
-              {imageCount} {imageCount === 1 ? "opção" : "opções"} disponíveis
-            </p>
+            <div className="mt-auto flex gap-2 items-end justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  {formatWorkshopName(workshopName)}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Oficina de {formatWorkshopName(workshopName.toLowerCase())}{" "}
+                  com {imageCount} {imageCount === 1 ? "opção" : "opções"}{" "}
+                  disponíveis
+                </p>
+              </div>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onFavoriteClick}
+                className={`border-none ${
+                  isFavorite
+                    ? "text-red-500 hover:bg-red-50"
+                    : "text-gray-500 hover:text-red-500"
+                }`}
+              >
+                <Heart fill={isFavorite ? "currentColor" : "none"} className="!w-6 !h-6" />
+              </Button>
+            </div>
           </div>
-          <div className="mt-auto flex gap-2">
+          {/* <div className="mt-auto flex gap-2">
             <Button
               size="sm"
               onClick={onDetailsClick}
@@ -312,7 +313,7 @@ const WorkshopCard = ({
             >
               <Heart size={16} fill={isFavorite ? "currentColor" : "none"} />
             </Button>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </motion.div>
@@ -329,6 +330,7 @@ const RentalCollection = () => {
     Record<string, boolean>
   >({});
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const {
     searchTerm,
@@ -519,7 +521,7 @@ const RentalCollection = () => {
 
   return (
     <section ref={ref} className="bg-white">
-      <div className="py-10 bg-white">
+      <div className="pt-10 bg-white">
         <div className="container max-w-none px-4">
           <motion.div
             className="mb-6"
@@ -533,148 +535,171 @@ const RentalCollection = () => {
       </div>
 
       <div className="min-h-screen flex flex-col lg:flex-row">
-        <div className="w-full container max-w-none px-4 flex flex-col lg:flex-row gap-8 min-h-full">
+        <div className="w-full container max-w-none px-4 flex flex-col lg:flex-row md:gap-8 min-h-full">
+          {/* Botão de Filtros Mobile */}
+          <div className="lg:hidden mb-4">
+            <Button
+              onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+              className="w-full bg-[#d9037d] hover:bg-[#c00270] text-white flex items-center justify-center gap-2"
+            >
+              <Search size={16} />
+              {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
+              {getTotalAdvancedFilters() > 0 && (
+                <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
+                  {getTotalAdvancedFilters()}
+                </span>
+              )}
+            </Button>
+          </div>
+
           {/* Sidebar com Filtros */}
-          <motion.div
-            className="w-full lg:max-w-80 lg:w-full flex-shrink-0 lg:min-h-full"
-            initial={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+          <div
+            className={`w-full lg:max-w-80 lg:w-full flex-shrink-0 lg:min-h-full ${
+              isFiltersOpen ? "block" : "hidden"
+            } lg:block`}
           >
-            <div className="min-h-full">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm min-h-full flex flex-col">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Filtrar Oficinas
-                </h3>
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <div className="min-h-full">
+                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm min-h-full flex flex-col">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Filtrar Oficinas
+                  </h3>
 
-                {/* Busca de filtros */}
-                <div className="relative mb-4">
-                  <Search
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={16}
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Buscar oficinas..."
-                    value={filterSearchTerm}
-                    onChange={(e) => setFilterSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d9037d] focus:border-transparent"
-                  />
-                </div>
+                  {/* Busca de filtros */}
+                  <div className="relative mb-4">
+                    <Search
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={16}
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Buscar oficinas..."
+                      value={filterSearchTerm}
+                      onChange={(e) => setFilterSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#d9037d] focus:border-transparent"
+                    />
+                  </div>
 
-                {/* Lista de oficinas - com scroll */}
-                <div className="space-y-2 flex-1 overflow-y-auto pr-2">
-                  {filteredFolders.map((folder) => {
-                    const hasSubfolders =
-                      folder === "BRINQUEDOTECA"
-                        ? foldersWithSubfolders["BRINQUEDOTECA"]
-                        : null;
+                  {/* Lista de oficinas - com scroll */}
+                  <div className="space-y-2 flex-1 overflow-y-auto pr-2">
+                    {filteredFolders.map((folder) => {
+                      const hasSubfolders =
+                        folder === "BRINQUEDOTECA"
+                          ? foldersWithSubfolders["BRINQUEDOTECA"]
+                          : null;
 
-                    return (
-                      <div
-                        key={folder}
-                        className="border-b border-gray-100 last:border-b-0 pb-2"
-                      >
-                        {/* Pasta principal */}
+                      return (
                         <div
-                          className={`flex items-center justify-between ${
-                            hasSubfolders ? "cursor-pointer" : ""
-                          }`}
-                          onClick={
-                            hasSubfolders
-                              ? () => toggleFolder(folder)
-                              : undefined
-                          }
+                          key={folder}
+                          className="border-b border-gray-100 last:border-b-0 pb-2"
                         >
-                          <label
-                            className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 rounded px-2 flex-1"
-                            onClick={(e) => e.stopPropagation()}
+                          {/* Pasta principal */}
+                          <div
+                            className={`flex items-center justify-between ${
+                              hasSubfolders ? "cursor-pointer" : ""
+                            }`}
+                            onClick={
+                              hasSubfolders
+                                ? () => toggleFolder(folder)
+                                : undefined
+                            }
                           >
-                            <input
-                              type="checkbox"
-                              checked={selectedWorkshopFilters.includes(folder)}
-                              onChange={() => toggleAdvancedFilter(folder)}
-                              className="rounded border-gray-300 text-[#d9037d] focus:ring-[#d9037d]"
-                            />
-                            <span className="text-sm text-gray-700 font-medium">
-                              {folder}
-                            </span>
-                            <span className="text-xs text-gray-500 ml-auto">
-                              ({folderImageCounts[folder] || 1})
-                            </span>
-                          </label>
+                            <label
+                              className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 rounded px-2 flex-1"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedWorkshopFilters.includes(
+                                  folder
+                                )}
+                                onChange={() => toggleAdvancedFilter(folder)}
+                                className="rounded border-gray-300 text-[#d9037d] focus:ring-[#d9037d]"
+                              />
+                              <span className="text-sm text-gray-700 font-medium">
+                                {folder}
+                              </span>
+                              <span className="text-xs text-gray-500 ml-auto">
+                                ({folderImageCounts[folder] || 1})
+                              </span>
+                            </label>
 
-                          {hasSubfolders && (
-                            <div className="p-1">
-                              {expandedFolders[folder] ? (
-                                <ChevronDown
-                                  size={16}
-                                  className="text-gray-400"
-                                />
-                              ) : (
-                                <ChevronRight
-                                  size={16}
-                                  className="text-gray-400"
-                                />
-                              )}
+                            {hasSubfolders && (
+                              <div className="p-1">
+                                {expandedFolders[folder] ? (
+                                  <ChevronDown
+                                    size={16}
+                                    className="text-gray-400"
+                                  />
+                                ) : (
+                                  <ChevronRight
+                                    size={16}
+                                    className="text-gray-400"
+                                  />
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Subpastas */}
+                          {hasSubfolders && expandedFolders[folder] && (
+                            <div className="ml-6 mt-2 space-y-1">
+                              {hasSubfolders.map((subfolder) => (
+                                <label
+                                  key={`${folder}-${subfolder}`}
+                                  className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 rounded px-2"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedWorkshopFilters.includes(
+                                      `${folder}-${subfolder}`
+                                    )}
+                                    onChange={() =>
+                                      toggleAdvancedFilter(
+                                        `${folder}-${subfolder}`
+                                      )
+                                    }
+                                    className="rounded border-gray-300 text-[#d9037d] focus:ring-[#d9037d]"
+                                  />
+                                  <span className="text-sm text-gray-600">
+                                    {subfolder}
+                                  </span>
+                                  <span className="text-xs text-gray-500 ml-auto">
+                                    (
+                                    {subfolderImageCounts[
+                                      `${folder}-${subfolder}`
+                                    ] || 0}
+                                    )
+                                  </span>
+                                </label>
+                              ))}
                             </div>
                           )}
                         </div>
-
-                        {/* Subpastas */}
-                        {hasSubfolders && expandedFolders[folder] && (
-                          <div className="ml-6 mt-2 space-y-1">
-                            {hasSubfolders.map((subfolder) => (
-                              <label
-                                key={`${folder}-${subfolder}`}
-                                className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 rounded px-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedWorkshopFilters.includes(
-                                    `${folder}-${subfolder}`
-                                  )}
-                                  onChange={() =>
-                                    toggleAdvancedFilter(
-                                      `${folder}-${subfolder}`
-                                    )
-                                  }
-                                  className="rounded border-gray-300 text-[#d9037d] focus:ring-[#d9037d]"
-                                />
-                                <span className="text-sm text-gray-600">
-                                  {subfolder}
-                                </span>
-                                <span className="text-xs text-gray-500 ml-auto">
-                                  (
-                                  {subfolderImageCounts[
-                                    `${folder}-${subfolder}`
-                                  ] || 0}
-                                  )
-                                </span>
-                              </label>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Limpar filtros */}
-                {getTotalAdvancedFilters() > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <Button
-                      variant="ghost"
-                      onClick={clearAllAdvancedFilters}
-                      className="text-sm text-red-600 hover:text-red-800 font-medium w-full"
-                    >
-                      Limpar todos os filtros
-                    </Button>
+                      );
+                    })}
                   </div>
-                )}
+
+                  {/* Limpar filtros */}
+                  {getTotalAdvancedFilters() > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <Button
+                        variant="ghost"
+                        onClick={clearAllAdvancedFilters}
+                        className="text-sm text-red-600 hover:text-red-800 font-medium w-full"
+                      >
+                        Limpar todos os filtros
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* Conteúdo Principal */}
           <div className="flex-1 w-full min-h-full flex flex-col">
