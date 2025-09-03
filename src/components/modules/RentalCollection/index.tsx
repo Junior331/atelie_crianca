@@ -755,7 +755,7 @@ const RentalCollection = () => {
             {/* Grid de oficinas - com scroll */}
             <div className="flex-1 overflow-y-auto">
               <motion.div
-                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pb-8"
+                className="grid grid-cols-2 lg:grid-cols-3 gap-6 pb-8"
                 layout
               >
                 {filteredWorkshops.map((workshopName) => (
