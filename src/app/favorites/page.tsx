@@ -85,7 +85,7 @@ export default function FavoritesPage() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                    className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   >
                     <div className="relative h-48 bg-gray-100">
                       {item.workshopFolder && (
@@ -110,7 +110,7 @@ export default function FavoritesPage() {
                       {/* Remove from favorites button */}
                       <button
                         onClick={() => handleRemoveFavorite(item.id)}
-                        className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors duration-200"
+                        className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white flex items-center justify-center shadow-md transition-colors duration-200"
                       >
                         <Trash2 className="w-4 h-4 text-red-500" />
                       </button>

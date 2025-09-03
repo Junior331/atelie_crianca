@@ -88,7 +88,7 @@ const PortfolioCarousel = () => {
 
   return (
     <div
-      className="relative w-full h-96 md:h-[500px] overflow-hidden rounded-lg bg-gray-100 group"
+      className="relative w-full h-96 md:h-[500px] overflow-hidden bg-gray-100 group"
       onMouseEnter={() => setIsAutoPlay(false)}
       onMouseLeave={() => setIsAutoPlay(true)}
     >
@@ -230,7 +230,7 @@ const WorkshopCard = ({
         onClick={onDetailsClick}
       >
         <div
-          className="relative h-48 overflow-hidden rounded-t-lg cursor-pointer"
+          className="relative h-48 overflow-hidden cursor-pointer"
           onClick={() => onImageClick(currentImageIndex)}
         >
           <AnimatePresence mode="wait">
@@ -250,13 +250,13 @@ const WorkshopCard = ({
                 imageName={imageIndices[currentImageIndex].toString()}
                 alt={workshopName}
                 fill={true}
-                className="rounded-t-lg object-cover"
+                className="object-cover"
               />
             </motion.div>
           </AnimatePresence>
           {imageCount > 1 && (
             <motion.div
-              className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded"
+              className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -545,7 +545,7 @@ const RentalCollection = () => {
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
               {getTotalAdvancedFilters() > 0 && (
-                <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
+                <span className="bg-white/20 px-2 py-1 text-xs">
                   {getTotalAdvancedFilters()}
                 </span>
               )}
@@ -564,7 +564,7 @@ const RentalCollection = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <div className="min-h-full">
-                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm min-h-full flex flex-col">
+                <div className="bg-white border border-gray-200 p-6 shadow-sm min-h-full flex flex-col">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     Filtrar Oficinas
                   </h3>
@@ -580,7 +580,7 @@ const RentalCollection = () => {
                       placeholder="Buscar oficinas..."
                       value={filterSearchTerm}
                       onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[rgb(255,147,186)] focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[rgb(255,147,186)] focus:border-transparent"
                     />
                   </div>
 
@@ -609,7 +609,7 @@ const RentalCollection = () => {
                             }
                           >
                             <label
-                              className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 rounded px-2 flex-1"
+                              className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 px-2 flex-1"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <input
@@ -618,7 +618,7 @@ const RentalCollection = () => {
                                   folder
                                 )}
                                 onChange={() => toggleAdvancedFilter(folder)}
-                                className="rounded border-gray-300 text-[rgb(255,147,186)] focus:ring-[rgb(255,147,186)]"
+                                className="border-gray-300 text-[rgb(255,147,186)] focus:ring-[rgb(255,147,186)]"
                               />
                               <span className="text-sm text-gray-700 font-medium">
                                 {folder}
@@ -651,7 +651,7 @@ const RentalCollection = () => {
                               {hasSubfolders.map((subfolder) => (
                                 <label
                                   key={`${folder}-${subfolder}`}
-                                  className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 rounded px-2"
+                                  className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2"
                                 >
                                   <input
                                     type="checkbox"
@@ -663,7 +663,7 @@ const RentalCollection = () => {
                                         `${folder}-${subfolder}`
                                       )
                                     }
-                                    className="rounded border-gray-300 text-[rgb(255,147,186)] focus:ring-[rgb(255,147,186)]"
+                                    className="border-gray-300 text-[rgb(255,147,186)] focus:ring-[rgb(255,147,186)]"
                                   />
                                   <span className="text-sm text-gray-600">
                                     {subfolder}
@@ -714,7 +714,7 @@ const RentalCollection = () => {
                 <Input
                   type="text"
                   placeholder="Pesquisar oficinas..."
-                  className="w-full pl-4 pr-10 py-3 border border-[#eaeaea] rounded-lg text-sm"
+                  className="w-full pl-4 pr-10 py-3 border border-[#eaeaea] text-sm"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -737,12 +737,12 @@ const RentalCollection = () => {
                   {selectedWorkshopFilters.map((filter) => (
                     <span
                       key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[rgb(255,147,186)] text-white rounded-full text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[rgb(255,147,186)] text-white text-sm"
                     >
                       {filter}
                       <button
                         onClick={() => toggleAdvancedFilter(filter)}
-                        className="hover:bg-[rgb(245,137,176)] rounded-full p-0.5"
+                        className="hover:bg-[rgb(245,137,176)] p-0.5"
                       >
                         <X size={12} />
                       </button>

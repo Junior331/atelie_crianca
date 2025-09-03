@@ -203,7 +203,7 @@ export default function WorkshopDetailPage() {
               {/* Galeria de Imagens */}
               <div className="space-y-4">
                 {/* Imagem principal */}
-                <div className="relative w-full h-96 bg-gray-50 rounded-lg overflow-hidden">
+                <div className="relative w-full h-96 bg-gray-50 overflow-hidden">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={currentImageIndex}
@@ -256,7 +256,7 @@ export default function WorkshopDetailPage() {
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`relative aspect-square rounded-md overflow-hidden border-2 ${
+                        className={`relative aspect-square overflow-hidden border-2 ${
                           currentImageIndex === index
                             ? "border-[rgb(255,147,186)]"
                             : "border-gray-200 hover:border-gray-300"
@@ -315,19 +315,19 @@ export default function WorkshopDetailPage() {
                   <h3 className="font-semibold text-gray-900 mb-3">Inclui:</h3>
                   <ul className="space-y-2">
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
                       Materiais inclusos
                     </li>
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
                       Atividade criativa
                     </li>
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
                       Lembrança especial
                     </li>
                     <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)] rounded-full"></div>
+                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
                       {imageCount}{" "}
                       {imageCount === 1
                         ? "opção disponível"
@@ -342,7 +342,7 @@ export default function WorkshopDetailPage() {
                     <span className="font-semibold text-gray-900">
                       Quantidade:
                     </span>
-                    <div className="flex items-center bg-[rgb(255,147,186)] !text-[rgb(81, 78, 85)] rounded-md">
+                    <div className="flex items-center bg-[rgb(255,147,186)] !text-[rgb(81, 78, 85)]">
                       <button
                         disabled
                         className="p-2"
@@ -423,7 +423,7 @@ export default function WorkshopDetailPage() {
                           (index > 0 ? `-item-${index + 1}` : "");
                         router.push(`/workshop/${newSlug}`);
                       }}
-                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                      className={`relative aspect-square overflow-hidden border-2 transition-all duration-300 ${
                         currentImageIndex === index
                           ? "border-[rgb(255,147,186)] ring-2 ring-[rgb(255,147,186)]/20"
                           : "border-gray-200 hover:border-[rgb(255,147,186)]/50"
@@ -443,7 +443,7 @@ export default function WorkshopDetailPage() {
 
                       {/* Indicador atual */}
                       {currentImageIndex === index && (
-                        <div className="absolute top-2 right-2 bg-[rgb(255,147,186)] text-white text-xs px-2 py-1 rounded-full font-semibold">
+                        <div className="absolute top-2 right-2 bg-[rgb(255,147,186)] text-white text-xs px-2 py-1 font-semibold">
                           Atual
                         </div>
                       )}

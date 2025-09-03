@@ -122,7 +122,7 @@ export default function Component() {
                         viewport={{ once: true }}
                         className="flex items-center space-x-2"
                       >
-                        <div className="flex place-content-center place-items-center w-10 h-10 bg-gold rounded-full bg-[#f8d07a33]">
+                        <div className="flex place-content-center place-items-center w-10 h-10 bg-gold bg-[#f8d07a33]">
                           <feature.icon color="#e6b34c" />
                         </div>
                         <div>
@@ -148,9 +148,9 @@ export default function Component() {
                     height={800}
                     alt="About"
                     src="/images/about.jpeg"
-                    className="w-full h-96 object-cover rounded-lg shadow-elegant"
+                    className="w-full h-96 object-cover shadow-elegant"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-lg" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </motion.div>
               </div>
 
@@ -173,7 +173,7 @@ export default function Component() {
                         whileInView={{ scale: 1 }}
                         transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
                         viewport={{ once: true }}
-                        className="inline-flex items-center justify-center w-12 h-12 bg-gradient-gold rounded-full mb-4"
+                        className="inline-flex items-center justify-center w-12 h-12 bg-gradient-gold mb-4"
                       >
                         <stat.icon className="w-6 h-6 text-gold-dark" />
                       </motion.div>

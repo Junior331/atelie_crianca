@@ -119,9 +119,9 @@ export default function Component() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 30 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className="group cursor-pointer bg-[#efe5ea] rounded-lg pb-6"
+                    className="group cursor-pointer bg-[#efe5ea] pb-6"
                   >
-                    <div className="relative h-80 md:h-96 overflow-hidden rounded-t-lg mb-6 bg-gray-100">
+                    <div className="relative h-80 md:h-96 overflow-hidden mb-6 bg-gray-100">
                       {item.image ? (
                         <div className="relative h-full overflow-hidden">
                           <Image
