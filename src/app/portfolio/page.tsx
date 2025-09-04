@@ -96,8 +96,8 @@ export default function Component() {
                       onClick={() => setActiveCategory(category.value)}
                       className={`cursor-pointer text-sm md:text-base font-medium tracking-wider transition-all duration-300 pb-2 border-b-2 ${
                         activeCategory === category.value
-                          ? "text-rose-500 border-rose-500"
-                          : "text-gray-500 border-transparent hover:text-gray-700"
+                          ? "text-[#E00075] border-[#E00075]"
+                          : "text-[#8A8A8A] border-transparent hover:text-[#615C5C]"
                       }`}
                     >
                       {category.name}
@@ -142,14 +142,14 @@ export default function Component() {
 
                     <div className="text-center">
                       <h3
-                        className="text-xl md:text-2xl font-light text-gray-800 mb-2 tracking-wider"
+                        className="text-xl md:text-2xl font-light text-[#615C5C] mb-2 tracking-wider"
                         style={{
                           fontFamily: 'Georgia, "Times New Roman", serif',
                         }}
                       >
                         {item.title}
                       </h3>
-                      <p className="text-gray-600 text-sm md:text-base font-light">
+                      <p className="text-[#8A8A8A] text-sm md:text-base font-light">
                         {item.subtitle}
                       </p>
                     </div>

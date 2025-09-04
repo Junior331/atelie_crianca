@@ -110,7 +110,7 @@ Aguardo retorno para orçamento! 😊`;
               size="sm"
               variant="ghost"
               onClick={onClose}
-              className="text-white hover:text-[rgb(255,147,186)] hover:bg-white/10 p-2 relative"
+              className="text-white hover:text-[#E00075] hover:bg-white/10 p-2 relative"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -155,7 +155,7 @@ Aguardo retorno para orçamento! 😊`;
                         variant="ghost"
                         size="sm"
                         onClick={() => removeItem(item.id)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        className="text-[#E00075] hover:text-[#B8005C] hover:bg-red-50"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -287,7 +287,7 @@ Aguardo retorno para orçamento! 😊`;
                       onChange={(e) =>
                         handleInputChange("isReturningClient", e.target.value)
                       }
-                      className="w-full mt-1 px-3 py-2 border text-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                      className="w-full mt-1 px-3 py-2 border text-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E00075]"
                     >
                       <option value="" className="text-black">Selecione...</option>
                       <option value="Sim" className="text-black">Sim, já contratei antes</option>

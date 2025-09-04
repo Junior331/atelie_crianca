@@ -61,7 +61,7 @@ export const SmartImage = ({
 
   if (isLoading) {
     return (
-      <div className={`bg-gray-200 animate-pulse flex items-center justify-center ${className || ''}`}>
+      <div className={`bg-gray-200 animate-pulse flex-1 h-full flex items-center justify-center ${className || ''}`}>
         <div className="text-gray-400">Carregando...</div>
       </div>
     );
@@ -69,7 +69,7 @@ export const SmartImage = ({
 
   if (hasError || !imageSrc) {
     return (
-      <div className={`bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ${className || ''}`}>
+      <div className={`bg-gradient-to-br h-full from-gray-100 to-gray-200 flex items-center justify-center ${className || ''}`}>
         <div className="text-4xl opacity-20">📸</div>
       </div>
     );

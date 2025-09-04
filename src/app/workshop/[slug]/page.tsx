@@ -3,7 +3,13 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Minus, Heart, Share2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  Minus,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 import { SmartImage } from "@/components/atoms/SmartImage";
 import { Button, LoadingSpinner } from "@/components/atoms";
@@ -16,6 +22,7 @@ import {
   folderImageCounts,
 } from "@/utils/workshop-categories";
 import { Footer } from "@/components/modules";
+import Image from "next/image";
 
 export default function WorkshopDetailPage() {
   const params = useParams();
@@ -84,15 +91,15 @@ export default function WorkshopDetailPage() {
           <div className="text-center">
             {isLoading ? (
               <>
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[rgb(255,147,186)] mb-4"></div>
-                <p className="text-gray-600">Carregando oficina...</p>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E00075] mb-4"></div>
+                <p className="text-[#8A8A8A]">Carregando oficina...</p>
               </>
             ) : (
               <>
-                <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                <h1 className="text-2xl font-bold text-[#615C5C] mb-4">
                   Oficina não encontrada
                 </h1>
-                <p className="text-gray-600 mb-4">
+                <p className="text-[#8A8A8A] mb-4">
                   A oficina que você está procurando não existe.
                 </p>
                 <Button onClick={() => router.push("/workshops")}>
@@ -190,7 +197,7 @@ export default function WorkshopDetailPage() {
               <Button
                 variant="ghost"
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+                className="flex items-center gap-2 text-[#8A8A8A] hover:text-[#615C5C]"
               >
                 <ArrowLeft size={20} />
                 Voltar
@@ -230,15 +237,15 @@ export default function WorkshopDetailPage() {
                     <>
                       <button
                         onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
                       >
-                        ←
+                        <ChevronLeft />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
                       >
-                        →
+                        <ChevronRight />
                       </button>
 
                       {/* Indicador */}
@@ -258,7 +265,7 @@ export default function WorkshopDetailPage() {
                         onClick={() => setCurrentImageIndex(index)}
                         className={`relative aspect-square overflow-hidden border-2 ${
                           currentImageIndex === index
-                            ? "border-[rgb(255,147,186)]"
+                            ? "border-[#E00075]"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
@@ -278,20 +285,20 @@ export default function WorkshopDetailPage() {
               {/* Informações do Produto */}
               <div className="space-y-6">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-3xl font-bold text-[#615C5C] mb-2">
                     {formatWorkshopName(workshop)}
                   </h1>
-                  <p className="text-gray-600 text-lg">
+                  <p className="text-[#8A8A8A] text-lg">
                     Oficina criativa completa com materiais inclusos
                   </p>
                 </div>
 
                 {/* Preço */}
                 <div className="border-b border-gray-200 pb-6">
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-[#615C5C]">
                     Sob consulta
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-[#8A8A8A] mt-1">
                     Preços variam conforme duração e número de participantes
                   </p>
                 </div>
@@ -300,34 +307,34 @@ export default function WorkshopDetailPage() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <h3 className="font-semibold text-gray-900">Duração</h3>
-                      <p className="text-gray-600">1-2 horas</p>
+                      <h3 className="font-semibold text-[#615C5C]">Duração</h3>
+                      <p className="text-[#8A8A8A]">1-2 horas</p>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Idade</h3>
-                      <p className="text-gray-600">5-12 anos</p>
+                      <h3 className="font-semibold text-[#615C5C]">Idade</h3>
+                      <p className="text-[#8A8A8A]">5-12 anos</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Destaques */}
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Inclui:</h3>
+                  <h3 className="font-semibold text-[#615C5C] mb-3">Inclui:</h3>
                   <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
+                    <li className="flex items-center gap-2 text-[#8A8A8A]">
+                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
                       Materiais inclusos
                     </li>
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
+                    <li className="flex items-center gap-2 text-[#8A8A8A]">
+                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
                       Atividade criativa
                     </li>
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
+                    <li className="flex items-center gap-2 text-[#8A8A8A]">
+                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
                       Lembrança especial
                     </li>
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <div className="w-1.5 h-1.5 bg-[rgb(255,147,186)]"></div>
+                    <li className="flex items-center gap-2 text-[#8A8A8A]">
+                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
                       {imageCount}{" "}
                       {imageCount === 1
                         ? "opção disponível"
@@ -339,10 +346,10 @@ export default function WorkshopDetailPage() {
                 {/* Quantidade e Ações */}
                 <div className="space-y-4 border-t border-gray-200 pt-6">
                   <div className="flex items-center gap-4">
-                    <span className="font-semibold text-gray-900">
+                    <span className="font-semibold text-[#615C5C]">
                       Quantidade:
                     </span>
-                    <div className="flex items-center bg-[rgb(255,147,186)] !text-[rgb(81, 78, 85)]">
+                    <div className="flex items-center bg-[#E00075] rounded-sm !text-[rgb(81, 78, 85)]">
                       <button
                         disabled
                         className="p-2"
@@ -358,7 +365,7 @@ export default function WorkshopDetailPage() {
                         onClick={() => setQuantity(quantity + 1)}
                         className="p-2"
                       >
-                        <Plus size={16} className="!text-[rgb(81, 78, 85)]"/>
+                        <Plus size={16} className="!text-[rgb(81, 78, 85)]" />
                       </button>
                     </div>
                   </div>
@@ -366,7 +373,7 @@ export default function WorkshopDetailPage() {
                   <div className="flex gap-3">
                     <Button
                       onClick={handleAddToCart}
-                      className="flex-1 bg-[rgb(255,147,186)] hover:bg-[rgb(245,137,176)] text-[rgb(81,78,85)] py-3"
+                      className="flex-1 bg-[#E00075] hover:bg-[#B8005C] !text-[rgb(81, 78, 85)] py-3"
                     >
                       Adicionar à sacola
                     </Button>
@@ -375,23 +382,32 @@ export default function WorkshopDetailPage() {
                       onClick={handleToggleFavorite}
                       className={`p-3 ${
                         isWorkshopFavorite
-                          ? "text-red-500 border-red-500"
-                          : "text-gray-500"
+                          ? "text-[#E00075] border-[#E00075]"
+                          : "text-[#8A8A8A]"
                       }`}
                     >
-                      <Heart
-                        size={20}
-                        fill={isWorkshopFavorite ? "currentColor" : "none"}
+                      <Image
+                        width={20}
+                        height={20}
+                        alt="Coração"
+                        src={
+                          isWorkshopFavorite
+                            ? "/images/coracao_solid.png"
+                            : "/images/coracao.png"
+                        }
+                        className={
+                          isWorkshopFavorite ? "opacity-100" : "opacity-50"
+                        }
                       />
                     </Button>
                   </div>
                 </div>
 
                 <div className="border-t border-gray-200 pt-6">
-                  <h3 className="font-semibold text-gray-900 mb-3">
+                  <h3 className="font-semibold text-[#615C5C] mb-3">
                     Descrição
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-[#8A8A8A] leading-relaxed">
                     A oficina de {formatWorkshopName(workshop?.toLowerCase())} é
                     uma experiência única e criativa para crianças. Com{" "}
                     {imageCount} {imageCount === 1 ? "opção" : "opções"}{" "}
@@ -409,7 +425,7 @@ export default function WorkshopDetailPage() {
           {imageCount > 1 && (
             <div className="py-2">
               <div className="container px-4">
-                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                <h2 className="text-2xl font-bold text-[#615C5C] mb-8 text-center">
                   Outras opções de {formatWorkshopName(workshop)}
                 </h2>
 
@@ -425,8 +441,8 @@ export default function WorkshopDetailPage() {
                       }}
                       className={`relative aspect-square overflow-hidden border-2 transition-all duration-300 ${
                         currentImageIndex === index
-                          ? "border-[rgb(255,147,186)] ring-2 ring-[rgb(255,147,186)]/20"
-                          : "border-gray-200 hover:border-[rgb(255,147,186)]/50"
+                          ? "border-[#E00075] ring-2 ring-[#E00075]/20"
+                          : "border-gray-200 hover:border-[#E00075]/50"
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -443,7 +459,7 @@ export default function WorkshopDetailPage() {
 
                       {/* Indicador atual */}
                       {currentImageIndex === index && (
-                        <div className="absolute top-2 right-2 bg-[rgb(255,147,186)] text-white text-xs px-2 py-1 font-semibold">
+                        <div className="absolute top-2 right-2 bg-[#E00075] text-white text-xs px-2 py-1 font-semibold">
                           Atual
                         </div>
                       )}
@@ -455,7 +471,7 @@ export default function WorkshopDetailPage() {
                   <Button
                     onClick={() => router.push("/workshops")}
                     variant="outline"
-                    className="border-[rgb(255,147,186)] text-[rgb(81,78,85)] hover:bg-[rgb(255,147,186)] hover:text-white"
+                    className="border-[#E00075] text-[rgb(81,78,85)] hover:bg-[#E00075] hover:text-white"
                   >
                     Ver Todas as Oficinas
                   </Button>

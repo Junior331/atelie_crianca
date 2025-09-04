@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ChevronRight,
   X,
-  Heart,
   ChevronLeft,
 } from "lucide-react";
 import { SmartImage } from "@/components/atoms/SmartImage";
@@ -230,7 +229,7 @@ const WorkshopCard = ({
         onClick={onDetailsClick}
       >
         <div
-          className="relative h-48 overflow-hidden cursor-pointer"
+          className="relative h-full min-h-48 overflow-hidden cursor-pointer"
           onClick={() => onImageClick(currentImageIndex)}
         >
           <AnimatePresence mode="wait">
@@ -269,10 +268,10 @@ const WorkshopCard = ({
           <div className="mb-2">
             <div className="mt-auto flex gap-2 items-end justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">
+                <h3 className="font-semibold text-[#615C5C]">
                   {formatWorkshopName(workshopName)}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-[#8A8A8A] mt-1">
                   Oficina de {formatWorkshopName(workshopName.toLowerCase())}{" "}
                   com {imageCount} {imageCount === 1 ? "opção" : "opções"}{" "}
                   disponíveis
@@ -283,37 +282,18 @@ const WorkshopCard = ({
                 size="sm"
                 variant="outline"
                 onClick={onFavoriteClick}
-                className={`border-none ${
-                  isFavorite
-                    ? "text-red-500 hover:bg-red-50"
-                    : "text-gray-500 hover:text-red-500"
-                }`}
               >
-                <Heart fill={isFavorite ? "currentColor" : "none"} className="!w-6 !h-6" />
+                <Image
+                  width={20}
+                  height={20}
+                  alt="Coração"
+                  src={
+                    isFavorite ? "/images/coracao_solid.png" : "/images/coracao.png"
+                  }
+                />
               </Button>
             </div>
           </div>
-          {/* <div className="mt-auto flex gap-2">
-            <Button
-              size="sm"
-              onClick={onDetailsClick}
-              className="flex-1 bg-[rgb(255,147,186)] hover:bg-[rgb(245,137,176)] text-white"
-            >
-              Ver Detalhes
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onFavoriteClick}
-              className={`p-2 ${
-                isFavorite
-                  ? "text-red-500 border-red-500 hover:bg-red-50"
-                  : "text-gray-500 border-gray-300 hover:text-red-500 hover:border-red-300"
-              }`}
-            >
-              <Heart size={16} fill={isFavorite ? "currentColor" : "none"} />
-            </Button>
-          </div> */}
         </CardContent>
       </Card>
     </motion.div>
@@ -540,7 +520,7 @@ const RentalCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[rgb(255,147,186)] hover:bg-[rgb(245,137,176)] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#E00075] hover:bg-[#B8005C] text-white flex items-center justify-center gap-2"
             >
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
@@ -565,7 +545,7 @@ const RentalCollection = () => {
             >
               <div className="min-h-full">
                 <div className="bg-white border border-gray-200 p-6 shadow-sm min-h-full flex flex-col">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h3 className="text-lg font-semibold text-[#615C5C] mb-4">
                     Filtrar Oficinas
                   </h3>
 
@@ -580,7 +560,7 @@ const RentalCollection = () => {
                       placeholder="Buscar oficinas..."
                       value={filterSearchTerm}
                       onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[rgb(255,147,186)] focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#E00075] focus:border-transparent"
                     />
                   </div>
 
@@ -618,12 +598,12 @@ const RentalCollection = () => {
                                   folder
                                 )}
                                 onChange={() => toggleAdvancedFilter(folder)}
-                                className="border-gray-300 text-[rgb(255,147,186)] focus:ring-[rgb(255,147,186)]"
+                                className="border-gray-300 text-[#E00075] focus:ring-[#E00075]"
                               />
-                              <span className="text-sm text-gray-700 font-medium">
+                              <span className="text-sm text-[#615C5C] font-medium">
                                 {folder}
                               </span>
-                              <span className="text-xs text-gray-500 ml-auto">
+                              <span className="text-xs text-[#8A8A8A] ml-auto">
                                 ({folderImageCounts[folder] || 1})
                               </span>
                             </label>
@@ -663,12 +643,12 @@ const RentalCollection = () => {
                                         `${folder}-${subfolder}`
                                       )
                                     }
-                                    className="border-gray-300 text-[rgb(255,147,186)] focus:ring-[rgb(255,147,186)]"
+                                    className="border-gray-300 text-[#E00075] focus:ring-[#E00075]"
                                   />
-                                  <span className="text-sm text-gray-600">
+                                  <span className="text-sm text-[#8A8A8A]">
                                     {subfolder}
                                   </span>
-                                  <span className="text-xs text-gray-500 ml-auto">
+                                  <span className="text-xs text-[#8A8A8A] ml-auto">
                                     (
                                     {subfolderImageCounts[
                                       `${folder}-${subfolder}`
@@ -690,7 +670,7 @@ const RentalCollection = () => {
                       <Button
                         variant="ghost"
                         onClick={clearAllAdvancedFilters}
-                        className="text-sm text-red-600 hover:text-red-800 font-medium w-full"
+                        className="text-sm text-[#E00075] hover:text-[#B8005C] font-medium w-full"
                       >
                         Limpar todos os filtros
                       </Button>
@@ -731,18 +711,18 @@ const RentalCollection = () => {
                 transition={{ delay: 0.4 }}
               >
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-sm text-gray-600 py-1">
+                  <span className="text-sm text-[#8A8A8A] py-1">
                     Filtros ativos:
                   </span>
                   {selectedWorkshopFilters.map((filter) => (
                     <span
                       key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[rgb(255,147,186)] text-white text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#E00075] text-white text-sm"
                     >
                       {filter}
                       <button
                         onClick={() => toggleAdvancedFilter(filter)}
-                        className="hover:bg-[rgb(245,137,176)] p-0.5"
+                        className="hover:bg-[#B8005C] p-0.5"
                       >
                         <X size={12} />
                       </button>
@@ -755,7 +735,7 @@ const RentalCollection = () => {
             {/* Grid de oficinas - com scroll */}
             <div className="flex-1 overflow-y-auto">
               <motion.div
-                className="grid grid-cols-2 lg:grid-cols-3 gap-6 pb-8"
+                className="grid grid-cols-2 md:grid-cols-3 gap-6 pb-8"
                 layout
               >
                 {filteredWorkshops.map((workshopName) => (
@@ -774,7 +754,7 @@ const RentalCollection = () => {
 
               {filteredWorkshops.length === 0 && (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-gray-500 text-lg">
+                  <p className="text-[#8A8A8A] text-lg">
                     Nenhuma oficina encontrada com os filtros aplicados.
                   </p>
                 </div>
