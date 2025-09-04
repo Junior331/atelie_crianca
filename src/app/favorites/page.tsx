@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
