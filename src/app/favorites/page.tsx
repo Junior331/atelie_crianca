@@ -85,7 +85,7 @@ export default function FavoritesPage() {
                   Explore nossas oficinas e adicione suas favoritas!
                 </p>
                 <Link href="/workshops">
-                  <Button className="bg-[#E00075] hover:bg-[#B8005C] text-white">
+                  <Button className="bg-[#ecced1] hover:bg-[#ecced1] text-[#615C5C]">
                     Explorar Oficinas
                   </Button>
                 </Link>

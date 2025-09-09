@@ -96,7 +96,7 @@ export default function Component() {
                       onClick={() => setActiveCategory(category.value)}
                       className={`cursor-pointer text-sm md:text-base font-medium tracking-wider transition-all duration-300 pb-2 border-b-2 ${
                         activeCategory === category.value
-                          ? "text-[#E00075] border-[#E00075]"
+                          ? "text-[#ecced1] border-[#ecced1]"
                           : "text-[#8A8A8A] border-transparent hover:text-[#615C5C]"
                       }`}
                     >

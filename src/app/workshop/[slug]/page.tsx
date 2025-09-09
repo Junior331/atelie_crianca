@@ -91,7 +91,7 @@ export default function WorkshopDetailPage() {
           <div className="text-center">
             {isLoading ? (
               <>
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E00075] mb-4"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ecced1] mb-4"></div>
                 <p className="text-[#8A8A8A]">Carregando oficina...</p>
               </>
             ) : (
@@ -265,7 +265,7 @@ export default function WorkshopDetailPage() {
                         onClick={() => setCurrentImageIndex(index)}
                         className={`relative aspect-square overflow-hidden border-2 ${
                           currentImageIndex === index
-                            ? "border-[#E00075]"
+                            ? "border-[#ecced1]"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
@@ -322,19 +322,19 @@ export default function WorkshopDetailPage() {
                   <h3 className="font-semibold text-[#615C5C] mb-3">Inclui:</h3>
                   <ul className="space-y-2">
                     <li className="flex items-center gap-2 text-[#8A8A8A]">
-                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
+                      <div className="w-1.5 h-1.5 bg-[#ecced1]"></div>
                       Materiais inclusos
                     </li>
                     <li className="flex items-center gap-2 text-[#8A8A8A]">
-                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
+                      <div className="w-1.5 h-1.5 bg-[#ecced1]"></div>
                       Atividade criativa
                     </li>
                     <li className="flex items-center gap-2 text-[#8A8A8A]">
-                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
+                      <div className="w-1.5 h-1.5 bg-[#ecced1]"></div>
                       Lembrança especial
                     </li>
                     <li className="flex items-center gap-2 text-[#8A8A8A]">
-                      <div className="w-1.5 h-1.5 bg-[#E00075]"></div>
+                      <div className="w-1.5 h-1.5 bg-[#ecced1]"></div>
                       {imageCount}{" "}
                       {imageCount === 1
                         ? "opção disponível"
@@ -349,7 +349,7 @@ export default function WorkshopDetailPage() {
                     <span className="font-semibold text-[#615C5C]">
                       Quantidade:
                     </span>
-                    <div className="flex items-center bg-[#E00075] rounded-sm !text-[rgb(81, 78, 85)]">
+                    <div className="flex items-center bg-[#ecced1] rounded-sm !text-[rgb(81, 78, 85)]">
                       <button
                         disabled
                         className="p-2"
@@ -373,16 +373,16 @@ export default function WorkshopDetailPage() {
                   <div className="flex gap-3">
                     <Button
                       onClick={handleAddToCart}
-                      className="flex-1 bg-[#E00075] hover:bg-[#B8005C] !text-[rgb(81, 78, 85)] py-3"
+                      className="flex-1 bg-[#ecced1] hover:bg-[#ecced1] !text-[rgb(81, 78, 85)] py-3"
                     >
                       Adicionar à sacola
                     </Button>
                     <Button
                       variant="outline"
                       onClick={handleToggleFavorite}
-                      className={`p-3 ${
+                      className={`p-3 border-none ${
                         isWorkshopFavorite
-                          ? "text-[#E00075] border-[#E00075]"
+                          ? "text-[#ecced1] border-[#ecced1]"
                           : "text-[#8A8A8A]"
                       }`}
                     >
@@ -441,8 +441,8 @@ export default function WorkshopDetailPage() {
                       }}
                       className={`relative aspect-square overflow-hidden border-2 transition-all duration-300 ${
                         currentImageIndex === index
-                          ? "border-[#E00075] ring-2 ring-[#E00075]/20"
-                          : "border-gray-200 hover:border-[#E00075]/50"
+                          ? "border-[#ecced1] ring-2 ring-[#ecced1]/20"
+                          : "border-gray-200 hover:border-[#ecced1]/50"
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -459,7 +459,7 @@ export default function WorkshopDetailPage() {
 
                       {/* Indicador atual */}
                       {currentImageIndex === index && (
-                        <div className="absolute top-2 right-2 bg-[#E00075] text-white text-xs px-2 py-1 font-semibold">
+                        <div className="absolute top-2 right-2 bg-[#ecced1] text-white text-xs px-2 py-1 font-semibold">
                           Atual
                         </div>
                       )}
@@ -471,7 +471,7 @@ export default function WorkshopDetailPage() {
                   <Button
                     onClick={() => router.push("/workshops")}
                     variant="outline"
-                    className="border-[#E00075] text-[rgb(81,78,85)] hover:bg-[#E00075] hover:text-white"
+                    className="border-[#ecced1] text-[rgb(81,78,85)] hover:bg-[#ecced1] "
                   >
                     Ver Todas as Oficinas
                   </Button>

@@ -253,16 +253,24 @@ const WorkshopCard = ({
               />
             </motion.div>
           </AnimatePresence>
-          {imageCount > 1 && (
-            <motion.div
-              className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              {currentImageIndex + 1}/{imageCount}
-            </motion.div>
-          )}
+         {imageCount > 1 && (
+  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
+    {imageIndices.map((_, index) => (
+      <button
+        key={index}
+        onClick={(e) => {
+          e.stopPropagation(); // Evita disparar o clique no card
+          setCurrentImageIndex(index);
+        }}
+        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+          currentImageIndex === index
+            ? "bg-white w-4"
+            : "bg-white/50 hover:bg-white/75"
+        }`}
+      />
+    ))}
+  </div>
+)}
         </div>
         <CardContent className="p-4 flex flex-col flex-grow">
           <div className="mb-2">
@@ -282,6 +290,7 @@ const WorkshopCard = ({
                 size="sm"
                 variant="outline"
                 onClick={onFavoriteClick}
+                 className="border-none"
               >
                 <Image
                   width={20}
@@ -520,7 +529,7 @@ const RentalCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#E00075] hover:bg-[#B8005C] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#ecced1] hover:bg-[#ecced1] text-white flex items-center justify-center gap-2"
             >
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
@@ -560,7 +569,7 @@ const RentalCollection = () => {
                       placeholder="Buscar oficinas..."
                       value={filterSearchTerm}
                       onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#E00075] focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#ecced1] focus:border-transparent"
                     />
                   </div>
 
@@ -598,14 +607,12 @@ const RentalCollection = () => {
                                   folder
                                 )}
                                 onChange={() => toggleAdvancedFilter(folder)}
-                                className="border-gray-300 text-[#E00075] focus:ring-[#E00075]"
+                                className="border-gray-300 text-[#ecced1] focus:ring-[#ecced1]"
                               />
                               <span className="text-sm text-[#615C5C] font-medium">
                                 {folder}
                               </span>
-                              <span className="text-xs text-[#8A8A8A] ml-auto">
-                                ({folderImageCounts[folder] || 1})
-                              </span>
+                            
                             </label>
 
                             {hasSubfolders && (
@@ -643,7 +650,7 @@ const RentalCollection = () => {
                                         `${folder}-${subfolder}`
                                       )
                                     }
-                                    className="border-gray-300 text-[#E00075] focus:ring-[#E00075]"
+                                    className="border-gray-300 text-[#ecced1] focus:ring-[#ecced1]"
                                   />
                                   <span className="text-sm text-[#8A8A8A]">
                                     {subfolder}
@@ -670,7 +677,7 @@ const RentalCollection = () => {
                       <Button
                         variant="ghost"
                         onClick={clearAllAdvancedFilters}
-                        className="text-sm text-[#E00075] hover:text-[#B8005C] font-medium w-full"
+                        className="text-sm text-[#ecced1] hover:text-[#ecced1] font-medium w-full"
                       >
                         Limpar todos os filtros
                       </Button>
@@ -717,12 +724,12 @@ const RentalCollection = () => {
                   {selectedWorkshopFilters.map((filter) => (
                     <span
                       key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#E00075] text-white text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#ecced1] text-black text-sm"
                     >
                       {filter}
                       <button
                         onClick={() => toggleAdvancedFilter(filter)}
-                        className="hover:bg-[#B8005C] p-0.5"
+                        className="hover:bg-[#ecced1] p-0.5"
                       >
                         <X size={12} />
                       </button>
