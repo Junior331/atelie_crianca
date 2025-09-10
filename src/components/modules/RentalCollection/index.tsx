@@ -26,6 +26,56 @@ import {
 } from "@/utils/workshop-categories";
 import { Product } from "@/types/product";
 
+// Descrições específicas para cada oficina
+const workshopDescriptions: Record<string, string> = {
+  "AQUÁRIO": "Montagem e decoração de aquários temáticos",
+  "OFICINA DE ARCO DISNEY": "Montagem e customização de arcos temáticos",
+  "OFICINA DE ASA DE BORBOLETA": "Customização de asas de borboletas",
+  "OFICINA DE BELEZA": "Maquiagem e penteados",
+  "OFICINA DE BIJU": "Criação de biju e chaveiros",
+  "OFICINA DE BISCOITOS DECORADOS": "Decoração de biscoitos",
+  "BISCUIT": "Modelagem e decoração em biscuit",
+  "OFICINA DE BODYS DE BEBÊ": "Personalização de bodys",
+  "OFICINA DE BOLHAS DE SABAO": "Brincadeira e experiência lúdica com bolhas",
+  "OFICINA DE BOLSAS DE PALHA": "Customização de bolsas",
+  "OFICINA DE BONE": "Personalização criativa de bonés",
+  "BRINCADEIRAS RAIZ": "Resgate de jogos e brincadeiras tradicionais",
+  "BRINQUEDOTECA": "Resgate de jogos e brincadeiras tradicionais",
+  "OFICINA DE BUCKET": "Pintura e customização de chapéus bucket",
+  "OFICINA DE CADERNINHOS": "Personalização de caderninhos",
+  "CAIXA DE FADA": "Pintura e decoração de caixas artesanais",
+  "OFICINA DE CAMISAS": "Customização de camisas",
+  "CAPA HARRY POTTER": "Customização de capas do Harry Potter",
+  "OFICINA DE CAPA DE SUPER-HERÓI": "Customização de capas ",
+  "CARMED": "Atividades especiais Carmed",
+  "OFICINA DE CARTINHAS": "Produção e decoração de cartinhas criativas",
+  "OFICINA DE CARTOLA": "Customização de cartolas",
+  "CASAMENTO": "Oficina temática de casamento",
+  "CHAPEU DE PALHA": "Customização de chapéus de palha",
+  "CIENTISTA": "Experiências e atividades de cientista",
+  "OFICINA DE COLAGEM E CRIATIVIDADE": "Customização de totem",
+  "OFICINA DE CUPCAKE": "Decoração de cupcakes",
+  "OFICINA DE ESMALTAÇAO": "Pintura de unhas",
+  "ESPAÇO SONINHO": "Espaço relaxante e atividades calmas",
+  "OFICINA DE ESTOJO": "Customização de estojos",
+  "OFICINA DE FANTOCHES": "Montagem de personagens em fantoche",
+  "OFICINA DE JARDINAGEM": "Plantio e cuidado com mudinhas",
+  "MAQUIAGEM ARTÍSTICA": "Pintura livre no rosto e maquiagem artística",
+  "OFICINA DE MASCARA": "Decoração de máscaras temáticas",
+  "PINTURA EM BOBBIE GOODS": "Pintura em produtos Bobbie Goods",
+  "OFICINA DE PINTURA NA TELA": "Arte em mini telas de pintura",
+  "OFICINA DE PINTURA NO CAVALETE": "Pintura em cavalete",
+  "OFICINA DE RECICLAGEM": "Arte e materiais a partir de reciclados",
+  "RECREAÇOES": "Dinâmicas e brincadeiras",
+  "OFICINA DE SLIME": "Confecção de slimes coloridos",
+  "SLIME NEON": "Confecção de slimes neon",
+  "SPA": "Cuidados e brincadeiras de spa infantil",
+  "TOTEM MDF": "Customização de totens decorativos",
+  "OFICINA DE VARINHA DE CONDÃO": "Customização de varinhas mágicas",
+  "OFICINA DE VARINHA HARRY POTTER": "Personalização de varinhas do Harry Potter",
+  "OFICINA DE VISEIRA": "Pintura e customização de viseiras"
+};
+
 // Portfolio items data
 const portfolioItems = [
   {
@@ -216,6 +266,12 @@ const WorkshopCard = ({
       .join(" ");
   };
 
+  // Obter a descrição específica da oficina
+  const getWorkshopDescription = (workshopName: string) => {
+    const description = workshopDescriptions[workshopName.toUpperCase()];
+    return description || `Oficina de ${formatWorkshopName(workshopName.toLowerCase())} com múltiplas opções disponíveis`;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -280,9 +336,7 @@ const WorkshopCard = ({
                   {formatWorkshopName(workshopName)}
                 </h3>
                 <p className="text-sm text-[#8A8A8A] mt-1">
-                  Oficina de {formatWorkshopName(workshopName.toLowerCase())}{" "}
-                  com {imageCount} {imageCount === 1 ? "opção" : "opções"}{" "}
-                  disponíveis
+                  {getWorkshopDescription(workshopName)}
                 </p>
               </div>
 
@@ -475,12 +529,16 @@ const RentalCollection = () => {
         .join(" ");
     };
 
+    // Obter a descrição específica da oficina
+    const getWorkshopDescription = (workshopName: string) => {
+      const description = workshopDescriptions[workshopName.toUpperCase()];
+      return description || `Oficina de ${formatWorkshopName(workshopName.toLowerCase())} com múltiplas opções disponíveis`;
+    };
+
     return {
       id: `workshop-${workshopName.toLowerCase().replace(/\s+/g, "-")}`,
       name: formatWorkshopName(workshopName),
-      description: `Oficina de ${formatWorkshopName(
-        workshopName.toLowerCase()
-      )} com múltiplas opções disponíveis`,
+      description: getWorkshopDescription(workshopName),
       category: "favorites",
       image: `/images/workshops/${workshopName}/1.jpg`,
       workshopFolder: workshopName,
