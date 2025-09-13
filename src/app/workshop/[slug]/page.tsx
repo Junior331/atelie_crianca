@@ -3,35 +3,23 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ArrowLeft,
-  Plus,
-  Minus,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { SmartImage } from "@/components/atoms/SmartImage";
 import { Button, LoadingSpinner } from "@/components/atoms";
 import { Header } from "@/components/organisms/Header";
-import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
 import { Product } from "@/types/product";
-import {
-  workshopFolders,
-  folderImageCounts,
-} from "@/utils/workshop-categories";
+import { workshopFolders, folderImageCounts } from "@/utils/workshop-categories";
 import { Footer } from "@/components/modules";
 import Image from "next/image";
 
 export default function WorkshopDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
 
   const slug = params.slug as string;
 
@@ -57,8 +45,7 @@ export default function WorkshopDetailPage() {
       .replace(/[\u0300-\u036f]/g, ""); // Remove acentos
 
     return (
-      normalizedFolder === normalizedSlug ||
-      folder.toLowerCase().replace(/\s+/g, "-") === decodedSlug.toLowerCase()
+      normalizedFolder === normalizedSlug || folder.toLowerCase().replace(/\s+/g, "-") === decodedSlug.toLowerCase()
     );
   });
 
@@ -96,15 +83,9 @@ export default function WorkshopDetailPage() {
               </>
             ) : (
               <>
-                <h1 className="text-2xl font-bold text-[#615C5C] mb-4">
-                  Oficina não encontrada
-                </h1>
-                <p className="text-[#8A8A8A] mb-4">
-                  A oficina que você está procurando não existe.
-                </p>
-                <Button onClick={() => router.push("/workshops")}>
-                  Voltar para Oficinas
-                </Button>
+                <h1 className="text-2xl font-bold text-[#615C5C] mb-4">Oficina não encontrada</h1>
+                <p className="text-[#8A8A8A] mb-4">A oficina que você está procurando não existe.</p>
+                <Button onClick={() => router.push("/workshops")}>Voltar para Oficinas</Button>
               </>
             )}
           </div>
@@ -134,21 +115,14 @@ export default function WorkshopDetailPage() {
     ? {
         id: `workshop-${workshop.toLowerCase().replace(/\s+/g, "-")}`,
         name: formatWorkshopName(workshop),
-        description: `Oficina de ${formatWorkshopName(
-          workshop.toLowerCase()
-        )} com múltiplas opções disponíveis`,
+        description: `Oficina de ${formatWorkshopName(workshop.toLowerCase())} com múltiplas opções disponíveis`,
         category: "favorites",
         image: `/images/workshops/${workshop}/1.jpg`,
         workshopFolder: workshop,
-        workshopSubfolder:
-          workshop === "BRINQUEDOTECA" ? "COLORIDA" : undefined,
+        workshopSubfolder: workshop === "BRINQUEDOTECA" ? "COLORIDA" : undefined,
         duration: "1-2 horas",
         ageRange: "5-12 anos",
-        highlights: [
-          "Materiais inclusos",
-          "Atividade criativa",
-          "Lembrança especial",
-        ],
+        highlights: ["Materiais inclusos", "Atividade criativa", "Lembrança especial"],
       }
     : null;
 
@@ -156,9 +130,6 @@ export default function WorkshopDetailPage() {
     if (!currentProduct) return;
 
     // Adicionar a quantidade especificada
-    for (let i = 0; i < quantity; i++) {
-      addItem(currentProduct);
-    }
   };
 
   const handleToggleFavorite = () => {
@@ -166,9 +137,7 @@ export default function WorkshopDetailPage() {
     toggleFavorite(currentProduct);
   };
 
-  const isWorkshopFavorite = currentProduct
-    ? isFavorite(currentProduct.id)
-    : false;
+  const isWorkshopFavorite = currentProduct ? isFavorite(currentProduct.id) : false;
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % imageCount);
@@ -210,51 +179,63 @@ export default function WorkshopDetailPage() {
               {/* Galeria de Imagens */}
               <div className="space-y-4">
                 {/* Imagem principal */}
-                <div className="relative w-full h-96 bg-gray-50 overflow-hidden">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentImageIndex}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0"
-                    >
-                      <SmartImage
-                        basePath={getImageBasePath()}
-                        imageName={imageIndices[currentImageIndex].toString()}
-                        alt={`${formatWorkshopName(workshop)} - Imagem ${
-                          currentImageIndex + 1
-                        }`}
-                        fill={true}
-                        className="object-cover"
-                      />
-                    </motion.div>
-                  </AnimatePresence>
+               <div className="relative w-full h-96 bg-gray-50 overflow-hidden">
+  <AnimatePresence mode="wait">
+    <motion.div
+      key={currentImageIndex}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="absolute inset-0"
+    >
+      <SmartImage
+        basePath={getImageBasePath()}
+        imageName={imageIndices[currentImageIndex].toString()}
+        alt={`${formatWorkshopName(workshop)} - Imagem ${currentImageIndex + 1}`}
+        fill={true}
+        className="object-cover"
+      />
+    </motion.div>
+  </AnimatePresence>
 
-                  {/* Navegação de imagens */}
-                  {imageCount > 1 && (
-                    <>
-                      <button
-                        onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
-                      >
-                        <ChevronLeft />
-                      </button>
-                      <button
-                        onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
-                      >
-                        <ChevronRight />
-                      </button>
+  {/* Navegação de imagens */}
+  {imageCount > 1 && (
+    <>
+      <button
+        onClick={prevImage}
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
+      >
+        <ChevronLeft />
+      </button>
+      <button
+        onClick={nextImage}
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer"
+      >
+        <ChevronRight />
+      </button>
 
-                      {/* Indicador */}
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                        {currentImageIndex + 1} / {imageCount}
-                      </div>
-                    </>
-                  )}
-                </div>
+      {/* Indicador com bolinhas */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+        {imageIndices.map((_, index) => (
+          <button
+            key={index}
+            onClick={(e) => {
+              e.stopPropagation(); // evita abrir clique do card
+              setCurrentImageIndex(index);
+            }}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              currentImageIndex === index
+                ? "bg-white w-4"
+                : "bg-white/50 hover:bg-white/75"
+            }`}
+          />
+        ))}
+      </div>
+    </>
+  )}
+</div>
+
 
                 {/* Thumbnails */}
                 {imageCount > 1 && (
@@ -264,9 +245,7 @@ export default function WorkshopDetailPage() {
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
                         className={`relative aspect-square overflow-hidden border-2 ${
-                          currentImageIndex === index
-                            ? "border-[#ecced1]"
-                            : "border-gray-200 hover:border-gray-300"
+                          currentImageIndex === index ? "border-[#ecced1]" : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
                         <SmartImage
@@ -285,26 +264,23 @@ export default function WorkshopDetailPage() {
               {/* Informações do Produto */}
               <div className="space-y-6">
                 <div>
-                  <h1 className="text-3xl font-bold text-[#615C5C] mb-2">
-                    {formatWorkshopName(workshop)}
-                  </h1>
-                  <p className="text-[#8A8A8A] text-lg">
-                    Oficina criativa completa com materiais inclusos
-                  </p>
+                  <h1 className="text-3xl font-bold text-[#615C5C] mb-2">{formatWorkshopName(workshop)}</h1>
+                  <p className="text-[#8A8A8A] text-lg">Oficina criativa completa com materiais inclusos</p>
                 </div>
 
                 {/* Preço */}
-                <div className="border-b border-gray-200 pb-6">
-                  <p className="text-2xl font-bold text-[#615C5C]">
-                    Sob consulta
-                  </p>
-                  <p className="text-sm text-[#8A8A8A] mt-1">
-                    Preços variam conforme duração e número de participantes
+                <div className=" border-gray-200 pt-6">
+                  <h3 className="font-semibold text-[#615C5C] mb-3">Descrição</h3>
+                  <p className="text-[#8A8A8A] leading-relaxed">
+                    A oficina de {formatWorkshopName(workshop?.toLowerCase())} é uma experiência única e criativa para
+                    crianças. Com {imageCount} {imageCount === 1 ? "opção" : "opções"} diferentes disponíveis, cada
+                    participante pode explorar sua criatividade de forma única. Todos os materiais necessários estão
+                    inclusos, garantindo uma experiência completa e memorável.
                   </p>
                 </div>
 
                 {/* Detalhes */}
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <h3 className="font-semibold text-[#615C5C]">Duração</h3>
@@ -318,7 +294,7 @@ export default function WorkshopDetailPage() {
                 </div>
 
                 {/* Destaques */}
-                <div>
+                {/* <div>
                   <h3 className="font-semibold text-[#615C5C] mb-3">Inclui:</h3>
                   <ul className="space-y-2">
                     <li className="flex items-center gap-2 text-[#8A8A8A]">
@@ -341,11 +317,11 @@ export default function WorkshopDetailPage() {
                         : "opções disponíveis"}
                     </li>
                   </ul>
-                </div>
+                </div> */}
 
                 {/* Quantidade e Ações */}
-                <div className="space-y-4 border-t border-gray-200 pt-6">
-                  <div className="flex items-center gap-4">
+                <div className="space-y-4  border-gray-200 pt-6">
+                  {/* <div className="flex items-center gap-4">
                     <span className="font-semibold text-[#615C5C]">
                       Quantidade:
                     </span>
@@ -368,54 +344,28 @@ export default function WorkshopDetailPage() {
                         <Plus size={16} className="!text-[rgb(81, 78, 85)]" />
                       </button>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="flex gap-3">
-                    <Button
-                      onClick={handleAddToCart}
-                      className="flex-1 bg-[#ecced1] hover:bg-[#ecced1] !text-[rgb(81, 78, 85)] py-3"
-                    >
-                      Adicionar à sacola
+                    <Button onClick={handleAddToCart} className="flex-1 bg-[#ecced1] hover:bg-[#e00075]  py-3">
+                      <span className="text-[#FFF] ">Adicionar à sacola</span>
                     </Button>
                     <Button
                       variant="outline"
                       onClick={handleToggleFavorite}
                       className={`p-3 border-none ${
-                        isWorkshopFavorite
-                          ? "text-[#ecced1] border-[#ecced1]"
-                          : "text-[#8A8A8A]"
+                        isWorkshopFavorite ? "text-[#ecced1] border-[#ecced1]" : "text-[#8A8A8A]"
                       }`}
                     >
                       <Image
                         width={20}
                         height={20}
                         alt="Coração"
-                        src={
-                          isWorkshopFavorite
-                            ? "/images/coracao_solid.png"
-                            : "/images/coracao.png"
-                        }
-                        className={
-                          isWorkshopFavorite ? "opacity-100" : "opacity-50"
-                        }
+                        src={isWorkshopFavorite ? "/images/coracao_solid.png" : "/images/coracao.png"}
+                        className={isWorkshopFavorite ? "opacity-100" : "opacity-50"}
                       />
                     </Button>
                   </div>
-                </div>
-
-                <div className="border-t border-gray-200 pt-6">
-                  <h3 className="font-semibold text-[#615C5C] mb-3">
-                    Descrição
-                  </h3>
-                  <p className="text-[#8A8A8A] leading-relaxed">
-                    A oficina de {formatWorkshopName(workshop?.toLowerCase())} é
-                    uma experiência única e criativa para crianças. Com{" "}
-                    {imageCount} {imageCount === 1 ? "opção" : "opções"}{" "}
-                    diferentes disponíveis, cada participante pode explorar sua
-                    criatividade de forma única. Todos os materiais necessários
-                    estão inclusos, garantindo uma experiência completa e
-                    memorável.
-                  </p>
                 </div>
               </div>
             </div>
@@ -425,8 +375,8 @@ export default function WorkshopDetailPage() {
           {imageCount > 1 && (
             <div className="py-2">
               <div className="container px-4">
-                <h2 className="text-2xl font-bold text-[#615C5C] mb-8 text-center">
-                  Outras opções de {formatWorkshopName(workshop)}
+                <h2 className="text-2xl font-bold text-[#8A8A8A] mb-8 text-center">
+                Veja também
                 </h2>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -434,9 +384,7 @@ export default function WorkshopDetailPage() {
                     <motion.button
                       key={index}
                       onClick={() => {
-                        const newSlug =
-                          workshopSlug +
-                          (index > 0 ? `-item-${index + 1}` : "");
+                        const newSlug = workshopSlug + (index > 0 ? `-item-${index + 1}` : "");
                         router.push(`/workshop/${newSlug}`);
                       }}
                       className={`relative aspect-square overflow-hidden border-2 transition-all duration-300 ${
@@ -450,9 +398,7 @@ export default function WorkshopDetailPage() {
                       <SmartImage
                         basePath={getImageBasePath()}
                         imageName={imageIndex.toString()}
-                        alt={`${formatWorkshopName(workshop)} - Opção ${
-                          index + 1
-                        }`}
+                        alt={`${formatWorkshopName(workshop)} - Opção ${index + 1}`}
                         fill={true}
                         className="object-cover"
                       />
@@ -467,15 +413,7 @@ export default function WorkshopDetailPage() {
                   ))}
                 </div>
 
-                <div className="text-center mt-8">
-                  <Button
-                    onClick={() => router.push("/workshops")}
-                    variant="outline"
-                    className="border-[#ecced1] text-[rgb(81,78,85)] hover:bg-[#ecced1] "
-                  >
-                    Ver Todas as Oficinas
-                  </Button>
-                </div>
+               
               </div>
             </div>
           )}

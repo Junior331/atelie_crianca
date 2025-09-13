@@ -10,9 +10,7 @@ import { cn } from "@/utils/utils";
 import { HeaderProps } from "./@types";
 import { Button } from "@/components/atoms";
 import { useCart } from "@/hooks/use-cart";
-import { useProducts } from "@/hooks/use-products";
 import { useFavorites } from "@/hooks/use-favorites";
-import { CartSheet } from "@/components/modules/cart";
 
 const navigationItems = [
   { name: "Quem somos", href: "/about" },
@@ -30,7 +28,6 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
   const { items } = useCart();
   const { favoritesCount } = useFavorites();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isCartOpen, setIsCartOpen } = useProducts();
 
   return (
     <motion.header
@@ -92,19 +89,20 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
               </Link>
 
               {/* Cart Icon */}
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setIsCartOpen(true)}
-                className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {items.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {items.length}
-                  </span>
-                )}
-              </Button>
+              <Link href="/cart">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  {items.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                      {items.length}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               {/* Mobile Menu Button */}
               <Button
@@ -175,7 +173,6 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
         )}
       </div>
 
-      <CartSheet isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </motion.header>
   );
 };
