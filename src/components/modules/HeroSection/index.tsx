@@ -151,7 +151,8 @@ const featuresData = [
 // Portfolio Carousel Component
 const PortfolioCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlay, setIsAutoPlay] = useState(true);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % portfolioItems.length);
@@ -167,13 +168,19 @@ const PortfolioCarousel = () => {
     setCurrentIndex(index);
   }, []);
 
+  // Mount effect
+  useEffect(() => {
+    setIsMounted(true);
+    setIsAutoPlay(true);
+  }, []);
+
   // Auto-play functionality
   useEffect(() => {
-    if (!isAutoPlay) return;
+    if (!isAutoPlay || !isMounted) return;
 
     const interval = setInterval(nextSlide, 4000);
     return () => clearInterval(interval);
-  }, [nextSlide, isAutoPlay]);
+  }, [nextSlide, isAutoPlay, isMounted]);
 
   return (
     <div
@@ -244,7 +251,7 @@ const HeroSection = () => {
 
         {/* Portfolio Carousel Section */}
         <div className="bg-white  mt-[100px]">
-          <div className="container max-w-none px-4 py-10">
+          <div className="container max-w-none md:pt-8">
             <motion.div
               className="mb-6"
               initial={{ opacity: 0, y: 50 }}
@@ -262,10 +269,10 @@ const HeroSection = () => {
               Nossos serviços
             </h2>
           </div>
-          <div className="flex flex-wrap  justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 justify-center items-center ">
             {cardsData.map((card, index) => (
-              <Link key={index} href={card.href} className=" ">
-                <CardContent className=" flex flex-col flex-grow">
+              <Link key={index} href={card.href}>
+                <CardContent className="flex flex-col flex-grow">
                   <div className="mb-2 flex flex-col">
                     <div className="mt-auto flex flex-col gap-2 items-center">
                       <Image
@@ -291,7 +298,7 @@ const HeroSection = () => {
         </div>
 
         {/* Features Grid Section */}
-        <div className="py-16 px-4">
+        <div className="md:py-16 px-4 py-8">
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuresData.map((feature, index) => {
@@ -328,30 +335,7 @@ const HeroSection = () => {
         >
           <div className="relative z-10 flex items-center min-h-[500px] px-4">
             <div className="container mx-auto flex items-center">
-              {/* Text Card - Left Side */}
-              <div className="w-full md:w-1/2">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
-                  className="bg-white/95 p-8 rounded-lg shadow-lg max-w-md flex flex-col items-center justify-center"
-                >
-                  <h2 className="text-sm font-medium text-gray-600 mb-2 uppercase tracking-wider text-center">
-                    MAS AFINAL
-                  </h2>
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center max-w-72">
-                    QUAL A NOSSA MISSÃO?
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed text-center">
-                    Nossa missão é proporcionar momentos extremamente divertidos
-                    longe dos aparelhos eletrônicos, estimular os talentos das
-                    crianças e criar laços afetivos entre pais e filhos.
-                  </p>
-                </motion.div>
-              </div>
-
-              <div className="container mx-auto px-4 relative py-16 md:py-24">
+              <div className="container mx-auto relative md:py-24">
                 {/* Desktop Layout */}
                 <div className="hidden lg:block relative max-w-7xl mx-auto">
                   <div className="flex items-center justify-center relative">
@@ -375,7 +359,7 @@ const HeroSection = () => {
                         <Image
                           width={1200}
                           height={800}
-                          src="../../../assets/images/children-play-area.jpg"
+                          src="/images/children-play-area.jpg"
                           alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                           className="mission-image"
                         />
@@ -404,7 +388,7 @@ const HeroSection = () => {
                       <Image
                         width={1200}
                         height={800}
-                        src="../../../assets/images/children-play-area.jpg"
+                        src="/images/children-play-area.jpg"
                         alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                         className="mission-image"
                       />
