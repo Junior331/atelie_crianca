@@ -62,12 +62,10 @@ input:-webkit-autofill {
 @layer components {
   .mission-card {
     @apply bg-white rounded-2xl p-8 md:p-10;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .mission-card:hover {
-    box-shadow: var(--shadow-soft);
     transform: translateY(-2px);
   }
 
@@ -96,7 +94,6 @@ input:-webkit-autofill {
 
   .mission-image-container {
     @apply relative overflow-hidden rounded-2xl;
-    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
   }
 
   .mission-image {

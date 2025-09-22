@@ -519,7 +519,7 @@ const RentalCollection = () => {
 
   return (
     <section ref={ref} className="bg-white">
-      <div className="pt-10 bg-white">
+      <div className="bg-white">
         <div className="container max-w-none px-4">
           <motion.div
             className="mb-6"

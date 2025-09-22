@@ -347,7 +347,7 @@ export default function WorkshopDetailPage() {
                   </div> */}
 
                   <div className="flex gap-3">
-                    <Button onClick={handleAddToCart} className="flex-1 bg-[#ecced1] hover:bg-[#e00075]  py-3">
+                    <Button onClick={handleAddToCart} className="flex-1 bg-[#ecced1]   py-3">
                       <span className="text-[#FFF] ">Adicionar à sacola</span>
                     </Button>
                     <Button
