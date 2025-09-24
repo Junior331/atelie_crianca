@@ -88,7 +88,7 @@ const cardsData = [
   {
     href: "/souvenirstable",
     title: "MESA DE LANCHINHO",
-   image: "/images/snack-table.jpeg",
+    image: "/images/snack-table.jpeg",
   },
   {
     href: "/ateliegroup",
@@ -106,17 +106,20 @@ const featuresData = [
   {
     icon: Palette,
     title: "paleta de cores",
-    description: "Mobiliário, suportes e uniformes combinam com as cores do evento.",
+    description:
+      "Mobiliário, suportes e uniformes combinam com as cores do evento.",
   },
   {
     icon: Armchair,
     title: "mobiliário próprio",
-    description: "Acervo variado de móveis personalizados que seguem a paleta do evento.",
+    description:
+      "Acervo variado de móveis personalizados que seguem a paleta do evento.",
   },
   {
     icon: TrendingUp,
     title: "treinamento",
-    description: "Equipe em constante capacitação para serviços mais eficientes e exclusivos.",
+    description:
+      "Equipe em constante capacitação para serviços mais eficientes e exclusivos.",
   },
   {
     icon: Star,
@@ -126,17 +129,20 @@ const featuresData = [
   {
     icon: User,
     title: "escritório",
-    description: "Estrutura com 6 pessoas dedicadas ao atendimento antes, durante e depois do evento.",
+    description:
+      "Estrutura com 6 pessoas dedicadas ao atendimento antes, durante e depois do evento.",
   },
   {
     icon: Clock,
     title: "agilidade",
-    description: "Entregas rápidas, com qualidade e pontualidade; mais de 100 eventos fechados em menos de 48h",
+    description:
+      "Entregas rápidas, com qualidade e pontualidade; mais de 100 eventos fechados em menos de 48h",
   },
   {
     icon: MapPin,
     title: "+ de 1000 eventos",
-    description: "Já realizaramos mais de 1.000 eventos no RJ, incluindo festas, casamentos e corporativos.",
+    description:
+      "Já realizaramos mais de 1.000 eventos no RJ, incluindo festas, casamentos e corporativos.",
   },
 ];
 // Services Carousel Component for Desktop
@@ -189,7 +195,11 @@ const ServicesCarousel = () => {
 
       {/* Cards Container */}
       <div className="">
-        <motion.div className="flex gap-4 " animate={{ x: 0 }} transition={{ duration: 0.3, ease: "easeInOut" }}>
+        <motion.div
+          className="flex gap-4 "
+          animate={{ x: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
           {getVisibleCards().map((card, index) => (
             <motion.div
               key={`${currentIndex}-${index}`}
@@ -203,11 +213,20 @@ const ServicesCarousel = () => {
                   <div className="mb-2 flex flex-col">
                     <div className="mt-auto flex flex-col gap-2 items-center">
                       <div className="relative w-full h-[300px]">
-                        <Image src={card.image} alt={card.title} fill className="rounded-lg object-cover" />
+                        <Image
+                          src={card.image}
+                          alt={card.title}
+                          fill
+                          className="rounded-lg object-cover"
+                        />
                       </div>
                       <div className="flex flex-col gap-2 items-center">
-                        <h3 className="font-semibold text-[#444242] text-center">{card.title}</h3>
-                        <p className="text-sm text-[#8A8A8A] mt-1">Saiba mais</p>
+                        <h3 className="font-semibold text-[#444242] text-center">
+                          {card.title}
+                        </h3>
+                        <p className="text-sm text-[#8A8A8A] mt-1">
+                          Saiba mais
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -232,7 +251,9 @@ const PortfolioCarousel = () => {
   }, []);
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
+    setCurrentIndex(
+      (prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length
+    );
   }, []);
 
   const goToSlide = useCallback((index: number) => {
@@ -302,7 +323,9 @@ const PortfolioCarousel = () => {
             key={index}
             onClick={() => goToSlide(index)}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              currentIndex === index ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
+              currentIndex === index
+                ? "bg-white w-8"
+                : "bg-white/50 hover:bg-white/75"
             }`}
           />
         ))}
@@ -334,7 +357,9 @@ const HeroSection = () => {
 
         <div className="relative flex-1 flex flex-col items-center px-4 py-8">
           <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#615C5C] mb-4 text-center">Nossos serviços</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#615C5C] mb-4 text-center">
+              Nossos serviços
+            </h2>
           </div>
 
           {/* Desktop Carousel */}
@@ -350,11 +375,20 @@ const HeroSection = () => {
                   <div className="mb-2 flex flex-col">
                     <div className="mt-auto flex flex-col gap-2 items-center">
                       <div className="relative w-full h-[300px]">
-                        <Image src={card.image} alt={card.title} fill className="rounded-lg object-cover" />
+                        <Image
+                          src={card.image}
+                          alt={card.title}
+                          fill
+                          className="rounded-lg object-cover"
+                        />
                       </div>
                       <div className="flex flex-col gap-2 items-center">
-                        <h3 className="font-semibold text-[#444242]">{card.title}</h3>
-                        <p className="text-sm text-[#8A8A8A] mt-1">Saiba mais</p>
+                        <h3 className="font-semibold text-[#444242]">
+                          {card.title}
+                        </h3>
+                        <p className="text-sm text-[#8A8A8A] mt-1">
+                          Saiba mais
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -382,8 +416,12 @@ const HeroSection = () => {
                     <div className="flex justify-center mb-4">
                       <Icon size={48} className="text-gray-600" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-800 mb-3 capitalize">{feature.title}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                    <h3 className="text-lg font-medium text-gray-800 mb-3 capitalize">
+                      {feature.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {feature.description}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -408,8 +446,10 @@ const HeroSection = () => {
                         <div className="mission-subtitle">MAS A FINAL,</div>
                         <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
                         <p className="mission-description">
-                          Nossa missão é proporcionar momentos extremamente divertidos longe dos aparelhos eletrônicos,
-                          estimular os talentos das crianças e criar laços afetivos entre pais e filhos.
+                          Nossa missão é proporcionar momentos extremamente
+                          divertidos longe dos aparelhos eletrônicos, estimular
+                          os talentos das crianças e criar laços afetivos entre
+                          pais e filhos.
                         </p>
                       </div>
                     </div>
@@ -436,8 +476,10 @@ const HeroSection = () => {
                     <div className="mission-subtitle">MAS A FINAL,</div>
                     <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
                     <p className="mission-description">
-                      Nossa missão é proporcionar momentos extremamente divertidos longe dos aparelhos eletrônicos,
-                      estimular os talentos das crianças e criar laços afetivos entre pais e filhos.
+                      Nossa missão é proporcionar momentos extremamente
+                      divertidos longe dos aparelhos eletrônicos, estimular os
+                      talentos das crianças e criar laços afetivos entre pais e
+                      filhos.
                     </p>
                   </div>
 
@@ -458,7 +500,7 @@ const HeroSection = () => {
             </div>
           </div>
         </div>
-         <Footer />
+        <Footer />
       </section>
     </>
   );

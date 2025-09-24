@@ -195,9 +195,9 @@ export default function Component() {
                   <Image
                     width={1200}
                     height={500}
+                    className="mission-image"
                     src="/images/wedding-cover.png"
                     alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                    className="mission-image"
                   />
                 </div>
               </div>

@@ -7,10 +7,18 @@ import { Footer } from "@/components/modules";
 import { LoadingSpinner } from "@/components/atoms";
 import { Header } from "@/components/organisms";
 import Image from "next/image";
-import { Armchair, Clock, MapPin, Palette, Star, TrendingUp, User, Users } from "lucide-react";
+import {
+  Armchair,
+  Clock,
+  MapPin,
+  Palette,
+  Star,
+  TrendingUp,
+  User,
+  Users,
+} from "lucide-react";
 
-
-  const featuresData = [
+const featuresData = [
   {
     icon: Users,
     title: "nossa equipe",
@@ -19,17 +27,20 @@ import { Armchair, Clock, MapPin, Palette, Star, TrendingUp, User, Users } from 
   {
     icon: Palette,
     title: "paleta de cores",
-    description: "Mobiliário, suportes e uniformes combinam com as cores do evento.",
+    description:
+      "Mobiliário, suportes e uniformes combinam com as cores do evento.",
   },
   {
     icon: Armchair,
     title: "mobiliário próprio",
-    description: "Acervo variado de móveis personalizados que seguem a paleta do evento.",
+    description:
+      "Acervo variado de móveis personalizados que seguem a paleta do evento.",
   },
   {
     icon: TrendingUp,
     title: "treinamento",
-    description: "Equipe em constante capacitação para serviços mais eficientes e exclusivos.",
+    description:
+      "Equipe em constante capacitação para serviços mais eficientes e exclusivos.",
   },
   {
     icon: Star,
@@ -39,17 +50,20 @@ import { Armchair, Clock, MapPin, Palette, Star, TrendingUp, User, Users } from 
   {
     icon: User,
     title: "escritório",
-    description: "Estrutura com 6 pessoas dedicadas ao atendimento antes, durante e depois do evento.",
+    description:
+      "Estrutura com 6 pessoas dedicadas ao atendimento antes, durante e depois do evento.",
   },
   {
     icon: Clock,
     title: "agilidade",
-    description: "Entregas rápidas, com qualidade e pontualidade; mais de 100 eventos fechados em menos de 48h",
+    description:
+      "Entregas rápidas, com qualidade e pontualidade; mais de 100 eventos fechados em menos de 48h",
   },
   {
     icon: MapPin,
     title: "+ de 1000 eventos",
-    description: "Já realizaramos mais de 1.000 eventos no RJ, incluindo festas, casamentos e corporativos.",
+    description:
+      "Já realizaramos mais de 1.000 eventos no RJ, incluindo festas, casamentos e corporativos.",
   },
 ];
 
@@ -80,126 +94,135 @@ export default function Component() {
           <div className=" bg-background">
             <div className="">
               <div className="relative w-full h-[600px]">
-                {/* Imagem de fundo */}
                 <Image
                   fill
                   src="/images/mission-bg2.jpeg"
                   alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                  className="object-cover object-contain"
+                  className="object-cover"
                 />
 
-                {/* Gradiente overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/90 to-transparent" />
 
-                {/* Texto por cima */}
                 <div className="absolute inset-0 flex items-center">
                   <div className="max-w-2xl px-8">
-                    <h2 className="text-4xl font-bold text-gray-900 mb-6">QUEM SOMOS?</h2>
+                    <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                      QUEM SOMOS?
+                    </h2>
                     <p className="text-lg text-gray-700 leading-relaxed">
-                      Há 8 anos, nossa empresa se destaca no mercado de festas infantis. Somos conhecidos por criar
-                      celebrações únicas e personalizadas. Nosso objetivo
-                      principal é trazer diversão e originalidade para cada
-                      evento, garantindo momentos inesquecíveis.
+                      Há 8 anos, nossa empresa se destaca no mercado de festas
+                      infantis. Somos conhecidos por criar celebrações únicas e
+                      personalizadas. Nosso objetivo principal é trazer diversão
+                      e originalidade para cada evento, garantindo momentos
+                      inesquecíveis.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-               <div className="flex items-center justify-center  py-8">
-                      <div className=" max-w-7xl">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                          {featuresData.map((feature, index) => {
-                            const Icon = feature.icon;
-                            return (
-                              <motion.div
-                                key={index}
-                                className="text-center bg-gray-50 p-5"
-                                viewport={{ once: true }}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                              >
-                                <div className="flex justify-center mb-4">
-                                  <Icon size={48} className="text-gray-600" />
-                                </div>
-                                <h3 className="text-lg font-medium text-gray-800 mb-3 capitalize">{feature.title}</h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
-                              </motion.div>
-                            );
-                          })}
+            <div className="flex items-center justify-center  py-8">
+              <div className=" max-w-7xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {featuresData.map((feature, index) => {
+                    const Icon = feature.icon;
+                    return (
+                      <motion.div
+                        key={index}
+                        className="text-center bg-gray-50 p-5"
+                        viewport={{ once: true }}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                      >
+                        <div className="flex justify-center mb-4">
+                          <Icon size={48} className="text-gray-600" />
                         </div>
-                      </div>
-                    </div>
-            
-                    {/* Mission Statement Section */}
-                    <div
-                      className="relative min-h-[500px] bg-cover bg-center bg-no-repeat"
-                      style={{ backgroundImage: "url('/images/mission-bg.jpg')" }}
-                    >
-                      <div className="relative z-10 flex items-center min-h-[500px] px-4">
-                        <div className="container mx-auto flex items-center">
-                          <div className="container mx-auto relative md:py-24">
-                            {/* Desktop Layout */}
-                            <div className="hidden xl:block relative max-w-full mx-auto">
-                              <div className="flex items-center justify-center relative">
-                                {/* Mission Card - Overlapping the image */}
-                                <div className="absolute left-[0] z-10 w-full max-w-xl">
-                                  <div className="mission-card text-center">
-                                    <div className="mission-subtitle">MAS A FINAL,</div>
-                                    <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
-                                    <p className="mission-description">
-                                      Nossa missão é proporcionar momentos extremamente divertidos longe dos aparelhos eletrônicos,
-                                      estimular os talentos das crianças e criar laços afetivos entre pais e filhos.
-                                    </p>
-                                  </div>
-                                </div>
-            
-                                {/* Image */}
-                                <div className="ml-auto w-full flex justify-end ">
-                                  <div className="mission-image-container  ">
-                                    <Image
-                                      width={1200}
-                                      height={500}
-                                      src="/images/children-play-area.jpg"
-                                      alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                                      className="mission-image"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-            
-                            {/* Mobile Layout */}
-                            <div className="xl:hidden max-w-2xl mx-auto">
-                              {/* Mission Card */}
-                              <div className="mission-card mission-card-mobile text-center mb-8">
-                                <div className="mission-subtitle">MAS A FINAL,</div>
-                                <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
-                                <p className="mission-description">
-                                  Nossa missão é proporcionar momentos extremamente divertidos longe dos aparelhos eletrônicos,
-                                  estimular os talentos das crianças e criar laços afetivos entre pais e filhos.
-                                </p>
-                              </div>
-            
-                              {/* Image with overlap */}
-                              <div className="relative -mt-10">
-                                <div className="mission-image-container">
-                                  <Image
-                                    width={1200}
-                                    height={800}
-                                    src="/images/children-play-area.jpg"
-                                    alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                                    className="mission-image"
-                                  />
-                                </div>
-                              </div>
-                            </div>
+                        <h3 className="text-lg font-medium text-gray-800 mb-3 capitalize">
+                          {feature.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Mission Statement Section */}
+            <div
+              className="relative min-h-[500px] bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: "url('/images/mission-bg.jpg')" }}
+            >
+              <div className="relative z-10 flex items-center min-h-[500px] px-4">
+                <div className="container mx-auto flex items-center">
+                  <div className="container mx-auto relative md:py-24">
+                    {/* Desktop Layout */}
+                    <div className="hidden xl:block relative max-w-full mx-auto">
+                      <div className="flex items-center justify-center relative">
+                        {/* Mission Card - Overlapping the image */}
+                        <div className="absolute left-[0] z-10 w-full max-w-xl">
+                          <div className="mission-card text-center">
+                            <div className="mission-subtitle">MAS A FINAL,</div>
+                            <h2 className="mission-title">
+                              QUAL A NOSSA MISSÃO?
+                            </h2>
+                            <p className="mission-description">
+                              Nossa missão é proporcionar momentos extremamente
+                              divertidos longe dos aparelhos eletrônicos,
+                              estimular os talentos das crianças e criar laços
+                              afetivos entre pais e filhos.
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Image */}
+                        <div className="ml-auto w-full flex justify-end ">
+                          <div className="mission-image-container  ">
+                            <Image
+                              width={1200}
+                              height={500}
+                              src="/images/children-play-area.jpg"
+                              alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
+                              className="mission-image"
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
-            
+
+                    {/* Mobile Layout */}
+                    <div className="xl:hidden max-w-2xl mx-auto">
+                      {/* Mission Card */}
+                      <div className="mission-card mission-card-mobile text-center mb-8">
+                        <div className="mission-subtitle">MAS A FINAL,</div>
+                        <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
+                        <p className="mission-description">
+                          Nossa missão é proporcionar momentos extremamente
+                          divertidos longe dos aparelhos eletrônicos, estimular
+                          os talentos das crianças e criar laços afetivos entre
+                          pais e filhos.
+                        </p>
+                      </div>
+
+                      {/* Image with overlap */}
+                      <div className="relative -mt-10">
+                        <div className="mission-image-container">
+                          <Image
+                            width={1200}
+                            height={800}
+                            src="/images/children-play-area.jpg"
+                            alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
+                            className="mission-image"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <Footer />
         </motion.main>
