@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
+import Image from "next/image";
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,6 +18,15 @@ export default function Component() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const mockImages = [
+    { id: 1, src: "/images/carousel-image4.jpeg", colSpan: "col-span-2" },
+    { id: 2, src: "/images/wedding.jpeg" },
+    { id: 3, src: "/images/wedding.jpeg" },
+    { id: 4, src: "/images/carousel-image4.jpeg", colSpan: "col-span-2" },
+    { id: 5, src: "/images/wedding.jpeg", colSpan: "col-span-2" },
+    { id: 6, src: "/images/carousel-image4.jpeg" },
+  ];
 
   return (
     <AnimatePresence mode="wait">
@@ -31,12 +41,35 @@ export default function Component() {
           className="flex flex-col min-h-screen"
         >
           <Header />
-          <div className="flex-1 flex flex-col items-center justify-center py-8 text-center">
-            <h2 className="text-4xl font-bold text-gray-700 mb-4">Em breve</h2>
-            <p className="text-lg text-gray-500">
-              Estamos preparando algo incrível para você!
-            </p>
-          </div>
+          <section className="relative min-h-screen flex flex-col">
+            <div className="">
+              <div className="ml-auto w-full p-6">
+                <div className=" relative h-[700px] flex items-center justify-center">
+                  {/* Imagem de fundo */}
+                  <Image
+                    width={1200}
+                    height={500}
+                    src="/images/table-cover-snack.png"
+                    alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
+                    className="mission-image"
+                  />
+                </div>
+              </div>
+
+              <div className=" grid grid-cols-2 md:grid-cols-3 gap-4 p-6">
+                {mockImages.map((img) => (
+                  <div
+                    key={img.id}
+                    className={`bg-red-500 relative flex items-center justify-center h-[300px]  overflow-hidden ${
+                      img.colSpan || ""
+                    }`}
+                  >
+                    <Image src={img.src} alt={`Imagem ${img.id}`} fill className="object-cover" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
           <Footer />
         </motion.div>
       )}

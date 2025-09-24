@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Menu, X, Heart } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import { cn } from "@/utils/utils";
 import { HeaderProps } from "./@types";
@@ -33,8 +33,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
     <motion.header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm",
-        isSecundary &&
-          "sticky"
+        isSecundary && "sticky"
       )}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -74,14 +73,11 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
             >
               {/* Favorites Icon */}
               <Link href="/favorites">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
-                >
-                  <Heart className="w-5 h-5" />
+                <Button size="sm" variant="ghost" className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative">
+                 
+                    <Image src="/images/coracao.png" alt="Sacola" width={16} height={16} className="mr-1" />
                   {favoritesCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="absolute -top-[3px] -right-1 bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {favoritesCount}
                     </span>
                   )}
@@ -90,14 +86,10 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
 
               {/* Cart Icon */}
               <Link href="/cart">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
-                >
-                  <ShoppingCart className="w-5 h-5" />
+                <Button size="sm" variant="ghost" className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative">
+                  <Image src="/images/sacola.png" alt="Sacola" width={16} height={16} className="mr-1" />
                   {items.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="absolute -top-[2px] -right-[2px] bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {items.length}
                     </span>
                   )}
@@ -111,11 +103,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 className="xl:hidden text-[#8A8A8A] hover:text-[#ecced1] p-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? (
-                  <X className="w-5 h-5" />
-                ) : (
-                  <Menu className="w-5 h-5" />
-                )}
+                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
             </motion.div>
           </div>
@@ -172,7 +160,6 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
           </motion.nav>
         )}
       </div>
-
     </motion.header>
   );
 };

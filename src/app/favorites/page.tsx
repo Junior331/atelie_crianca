@@ -125,7 +125,7 @@ export default function FavoritesPage() {
                         onClick={() => handleRemoveFavorite(item.id)}
                         className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white flex items-center justify-center shadow-md transition-colors duration-200"
                       >
-                        <Trash2 className="w-4 h-4 text-[#E00075]" />
+                        <Trash2 className="w-4 h-4 text-[#ecced1]" />
                       </button>
                     </div>
 
@@ -134,7 +134,7 @@ export default function FavoritesPage() {
                         href={`/workshop/${item.workshopFolder?.toLowerCase().replace(/\s+/g, '-') || ''}`}
                         className="block"
                       >
-                        <h3 className="font-semibold text-[#615C5C] mb-2 hover:text-[#E00075] transition-colors">
+                        <h3 className="font-semibold text-[#615C5C] mb-2 hover:text-[#ecced1] transition-colors">
                           {item.name}
                         </h3>
                       </Link>
@@ -161,7 +161,7 @@ export default function FavoritesPage() {
                       <div className="flex gap-2 mt-4">
                         <Button
                           onClick={() => handleAddToCart(item)}
-                          className="flex-1 bg-[#E00075] hover:bg-[#B8005C] text-white text-sm"
+                          className="flex-1 bg-[#ecced1] hover:bg-[#ecced1] text-white text-sm"
                           size="sm"
                         >
                           <Image 
@@ -179,7 +179,7 @@ export default function FavoritesPage() {
                         >
                           <Button
                             variant="outline"
-                            className="border-gray-300 text-[#8A8A8A] hover:border-[#E00075] hover:text-[#E00075] text-sm"
+                            className="border-gray-300 text-[#8A8A8A] hover:border-[#ecced1] hover:text-[#ecced1] text-sm"
                             size="sm"
                           >
                             Ver Detalhes
