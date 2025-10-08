@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const LoadingSpinner = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-50 to-amber-50">
+    <div className="flex items-center justify-center min-h-screen bg-white">
       <motion.div
         className="relative"
         initial={{ opacity: 0 }}

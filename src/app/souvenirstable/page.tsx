@@ -7,6 +7,7 @@ import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import Image from "next/image";
+import { getImage } from "@/assets/images";
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
@@ -20,12 +21,12 @@ export default function Component() {
   }, []);
 
   const mockImages = [
-    { id: 1, src: "/images/carousel-image4.jpeg", colSpan: "col-span-2" },
-    { id: 2, src: "/images/wedding.jpeg" },
-    { id: 3, src: "/images/wedding.jpeg" },
-    { id: 4, src: "/images/carousel-image4.jpeg", colSpan: "col-span-2" },
-    { id: 5, src: "/images/wedding.jpeg", colSpan: "col-span-2" },
-    { id: 6, src: "/images/carousel-image4.jpeg" },
+    { id: 1, src: getImage('mesa_01'), colSpan: "col-span-2" },
+    { id: 2, src: getImage('mesa_02') },
+    { id: 3, src: getImage('mesa_03') },
+    { id: 4, src: getImage('mesa_04'), colSpan: "col-span-2" },
+    { id: 5, src: getImage('mesa_05'), colSpan: "md:col-span-2" },
+    { id: 6, src: getImage('mesa_05') },
   ];
 
   return (
