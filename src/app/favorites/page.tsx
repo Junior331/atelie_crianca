@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -16,9 +17,22 @@ import { Product } from "@/types/product";
 export default function FavoritesPage() {
   const { favorites, removeFromFavorites, isLoaded } = useFavorites();
   const { addItem } = useCart();
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
 
   const handleAddToCart = (product: Product) => {
     addItem(product);
+
+    // Mostrar feedback visual
+    setAddedItems((prev) => new Set(prev).add(product.id));
+
+    // Remover feedback após 2 segundos
+    setTimeout(() => {
+      setAddedItems((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(product.id);
+        return newSet;
+      });
+    }, 2000);
   };
 
   const handleRemoveFavorite = (productId: string) => {
@@ -161,17 +175,43 @@ export default function FavoritesPage() {
                       <div className="flex gap-2 mt-4">
                         <Button
                           onClick={() => handleAddToCart(item)}
-                          className="flex-1 bg-[#ecced1] hover:bg-[#ecced1] text-white text-sm"
+                          disabled={addedItems.has(item.id)}
+                          className={`flex-1 text-white text-sm transition-all duration-300 ${
+                            addedItems.has(item.id)
+                              ? "bg-green-500 hover:bg-green-500"
+                              : "bg-[#ecced1] hover:bg-[#e9c7ca]"
+                          }`}
                           size="sm"
                         >
-                          <Image 
-                            src="/images/sacola.png" 
-                            alt="Sacola" 
-                            width={16} 
-                            height={16} 
-                            className="mr-1"
-                          />
-                          Adicionar
+                          {addedItems.has(item.id) ? (
+                            <>
+                              <svg
+                                className="w-4 h-4 mr-1"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                              Adicionado!
+                            </>
+                          ) : (
+                            <>
+                              <Image
+                                src="/images/sacola.png"
+                                alt="Sacola"
+                                width={16}
+                                height={16}
+                                className="mr-1"
+                              />
+                              Adicionar
+                            </>
+                          )}
                         </Button>
                         
                         <Link 

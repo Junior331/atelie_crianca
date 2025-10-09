@@ -443,7 +443,7 @@ const HeroSection = () => {
                     {/* Mission Card - Overlapping the image */}
                     <div className="absolute left-0 top-[150px] z-10 w-full max-w-xl">
                       <div className="mission-card text-center">
-                        <div className="mission-subtitle">MAS A FINAL,</div>
+                        <div className="mission-subtitle">MAS AFINAL,</div>
                         <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
                         <p className="mission-description">
                           Nossa missão é proporcionar momentos extremamente
@@ -473,7 +473,7 @@ const HeroSection = () => {
                 <div className="lg:hidden max-w-2xl mx-auto">
                   {/* Mission Card */}
                   <div className="mission-card mission-card-mobile text-center mb-8">
-                    <div className="mission-subtitle">MAS A FINAL,</div>
+                    <div className="mission-subtitle">MAS AFINAL,</div>
                     <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
                     <p className="mission-description">
                       Nossa missão é proporcionar momentos extremamente

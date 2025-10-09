@@ -5,14 +5,14 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 
-import { SmartImage } from "@/components/atoms/SmartImage";
 import { Button, LoadingSpinner } from "@/components/atoms";
 import { Header } from "@/components/organisms/Header";
 import { useFavorites } from "@/hooks/use-favorites";
 import { Product } from "@/types/product";
-import { workshopFolders, folderImageCounts } from "@/utils/workshop-categories";
+import { workshopFolders } from "@/utils/workshop-categories";
 import { Footer } from "@/components/modules";
 import Image from "next/image";
+import { getWorkshopImage, getWorkshopImageCount } from "@/assets/workshop";
 
 export default function WorkshopDetailPage() {
   const params = useParams();
@@ -23,8 +23,6 @@ export default function WorkshopDetailPage() {
 
   const slug = params.slug as string;
 
-  // Extrair o nome da oficina e índice do item (se houver) da URL
-  // Formato: oficina-name ou oficina-name-item-2
   const itemMatch = slug?.match(/-item-(\d+)$/);
   const itemIndex = itemMatch ? parseInt(itemMatch[1]) - 1 : 0;
 
@@ -49,6 +47,46 @@ export default function WorkshopDetailPage() {
     );
   });
 
+  // Mapear nome da oficina para pasta correspondente
+  const getFolderName = (name?: string) => {
+    if (!name) return "";
+    const mapping: Record<string, string> = {
+      "OFICINA DE ARCO DISNEY": "ARCO DISNEY",
+      "OFICINA DE ASA DE BORBOLETA": "ASA DE BORBOLETA",
+      "OFICINA DE BELEZA": "BELEZA",
+      "OFICINA DE BIJU": "BIJU COM CHAVEIROS",
+      "OFICINA DE BISCOITOS DECORADOS": "BISCOITOS DECORADOS",
+      "OFICINA DE BODYS DE BEBÊ": "BODYS",
+      "OFICINA DE BOLHAS DE SABAO": "BOLHAS DE SABAO",
+      "OFICINA DE BOLSAS DE PALHA": "BOLSAS DE PALHA",
+      "OFICINA DE BONE": "BONE",
+      "OFICINA DE BUCKET": "BUCKET",
+      "OFICINA DE CADERNINHOS": "CADERNINHOS",
+      "OFICINA DE CAMISAS": "CAMISAS",
+      "OFICINA DE CAPA DE SUPER-HERÓI": "CAPAS HEROIS",
+      "OFICINA DE CARTINHAS": "CARTINHAS",
+      "OFICINA DE CARTOLA": "CARTOLA",
+      "OFICINA DE COLAGEM E CRIATIVIDADE": "COLAGEM E CRIATIVIDADE",
+      "OFICINA DE CUPCAKE": "CUPCAKE",
+      "OFICINA DE ESMALTAÇAO": "ESMALTAÇAO",
+      "OFICINA DE ESTOJO": "ESTOJO",
+      "OFICINA DE FANTOCHES": "FANTOCHES",
+      "OFICINA DE JARDINAGEM": "JARDINAGEM",
+      "OFICINA DE MASCARA": "MASCARA",
+      "OFICINA DE PINTURA NA TELA": "PINTURA EM TELA",
+      "OFICINA DE PINTURA NO CAVALETE": "PINTURA NO CAVALETE",
+      "OFICINA DE RECICLAGEM": "RECICLAGEM",
+      "OFICINA DE SLIME": "SLIME",
+      "OFICINA DE VARINHA DE CONDÃO": "VARINHA E COROA",
+      "OFICINA DE VARINHA HARRY POTTER": "VARINHA HARRY POTTER",
+      "OFICINA DE VISEIRA": "VISEIRA",
+    };
+    return mapping[name] || name;
+  };
+
+  const folderName = getFolderName(workshop);
+  const subfolder = folderName === "BRINQUEDOTECA" ? "COLORIDA" : undefined;
+
   // Definir o índice inicial da imagem baseado na URL
   useEffect(() => {
     if (itemMatch && itemIndex >= 0) {
@@ -56,7 +94,7 @@ export default function WorkshopDetailPage() {
     }
   }, [itemMatch, itemIndex]);
 
-  const imageCount = workshop ? folderImageCounts[workshop] || 1 : 1;
+  const imageCount = workshop ? getWorkshopImageCount(folderName, subfolder) : 1;
   const imageIndices = Array.from({ length: imageCount }, (_, i) => i + 1);
 
   // Se a oficina não for encontrada após um tempo, mostrar erro
@@ -94,13 +132,6 @@ export default function WorkshopDetailPage() {
     );
   }
 
-  const getImageBasePath = () => {
-    if (workshop === "BRINQUEDOTECA") {
-      return "/images/workshops/BRINQUEDOTECA/COLORIDA";
-    }
-    return `/images/workshops/${workshop}`;
-  };
-
   const formatWorkshopName = (name?: string) => {
     if (!name) return "";
     return name
@@ -117,9 +148,9 @@ export default function WorkshopDetailPage() {
         name: formatWorkshopName(workshop),
         description: `Oficina de ${formatWorkshopName(workshop.toLowerCase())} com múltiplas opções disponíveis`,
         category: "favorites",
-        image: `/images/workshops/${workshop}/1.jpg`,
+        image: getWorkshopImage(folderName, 1, subfolder),
         workshopFolder: workshop,
-        workshopSubfolder: workshop === "BRINQUEDOTECA" ? "COLORIDA" : undefined,
+        workshopSubfolder: subfolder,
         duration: "1-2 horas",
         ageRange: "5-12 anos",
         highlights: ["Materiais inclusos", "Atividade criativa", "Lembrança especial"],
@@ -189,12 +220,12 @@ export default function WorkshopDetailPage() {
       transition={{ duration: 0.3 }}
       className="absolute inset-0"
     >
-      <SmartImage
-        basePath={getImageBasePath()}
-        imageName={imageIndices[currentImageIndex].toString()}
+      <Image
+        src={getWorkshopImage(folderName, imageIndices[currentImageIndex], subfolder)}
         alt={`${formatWorkshopName(workshop)} - Imagem ${currentImageIndex + 1}`}
-        fill={true}
+        fill
         className="object-cover"
+        sizes="(max-width: 1024px) 100vw, 50vw"
       />
     </motion.div>
   </AnimatePresence>
@@ -248,12 +279,12 @@ export default function WorkshopDetailPage() {
                           currentImageIndex === index ? "border-[#ecced1]" : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
-                        <SmartImage
-                          basePath={getImageBasePath()}
-                          imageName={imageIndex.toString()}
+                        <Image
+                          src={getWorkshopImage(folderName, imageIndex, subfolder)}
                           alt={`Thumbnail ${index + 1}`}
-                          fill={true}
+                          fill
                           className="object-cover"
+                          sizes="20vw"
                         />
                       </button>
                     ))}
@@ -347,7 +378,7 @@ export default function WorkshopDetailPage() {
                   </div> */}
 
                   <div className="flex gap-3">
-                    <Button onClick={handleAddToCart} className="flex-1 bg-[#ecced1]   py-3">
+                    <Button onClick={handleAddToCart} className="flex-1 bg-[#ecced1] hover:bg-[#d6aeb2] py-3">
                       <span className="text-[#FFF] ">Adicionar à sacola</span>
                     </Button>
                     <Button
@@ -395,12 +426,12 @@ export default function WorkshopDetailPage() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <SmartImage
-                        basePath={getImageBasePath()}
-                        imageName={imageIndex.toString()}
+                      <Image
+                        src={getWorkshopImage(folderName, imageIndex, subfolder)}
                         alt={`${formatWorkshopName(workshop)} - Opção ${index + 1}`}
-                        fill={true}
+                        fill
                         className="object-cover"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
                       />
 
                       {/* Indicador atual */}

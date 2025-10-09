@@ -61,7 +61,7 @@ export const SmartImage = ({
 
   if (isLoading) {
     return (
-      <div className={`bg-gray-200 animate-pulse flex-1 h-full flex items-center justify-center ${className || ''}`}>
+      <div className={`bg-white animate-pulse flex-1 h-full flex items-center justify-center ${className || ''}`}>
         <div className="text-gray-400">Carregando...</div>
       </div>
     );

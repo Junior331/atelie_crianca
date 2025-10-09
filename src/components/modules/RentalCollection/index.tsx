@@ -1,7 +1,6 @@
 "use client";
 
-import { Search, ChevronDown, ChevronRight, X, ChevronLeft } from "lucide-react";
-import { SmartImage } from "@/components/atoms/SmartImage";
+import { Search, ChevronDown, ChevronRight, X } from "lucide-react";
 import { useRef, useState, useMemo, useEffect, useCallback } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -15,10 +14,10 @@ import { CardContent } from "@/components/organisms/Card";
 import {
   workshopFolders,
   foldersWithSubfolders,
-  folderImageCounts,
   subfolderImageCounts,
 } from "@/utils/workshop-categories";
 import { Product } from "@/types/product";
+import { getWorkshopImage, getWorkshopImageCount } from "@/assets/workshop";
 
 // Descrições específicas para cada oficina
 const workshopDescriptions: Record<string, string> = {
@@ -71,119 +70,119 @@ const workshopDescriptions: Record<string, string> = {
 };
 
 // Portfolio items data
-const portfolioItems = [
-  {
-    id: "1",
-    title: "RECEPÇÃO DE CASAMENTO",
-    subtitle: "Elegante celebração noturna",
-    category: "weddings",
-    image: "/images/wedding-elegant.png",
-  },
-  {
-    id: "2",
-    title: "JANTAR DE GALA CORPORATIVO",
-    subtitle: "Gala anual da empresa",
-    category: "corporate",
-    image: "/images/corporate-event.png",
-  },
-  {
-    id: "3",
-    title: "CASAMENTO AO AR LIVRE",
-    subtitle: "Preparação da cerimónia no jardim",
-    category: "weddings",
-    image: "/images/outdoor-wedding-ceremony.jpg",
-  },
-  {
-    id: "4",
-    title: "FESTA DE ANIVERSÁRIO",
-    subtitle: "Celebração doce",
-    category: "birthdays",
-    image: "/images/birthday-party-pink.jpg",
-  },
-];
+// const portfolioItems = [
+//   {
+//     id: "1",
+//     title: "RECEPÇÃO DE CASAMENTO",
+//     subtitle: "Elegante celebração noturna",
+//     category: "weddings",
+//     image: "/images/wedding-elegant.png",
+//   },
+//   {
+//     id: "2",
+//     title: "JANTAR DE GALA CORPORATIVO",
+//     subtitle: "Gala anual da empresa",
+//     category: "corporate",
+//     image: "/images/corporate-event.png",
+//   },
+//   {
+//     id: "3",
+//     title: "CASAMENTO AO AR LIVRE",
+//     subtitle: "Preparação da cerimónia no jardim",
+//     category: "weddings",
+//     image: "/images/outdoor-wedding-ceremony.jpg",
+//   },
+//   {
+//     id: "4",
+//     title: "FESTA DE ANIVERSÁRIO",
+//     subtitle: "Celebração doce",
+//     category: "birthdays",
+//     image: "/images/birthday-party-pink.jpg",
+//   },
+// ];
 
 // Portfolio Carousel Component
-const PortfolioCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlay, setIsAutoPlay] = useState(true);
+// const PortfolioCarousel = () => {
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
-  const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % portfolioItems.length);
-  }, []);
+//   const nextSlide = useCallback(() => {
+//     setCurrentIndex((prev) => (prev + 1) % portfolioItems.length);
+//   }, []);
 
-  const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
-  }, []);
+//   const prevSlide = useCallback(() => {
+//     setCurrentIndex((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
+//   }, []);
 
-  const goToSlide = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
+//   const goToSlide = useCallback((index: number) => {
+//     setCurrentIndex(index);
+//   }, []);
 
-  // Auto-play functionality
-  useEffect(() => {
-    if (!isAutoPlay) return;
+//   // Auto-play functionality
+//   useEffect(() => {
+//     if (!isAutoPlay) return;
 
-    const interval = setInterval(nextSlide, 4000);
-    return () => clearInterval(interval);
-  }, [nextSlide, isAutoPlay]);
+//     const interval = setInterval(nextSlide, 4000);
+//     return () => clearInterval(interval);
+//   }, [nextSlide, isAutoPlay]);
 
-  return (
-    <div
-      className="relative w-full h-96 md:h-[500px] overflow-hidden bg-gray-100 group"
-      onMouseEnter={() => setIsAutoPlay(false)}
-      onMouseLeave={() => setIsAutoPlay(true)}
-    >
-      {/* Main Image */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={portfolioItems[currentIndex].image}
-            alt={portfolioItems[currentIndex].title}
-            fill
-            className="object-cover"
-            priority={currentIndex === 0}
-          />
-          <div className="absolute inset-0 bg-black/20" />
-        </motion.div>
-      </AnimatePresence>
+//   return (
+//     <div
+//       className="relative w-full h-96 md:h-[500px] overflow-hidden bg-gray-100 group"
+//       onMouseEnter={() => setIsAutoPlay(false)}
+//       onMouseLeave={() => setIsAutoPlay(true)}
+//     >
+//       {/* Main Image */}
+//       <AnimatePresence mode="wait">
+//         <motion.div
+//           key={currentIndex}
+//           initial={{ opacity: 0, scale: 1.1 }}
+//           animate={{ opacity: 1, scale: 1 }}
+//           exit={{ opacity: 0, scale: 0.95 }}
+//           transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+//           className="absolute inset-0"
+//         >
+//           <Image
+//             src={portfolioItems[currentIndex].image}
+//             alt={portfolioItems[currentIndex].title}
+//             fill
+//             className="object-cover"
+//             priority={currentIndex === 0}
+//           />
+//           <div className="absolute inset-0 bg-black/20" />
+//         </motion.div>
+//       </AnimatePresence>
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-      >
-        <ChevronLeft size={20} className="text-gray-800" />
-      </button>
+//       {/* Navigation Arrows */}
+//       <button
+//         onClick={prevSlide}
+//         className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+//       >
+//         <ChevronLeft size={20} className="text-gray-800" />
+//       </button>
 
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-      >
-        <ChevronRight size={20} className="text-gray-800" />
-      </button>
+//       <button
+//         onClick={nextSlide}
+//         className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+//       >
+//         <ChevronRight size={20} className="text-gray-800" />
+//       </button>
 
-      {/* Dots Indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
-        {portfolioItems.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              currentIndex === index ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+//       {/* Dots Indicator */}
+//       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
+//         {portfolioItems.map((_, index) => (
+//           <button
+//             key={index}
+//             onClick={() => goToSlide(index)}
+//             className={`w-2 h-2 rounded-full transition-all duration-300 ${
+//               currentIndex === index ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
+//             }`}
+//           />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
 
 // Componente para o card de oficina com hover infinito
 const WorkshopCard = ({
@@ -203,8 +202,56 @@ const WorkshopCard = ({
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Mapear nome da oficina para pasta correspondente
+  const getFolderName = (name: string) => {
+    const mapping: Record<string, string> = {
+      "OFICINA DE ARCO DISNEY": "ARCO DISNEY",
+      "OFICINA DE ASA DE BORBOLETA": "ASA DE BORBOLETA",
+      "OFICINA DE BELEZA": "BELEZA",
+      "OFICINA DE BIJU": "BIJU COM CHAVEIROS",
+      "OFICINA DE BISCOITOS DECORADOS": "BISCOITOS DECORADOS",
+      "OFICINA DE BODYS DE BEBÊ": "BODYS",
+      "OFICINA DE BOLHAS DE SABAO": "BOLHAS DE SABAO",
+      "OFICINA DE BOLSAS DE PALHA": "BOLSAS DE PALHA",
+      "OFICINA DE BONE": "BONE",
+      "OFICINA DE BUCKET": "BUCKET",
+      "OFICINA DE CADERNINHOS": "CADERNINHOS",
+      "OFICINA DE CAMISAS": "CAMISAS",
+      "OFICINA DE CAPA DE SUPER-HERÓI": "CAPAS HEROIS",
+      "OFICINA DE CARTINHAS": "CARTINHAS",
+      "OFICINA DE CARTOLA": "CARTOLA",
+      "OFICINA DE COLAGEM E CRIATIVIDADE": "COLAGEM E CRIATIVIDADE",
+      "OFICINA DE CUPCAKE": "CUPCAKE",
+      "OFICINA DE ESMALTAÇAO": "ESMALTAÇAO",
+      "OFICINA DE ESTOJO": "ESTOJO",
+      "OFICINA DE FANTOCHES": "FANTOCHES",
+      "OFICINA DE JARDINAGEM": "JARDINAGEM",
+      "OFICINA DE MASCARA": "MASCARA",
+      "OFICINA DE PINTURA NA TELA": "PINTURA EM TELA",
+      "OFICINA DE PINTURA NO CAVALETE": "PINTURA NO CAVALETE",
+      "OFICINA DE RECICLAGEM": "RECICLAGEM",
+      "OFICINA DE SLIME": "SLIME",
+      "OFICINA DE VARINHA DE CONDÃO": "VARINHA E COROA",
+      "OFICINA DE VARINHA HARRY POTTER": "VARINHA HARRY POTTER",
+      "OFICINA DE VISEIRA": "VISEIRA",
+    };
+    return mapping[name] || name;
+  };
+
+  const folderName = getFolderName(workshopName);
+
+  // Obter a subpasta se for BRINQUEDOTECA
+  const getSubfolder = () => {
+    if (folderName === "BRINQUEDOTECA") {
+      return "COLORIDA"; // Usar COLORIDA como padrão
+    }
+    return undefined;
+  };
+
+  const subfolder = getSubfolder();
+
   // Obter o número de imagens para esta oficina
-  const imageCount = folderImageCounts[workshopName] || 1;
+  const imageCount = getWorkshopImageCount(folderName, subfolder);
 
   // Array com os índices das imagens (1, 2, 3, etc.)
   const imageIndices = Array.from({ length: imageCount }, (_, i) => i + 1);
@@ -239,15 +286,6 @@ const WorkshopCard = ({
     }
   }, [isHovered]);
 
-  // Lidar com subpastas especiais (como BRINQUEDOTECA)
-  const getImageBasePath = () => {
-    if (workshopName === "BRINQUEDOTECA") {
-      // Para BRINQUEDOTECA, usar a subpasta COLORIDA que tem mais imagens
-      return "/images/workshops/BRINQUEDOTECA/COLORIDA";
-    }
-    return `/images/workshops/${workshopName}`;
-  };
-
   const formatWorkshopName = (name: string) => {
     return name
       .toLowerCase()
@@ -273,7 +311,7 @@ const WorkshopCard = ({
         onClick={onDetailsClick}
       >
         <div
-          className="relative h-full min-h-48 overflow-hidden cursor-pointer"
+          className="relative w-full h-64 overflow-hidden cursor-pointer"
           onClick={() => onImageClick(currentImageIndex)}
         >
           <AnimatePresence mode="wait">
@@ -288,12 +326,12 @@ const WorkshopCard = ({
               }}
               className="absolute inset-0"
             >
-              <SmartImage
-                basePath={getImageBasePath()}
-                imageName={imageIndices[currentImageIndex].toString()}
+              <Image
+                src={getWorkshopImage(folderName, imageIndices[currentImageIndex], subfolder)}
                 alt={workshopName}
-                fill={true}
+                fill
                 className="object-cover"
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
             </motion.div>
           </AnimatePresence>
@@ -493,14 +531,53 @@ const RentalCollection = () => {
       );
     };
 
+    // Mapear nome da oficina para pasta correspondente
+    const getFolderName = (name: string) => {
+      const mapping: Record<string, string> = {
+        "OFICINA DE ARCO DISNEY": "ARCO DISNEY",
+        "OFICINA DE ASA DE BORBOLETA": "ASA DE BORBOLETA",
+        "OFICINA DE BELEZA": "BELEZA",
+        "OFICINA DE BIJU": "BIJU COM CHAVEIROS",
+        "OFICINA DE BISCOITOS DECORADOS": "BISCOITOS DECORADOS",
+        "OFICINA DE BODYS DE BEBÊ": "BODYS",
+        "OFICINA DE BOLHAS DE SABAO": "BOLHAS DE SABAO",
+        "OFICINA DE BOLSAS DE PALHA": "BOLSAS DE PALHA",
+        "OFICINA DE BONE": "BONE",
+        "OFICINA DE BUCKET": "BUCKET",
+        "OFICINA DE CADERNINHOS": "CADERNINHOS",
+        "OFICINA DE CAMISAS": "CAMISAS",
+        "OFICINA DE CAPA DE SUPER-HERÓI": "CAPAS HEROIS",
+        "OFICINA DE CARTINHAS": "CARTINHAS",
+        "OFICINA DE CARTOLA": "CARTOLA",
+        "OFICINA DE COLAGEM E CRIATIVIDADE": "COLAGEM E CRIATIVIDADE",
+        "OFICINA DE CUPCAKE": "CUPCAKE",
+        "OFICINA DE ESMALTAÇAO": "ESMALTAÇAO",
+        "OFICINA DE ESTOJO": "ESTOJO",
+        "OFICINA DE FANTOCHES": "FANTOCHES",
+        "OFICINA DE JARDINAGEM": "JARDINAGEM",
+        "OFICINA DE MASCARA": "MASCARA",
+        "OFICINA DE PINTURA NA TELA": "PINTURA EM TELA",
+        "OFICINA DE PINTURA NO CAVALETE": "PINTURA NO CAVALETE",
+        "OFICINA DE RECICLAGEM": "RECICLAGEM",
+        "OFICINA DE SLIME": "SLIME",
+        "OFICINA DE VARINHA DE CONDÃO": "VARINHA E COROA",
+        "OFICINA DE VARINHA HARRY POTTER": "VARINHA HARRY POTTER",
+        "OFICINA DE VISEIRA": "VISEIRA",
+      };
+      return mapping[name] || name;
+    };
+
+    const folderName = getFolderName(workshopName);
+    const subfolder = folderName === "BRINQUEDOTECA" ? "COLORIDA" : undefined;
+
     return {
       id: `workshop-${workshopName.toLowerCase().replace(/\s+/g, "-")}`,
       name: formatWorkshopName(workshopName),
       description: getWorkshopDescription(workshopName),
       category: "favorites",
-      image: `/images/workshops/${workshopName}/1.jpg`,
+      image: getWorkshopImage(folderName, 1, subfolder),
       workshopFolder: workshopName,
-      workshopSubfolder: workshopName === "BRINQUEDOTECA" ? "COLORIDA" : undefined,
+      workshopSubfolder: subfolder,
       duration: "1-2 horas",
       ageRange: "5-12 anos",
       highlights: ["Materiais inclusos", "Atividade criativa", "Lembrança especial"],
@@ -519,7 +596,7 @@ const RentalCollection = () => {
 
   return (
     <section ref={ref} className="bg-white">
-      <div className="bg-white">
+      {/* <div className="bg-white">
         <div className="container max-w-none px-4">
           <motion.div
             className="mb-6"
@@ -530,9 +607,9 @@ const RentalCollection = () => {
             <PortfolioCarousel />
           </motion.div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="min-h-screen flex flex-col lg:flex-row">
+      <div className="min-h-screen flex flex-col lg:flex-row mt-4">
         <div className="w-full container max-w-none px-4 flex flex-col lg:flex-row md:gap-8 min-h-full">
           {/* Botão de Filtros Mobile */}
           <div className="lg:hidden mb-4">
