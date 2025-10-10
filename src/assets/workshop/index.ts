@@ -85,18 +85,6 @@ import CARMED_4 from "./CARMED/4.jpeg";
 import CARTINHAS_1 from "./CARTINHAS/copia_de_128dec5c-58f2-436e-a151-d8e9eb1c722d.jpeg";
 import CARTOLA_1 from "./CARTOLA/1.jpeg";
 import CARTOLA_2 from "./CARTOLA/2.jpeg";
-import CASAMENTO_1 from "./CASAMENTO/024.jpeg";
-import CASAMENTO_2 from "./CASAMENTO/177.jpeg";
-import CASAMENTO_3 from "./CASAMENTO/218.jpeg";
-import CASAMENTO_4 from "./CASAMENTO/347.jpeg";
-import CASAMENTO_5 from "./CASAMENTO/356.jpeg";
-import CASAMENTO_6 from "./CASAMENTO/357.jpeg";
-import CASAMENTO_7 from "./CASAMENTO/IMG_0239.jpeg";
-import CASAMENTO_8 from "./CASAMENTO/IMG_9800.jpeg";
-import CASAMENTO_9 from "./CASAMENTO/IMG_9801.jpeg";
-import CASAMENTO_10 from "./CASAMENTO/IMG_9818.jpeg";
-import CASAMENTO_11 from "./CASAMENTO/IMG_9821.jpeg";
-import CASAMENTO_12 from "./CASAMENTO/IMG_9822.jpeg";
 import CHAPEU_DE_PALHA_1 from "./CHAPEU DE PALHA/1.jpeg";
 import CHAPEU_DE_PALHA_2 from "./CHAPEU DE PALHA/2.jpeg";
 import CHAPEU_DE_PALHA_3 from "./CHAPEU DE PALHA/3.jpeg";
@@ -306,20 +294,6 @@ export const workshopImages = {
   CARTOLA: {
     1: CARTOLA_1,
     2: CARTOLA_2,
-  },
-  CASAMENTO: {
-    1: CASAMENTO_1,
-    2: CASAMENTO_2,
-    3: CASAMENTO_3,
-    4: CASAMENTO_4,
-    5: CASAMENTO_5,
-    6: CASAMENTO_6,
-    7: CASAMENTO_7,
-    8: CASAMENTO_8,
-    9: CASAMENTO_9,
-    10: CASAMENTO_10,
-    11: CASAMENTO_11,
-    12: CASAMENTO_12,
   },
   CHAPEU_DE_PALHA: {
     1: CHAPEU_DE_PALHA_1,

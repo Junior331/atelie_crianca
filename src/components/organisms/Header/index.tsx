@@ -66,16 +66,25 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
 
             {/* Right side - Icons */}
             <motion.div
-              className="flex-1 flex items-center justify-end space-x-4"
+              className="flex-1 flex items-center justify-end space-x-2"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               {/* Favorites Icon */}
-              <Link href="/favorites">
-                <Button size="sm" variant="ghost" className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative">
-                 
-                    <Image src="/images/coracao.png" alt="Sacola" width={16} height={16} className="mr-1" />
+              <Link href="/favorites" className="!mr-1">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
+                >
+                  <Image
+                    src="/images/coracao.png"
+                    alt="Sacola"
+                    width={16}
+                    height={16}
+                    className="md:mr-1"
+                  />
                   {favoritesCount > 0 && (
                     <span className="absolute -top-[3px] -right-1 bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {favoritesCount}
@@ -86,8 +95,18 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
 
               {/* Cart Icon */}
               <Link href="/cart">
-                <Button size="sm" variant="ghost" className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative">
-                  <Image src="/images/sacola.png" alt="Sacola" width={16} height={16} className="mr-1" />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
+                >
+                  <Image
+                    src="/images/sacola.png"
+                    alt="Sacola"
+                    width={16}
+                    height={16}
+                    className="mr-1"
+                  />
                   {items.length > 0 && (
                     <span className="absolute -top-[2px] -right-[2px] bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {items.length}
@@ -103,7 +122,11 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 className="xl:hidden text-[#8A8A8A] hover:text-[#ecced1] p-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {isMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
               </Button>
             </motion.div>
           </div>

@@ -43,7 +43,6 @@ const workshopDescriptions: Record<string, string> = {
   CARMED: "Atividades especiais Carmed",
   "OFICINA DE CARTINHAS": "Produção e decoração de cartinhas criativas",
   "OFICINA DE CARTOLA": "Customização de cartolas",
-  CASAMENTO: "Oficina temática de casamento",
   "CHAPEU DE PALHA": "Customização de chapéus de palha",
   CIENTISTA: "Experiências e atividades de cientista",
   "OFICINA DE COLAGEM E CRIATIVIDADE": "Customização de totem",
