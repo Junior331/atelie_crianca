@@ -1,27 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Users,
-  Palette,
-  Armchair,
-  TrendingUp,
-  Star,
-  User,
-  Clock,
-  MapPin,
-} from "lucide-react";
-import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { Footer } from "../Footer";
+import { getIcon } from "@/assets/icons";
 import { Header } from "@/components/organisms";
 import { CardContent } from "@/components/organisms/Card";
-import { Footer } from "../Footer";
 
-// Portfolio items data
 const portfolioItems = [
   {
     id: "1",
@@ -99,47 +88,49 @@ const cardsData = [
 
 const featuresData = [
   {
-    icon: Users,
+    icon: getIcon("equipe"),
     title: "nossa equipe",
     description: "Mais de 120 colaboradores no Rio e 6 fixos no escritório.",
   },
   {
-    icon: Palette,
+    icon: getIcon("paleta_de_cores"),
     title: "paleta de cores",
     description:
       "Mobiliário, suportes e uniformes combinam com as cores do evento.",
   },
   {
-    icon: Armchair,
+    icon: getIcon("mobiliario"),
     title: "mobiliário próprio",
     description:
       "Acervo variado de móveis personalizados que seguem a paleta do evento.",
   },
   {
-    icon: TrendingUp,
+    icon: getIcon("treinamento"),
     title: "treinamento",
     description:
       "Equipe em constante capacitação para serviços mais eficientes e exclusivos.",
   },
   {
-    icon: Star,
+    icon: getIcon("experiencia"),
+
     title: "experiência",
     description: "7 anos de atuação no mercado.",
   },
   {
-    icon: User,
+    icon: getIcon("ecritorio"),
+
     title: "escritório",
     description:
       "Estrutura com 6 pessoas dedicadas ao atendimento antes, durante e depois do evento.",
   },
   {
-    icon: Clock,
+    icon: getIcon("agilidade"),
     title: "agilidade",
     description:
       "Entregas rápidas, com qualidade e pontualidade; mais de 100 eventos fechados em menos de 48h",
   },
   {
-    icon: MapPin,
+    icon: getIcon("eventos_100"),
     title: "+ de 1000 eventos",
     description:
       "Já realizaramos mais de 1.000 eventos no RJ, incluindo festas, casamentos e corporativos.",
@@ -403,7 +394,6 @@ const HeroSection = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuresData.map((feature, index) => {
-                const Icon = feature.icon;
                 return (
                   <motion.div
                     key={index}
@@ -414,7 +404,13 @@ const HeroSection = () => {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                   >
                     <div className="flex justify-center mb-4">
-                      <Icon size={48} className="text-gray-600" />
+                      <Image
+                        src={feature.icon}
+                        alt="Whatsapp"
+                        width={48}
+                        height={48}
+                        className="mr-2"
+                      />
                     </div>
                     <h3 className="text-lg font-medium text-gray-800 mb-3 capitalize">
                       {feature.title}
