@@ -194,8 +194,8 @@ export default function Component() {
     return (
       <div className="flex flex-col gap-4">
         {/* Primeira linha: 30% - 70% */}
-        <div className="flex gap-4 h-[200px]">
-          <div className="relative w-[30%] overflow-hidden rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+          <div className="relative w-full md:w-[30%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[0]?.image}
               alt={`imagem demonstrativa 1`}
@@ -203,7 +203,7 @@ export default function Component() {
               className="object-cover"
             />
           </div>
-          <div className="relative w-[70%] overflow-hidden rounded-lg">
+          <div className="relative w-full md:w-[70%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[1]?.image}
               alt={`imagem demonstrativa 2`}
@@ -214,8 +214,8 @@ export default function Component() {
         </div>
 
         {/* Segunda linha: 70% - 30% */}
-        <div className="flex gap-4 h-[200px]">
-          <div className="relative w-[70%] overflow-hidden rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+          <div className="relative w-full md:w-[70%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[2]?.image}
               alt={`imagem demonstrativa 3`}
@@ -223,7 +223,7 @@ export default function Component() {
               className="object-cover"
             />
           </div>
-          <div className="relative w-[30%] overflow-hidden rounded-lg">
+          <div className="relative w-full md:w-[30%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[3]?.image}
               alt={`imagem demonstrativa 4`}
@@ -234,8 +234,8 @@ export default function Component() {
         </div>
 
         {/* Terceira linha: 30% - 70% */}
-        <div className="flex gap-4 h-[200px]">
-          <div className="relative w-[30%] overflow-hidden rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+          <div className="relative w-full md:w-[30%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[4]?.image}
               alt={`imagem demonstrativa 5`}
@@ -243,7 +243,7 @@ export default function Component() {
               className="object-cover"
             />
           </div>
-          <div className="relative w-[70%] overflow-hidden rounded-lg">
+          <div className="relative w-full md:w-[70%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[5]?.image}
               alt={`imagem demonstrativa 6`}
@@ -260,8 +260,8 @@ export default function Component() {
     return (
       <div className="flex flex-col gap-4">
         {/* Primeira linha: 30% - 70% */}
-        <div className="flex gap-4 h-[200px]">
-          <div className="relative w-[30%] overflow-hidden rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+          <div className="relative w-full md:w-[30%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[0]?.image}
               alt={`imagem demonstrativa 1`}
@@ -269,7 +269,7 @@ export default function Component() {
               className="object-cover"
             />
           </div>
-          <div className="relative w-[70%] overflow-hidden rounded-lg">
+          <div className="relative w-full md:w-[70%] h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[1]?.image}
               alt={`imagem demonstrativa 2`}
@@ -292,8 +292,8 @@ export default function Component() {
         </div>
 
         {/* Terceira linha: 3 imagens iguais */}
-        <div className="flex gap-4 h-[200px]">
-          <div className="relative w-1/3 overflow-hidden rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+          <div className="relative w-full md:w-1/3 h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[3]?.image}
               alt={`imagem demonstrativa 4`}
@@ -301,7 +301,7 @@ export default function Component() {
               className="object-cover"
             />
           </div>
-          <div className="relative w-1/3 overflow-hidden rounded-lg">
+          <div className="relative w-full md:w-1/3 h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[4]?.image}
               alt={`imagem demonstrativa 5`}
@@ -309,7 +309,7 @@ export default function Component() {
               className="object-cover"
             />
           </div>
-          <div className="relative w-1/3 overflow-hidden rounded-lg">
+          <div className="relative w-full md:w-1/3 h-[200px] overflow-hidden rounded-lg">
             <Image
               src={items[5]?.image}
               alt={`imagem demonstrativa 6`}
