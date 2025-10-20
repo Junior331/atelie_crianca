@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 type CarouselItem = {
   id: string;
   image: string;
@@ -146,7 +145,7 @@ export default function Component() {
   ];
 
   const PlayroomCard = () => (
-    <div className="bg-gray-50 h-[300px] p-6 rounded-lg  text-gray-800 flex flex-col justify-center">
+    <div className="bg-gray-50 h-auto p-6 rounded-lg  text-gray-800 flex flex-col justify-center items-center text-center">
       <h3 className="text-lg flex flex-col font-bold uppercase mb-2">
         BRINQUEDOTECA <span className="italic font-normal">Casamento</span>
       </h3>
@@ -157,7 +156,7 @@ export default function Component() {
   );
 
   const SnackCard = () => (
-    <div className="bg-gray-50 h-[300px] p-6 rounded-lg  text-gray-800 flex flex-col justify-center">
+    <div className="bg-gray-50 h-auto p-6 rounded-lg  text-gray-800 flex flex-col justify-center items-center text-center">
       <h3 className="text-lg flex flex-col font-bold uppercase mb-2">
         BRINQUEDOTECA<span className="italic font-normal">Candy Color</span>
       </h3>
@@ -169,7 +168,7 @@ export default function Component() {
   );
 
   const ToyLibraryCard = () => (
-    <div className="bg-gray-50 h-[300px] p-6 rounded-lg text-gray-800 flex flex-col justify-center">
+    <div className="bg-gray-50 h-auto p-6 rounded-lg text-gray-800 flex flex-col justify-center items-center text-center">
       <h3 className="text-lg font-bold uppercase mb-2">
         BRINQUEDOTECA <span className="italic font-normal">Colorida</span>
       </h3>
@@ -180,7 +179,7 @@ export default function Component() {
     </div>
   );
   const Customized = () => (
-    <div className="bg-gray-50 h-[300px] p-6 rounded-lg text-gray-800 flex flex-col justify-center">
+    <div className="bg-gray-50 h-auto p-6 rounded-lg text-gray-800 flex flex-col justify-center items-center text-center">
       <h3 className="text-lg font-bold uppercase mb-2">
         BRINQUEDOTECA <span className="italic font-normal">Personalizada</span>
       </h3>
@@ -191,92 +190,175 @@ export default function Component() {
     </div>
   );
 
-  const Carousel = ({ items }: { items: CarouselItem[] }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isAutoPlay, setIsAutoPlay] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
-
-    const nextSlide = useCallback(() => {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
-    }, [items.length]);
-
-    const prevSlide = useCallback(() => {
-      setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-    }, [items.length]);
-
-    const goToSlide = useCallback((index: number) => {
-      setCurrentIndex(index);
-    }, []);
-
-    // Mount effect
-    useEffect(() => {
-      setIsMounted(true);
-      setIsAutoPlay(true);
-    }, []);
-
-    // Auto-play functionality
-    useEffect(() => {
-      if (!isAutoPlay || !isMounted) return;
-
-      const interval = setInterval(nextSlide, 4000);
-      return () => clearInterval(interval);
-    }, [nextSlide, isAutoPlay, isMounted]);
-
+  const ImageGrid = ({ items }: { items: CarouselItem[] }) => {
     return (
-      <div
-        className="relative w-full h-[300px] overflow-hidden bg-gray-100 group rounded-lg"
-        onMouseEnter={() => setIsAutoPlay(false)}
-        onMouseLeave={() => setIsAutoPlay(true)}
-      >
-        {/* Main Image */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute inset-0"
-          >
+      <div className="flex flex-col gap-4">
+        {/* Primeira linha: 30% - 70% */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-[30%] overflow-hidden rounded-lg">
             <Image
-              src={items[currentIndex]?.image}
-              alt={'imagem demonstrativa'}
+              src={items[0]?.image}
+              alt={`imagem demonstrativa 1`}
               fill
               className="object-cover"
-              priority={currentIndex === 0}
             />
-            <div className="absolute inset-0 bg-black/20" />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        >
-          <ChevronLeft size={20} className="text-gray-800" />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        >
-          <ChevronRight size={20} className="text-gray-800" />
-        </button>
-
-        {/* Dots Indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
-          {items.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                currentIndex === index
-                  ? "bg-white w-8"
-                  : "bg-white/50 hover:bg-white/75"
-              }`}
+          </div>
+          <div className="relative w-[70%] overflow-hidden rounded-lg">
+            <Image
+              src={items[1]?.image}
+              alt={`imagem demonstrativa 2`}
+              fill
+              className="object-cover"
             />
-          ))}
+          </div>
+        </div>
+
+        {/* Segunda linha: 70% - 30% */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-[70%] overflow-hidden rounded-lg">
+            <Image
+              src={items[2]?.image}
+              alt={`imagem demonstrativa 3`}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative w-[30%] overflow-hidden rounded-lg">
+            <Image
+              src={items[3]?.image}
+              alt={`imagem demonstrativa 4`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Terceira linha: 30% - 70% */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-[30%] overflow-hidden rounded-lg">
+            <Image
+              src={items[4]?.image}
+              alt={`imagem demonstrativa 5`}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative w-[70%] overflow-hidden rounded-lg">
+            <Image
+              src={items[5]?.image}
+              alt={`imagem demonstrativa 6`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const ColorfulGrid = ({ items }: { items: CarouselItem[] }) => {
+    return (
+      <div className="flex flex-col gap-4">
+        {/* Primeira linha: 30% - 70% */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-[30%] overflow-hidden rounded-lg">
+            <Image
+              src={items[0]?.image}
+              alt={`imagem demonstrativa 1`}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative w-[70%] overflow-hidden rounded-lg">
+            <Image
+              src={items[1]?.image}
+              alt={`imagem demonstrativa 2`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Segunda linha: 100% - Uma imagem */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-full overflow-hidden rounded-lg">
+            <Image
+              src={items[2]?.image}
+              alt={`imagem demonstrativa 3`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Terceira linha: 3 imagens iguais */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-1/3 overflow-hidden rounded-lg">
+            <Image
+              src={items[3]?.image}
+              alt={`imagem demonstrativa 4`}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative w-1/3 overflow-hidden rounded-lg">
+            <Image
+              src={items[4]?.image}
+              alt={`imagem demonstrativa 5`}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative w-1/3 overflow-hidden rounded-lg">
+            <Image
+              src={items[5]?.image}
+              alt={`imagem demonstrativa 6`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const PersonalizedGrid = ({ items }: { items: CarouselItem[] }) => {
+    return (
+      <div className="flex flex-col gap-4">
+        {/* Primeira linha: 100% */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-full overflow-hidden rounded-lg">
+            <Image
+              src={items[0]?.image}
+              alt={`imagem demonstrativa 1`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Segunda linha: 100% */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-full overflow-hidden rounded-lg">
+            <Image
+              src={items[1]?.image}
+              alt={`imagem demonstrativa 2`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Terceira linha: 100% */}
+        <div className="flex gap-4 h-[200px]">
+          <div className="relative w-full overflow-hidden rounded-lg">
+            <Image
+              src={items[2]?.image}
+              alt={`imagem demonstrativa 3`}
+              fill
+              className="object-cover"
+            />
+          </div>
         </div>
       </div>
     );
@@ -310,64 +392,64 @@ export default function Component() {
                 </div>
               </div>
 
-              <div className="bg-white pt-[150px] px-8">
+              <div className="bg-white py-14 px-8">
                 <div className="w-full  mx-auto space-y-12">
-                  {/* Primeira seção - Brinquedoteca */}
+                  {/* Primeira seção - Brinquedoteca Casamento */}
                   <motion.div
-                    className="flex flex-col lg:flex-row gap-8 items-center"
+                    className="flex flex-col gap-2"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
-                    <div className="w-full lg:w-2/3">
-                      <Carousel items={playroomItems} />
-                    </div>
-                    <div className="w-full lg:w-1/3">
+                    <div className="w-full">
                       <PlayroomCard />
+                    </div>
+                    <div className="w-full">
+                      <ImageGrid items={playroomItems} />
                     </div>
                   </motion.div>
 
-                  {/* Segunda seção - Mesa de Lanches */}
+                  {/* Segunda seção - Candy Color */}
                   <motion.div
-                    className="flex flex-col lg:flex-row-reverse gap-8 items-center"
+                    className="flex flex-col gap-2"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
                   >
-                    <div className="w-full  lg:w-2/3">
-                      <Carousel items={snackItems} />
-                    </div>
-                    <div className="w-full lg:w-1/3">
+                    <div className="w-full">
                       <SnackCard />
+                    </div>
+                    <div className="w-full">
+                      <ImageGrid items={snackItems} />
                     </div>
                   </motion.div>
 
-                  {/* Terceira seção - Biblioteca de Brinquedos */}
+                  {/* Terceira seção - Colorida */}
                   <motion.div
-                    className="flex flex-col lg:flex-row gap-8 items-center"
+                    className="flex flex-col gap-2"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
                   >
-                    <div className="w-full lg:w-2/3">
-                      <Carousel items={toyLibraryItems} />
-                    </div>
-                    <div className="w-full lg:w-1/3">
+                    <div className="w-full">
                       <ToyLibraryCard />
                     </div>
+                    <div className="w-full">
+                      <ColorfulGrid items={toyLibraryItems} />
+                    </div>
                   </motion.div>
-                  {/* Quarta seção - Biblioteca de Brinquedos */}
+                  {/* Quarta seção - Personalizada */}
                   <motion.div
-                    className="flex flex-col lg:flex-row gap-8 items-center"
+                    className="flex flex-col gap-2"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
                   >
-                    <div className="w-full lg:w-1/3">
+                    <div className="w-full">
                       <Customized />
                     </div>
-                    <div className="w-full lg:w-2/3">
-                      <Carousel items={customizedItems} />
+                    <div className="w-full">
+                      <PersonalizedGrid items={customizedItems} />
                     </div>
                   </motion.div>
                 </div>
