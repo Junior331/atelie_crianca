@@ -13,6 +13,7 @@ export const useProducts = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products_mock);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedWorkshopFilters, setSelectedWorkshopFilters] = useState<string[]>([]);
+  const [selectedProductFilters, setSelectedProductFilters] = useState<string[]>([]);
 
   // Inicializar produtos na montagem
   useEffect(() => {
@@ -75,5 +76,7 @@ export const useProducts = () => {
     products: filteredProducts,
     selectedWorkshopFilters,
     setSelectedWorkshopFilters,
+    selectedProductFilters,
+    setSelectedProductFilters,
   };
 };

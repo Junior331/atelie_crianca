@@ -10,10 +10,8 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 type CarouselItem = {
   id: string;
-  title: string;
-  subtitle: string;
-  category: string;
   image: string;
+  category: string;
 };
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,35 +24,38 @@ export default function Component() {
     return () => clearTimeout(timer);
   }, []);
 
+  
   // Dados para Brinquedoteca
   const playroomItems = [
     {
       id: "1",
-      title: "ÁREA DE JOGOS",
-      subtitle: "Espaço seguro e divertido",
       category: "playroom",
-      image: "/images/carousel-image.jpeg",
+      image: "/images/playroom_01.jpg",
     },
     {
       id: "2",
-      title: "PISCINA DE BOLINHAS",
-      subtitle: "Diversão garantida",
       category: "playroom",
-      image: "/images/carousel-image2.jpeg",
+      image: "/images/playroom_02.jpg",
     },
     {
       id: "3",
-      title: "CANTINHO DA LEITURA",
-      subtitle: "Estímulo à imaginação",
       category: "playroom",
-      image: "/images/carousel-image3.jpeg",
+      image: "/images/playroom_03.jpg",
     },
     {
       id: "4",
-      title: "ZONA CRIATIVA",
-      subtitle: "Arte e criatividade",
       category: "playroom",
-      image: "/images/carousel-image4.jpeg",
+      image: "/images/playroom_04.jpg",
+    },
+    {
+      id: "5",
+      category: "playroom",
+      image: "/images/playroom_05.jpg",
+    },
+    {
+      id: "6",
+      category: "playroom",
+      image: "/images/playroom_06.jpg",
     },
   ];
 
@@ -62,31 +63,33 @@ export default function Component() {
   const snackItems = [
     {
       id: "1",
-      title: "MESA TEMÁTICA",
-      subtitle: "Lanches saudáveis e divertidos",
       category: "snacks",
-      image: "/images/snack-table.jpeg",
+      image: "/images/snack_01.jpg",
     },
     {
       id: "2",
-      title: "DOCES ARTESANAIS",
-      subtitle: "Feitos com carinho",
       category: "snacks",
-      image: "/images/carousel-image.jpeg",
+      image: "/images/snack_02.jpg",
     },
     {
       id: "3",
-      title: "SUCOS NATURAIS",
-      subtitle: "Sabores da estação",
       category: "snacks",
-      image: "/images/carousel-image2.jpeg",
+      image: "/images/snack_03.jpg",
     },
     {
       id: "4",
-      title: "FRUTAS DECORADAS",
-      subtitle: "Nutrição com diversão",
       category: "snacks",
-      image: "/images/carousel-image3.jpeg",
+      image: "/images/snack_04.jpg",
+    },
+    {
+      id: "5",
+      category: "snacks",
+      image: "/images/snack_05.jpg",
+    },
+    {
+      id: "6",
+      category: "snacks",
+      image: "/images/snack_06.jpg",
     },
   ];
 
@@ -94,42 +97,61 @@ export default function Component() {
   const toyLibraryItems = [
     {
       id: "1",
-      title: "BRINQUEDOS EDUCATIVOS",
-      subtitle: "Aprender brincando",
       category: "toys",
-      image: "/images/toy-library.jpeg",
+      image: "/images/toyLibrary_01.jpg",
     },
     {
       id: "2",
-      title: "JOGOS DE MONTAR",
-      subtitle: "Desenvolvimento motor",
       category: "toys",
-      image: "/images/carousel-image4.jpeg",
+      image: "/images/toyLibrary_02.jpg",
     },
     {
       id: "3",
-      title: "LIVROS INTERATIVOS",
-      subtitle: "Histórias encantadas",
       category: "toys",
-      image: "/images/carousel-image.jpeg",
+      image: "/images/toyLibrary_03.jpg",
     },
     {
       id: "4",
-      title: "FANTASIAS E TEATRO",
-      subtitle: "Imaginação sem limites",
       category: "toys",
-      image: "/images/carousel-image2.jpeg",
+      image: "/images/toyLibrary_04.jpg",
+    },
+    {
+      id: "5",
+      category: "toys",
+      image: "/images/toyLibrary_05.jpg",
+    },
+    {
+      id: "6",
+      category: "toys",
+      image: "/images/toyLibrary_06.jpg",
+    },
+  ];
+
+  const customizedItems = [
+    {
+      id: "1",
+      category: "toys",
+      image: "/images/customized_01.jpg",
+    },
+    {
+      id: "2",
+      category: "toys",
+      image: "/images/customized_02.jpg",
+    },
+    {
+      id: "3",
+      category: "toys",
+      image: "/images/customized_03.jpg",
     },
   ];
 
   const PlayroomCard = () => (
     <div className="bg-gray-50 h-[300px] p-6 rounded-lg  text-gray-800 flex flex-col justify-center">
       <h3 className="text-lg flex flex-col font-bold uppercase mb-2">
-        BRINQUEDOTECA <span className="italic font-normal">MONOCROÁTICA</span>
+        BRINQUEDOTECA <span className="italic font-normal">Casamento</span>
       </h3>
       <p className="text-sm  text-gray-800">
-        As oficinas infantis são uma forma de encantar os pequenos e trazer tranquilidade para os pais durante a festa.
-        Nosso espaço é planejado para se compor com a
+        Diversão para crianças em harmonia com a decoração do casamento.
       </p>
     </div>
   );
@@ -137,11 +159,11 @@ export default function Component() {
   const SnackCard = () => (
     <div className="bg-gray-50 h-[300px] p-6 rounded-lg  text-gray-800 flex flex-col justify-center">
       <h3 className="text-lg flex flex-col font-bold uppercase mb-2">
-        BRINQUEDOTECA<span className="italic font-normal">CANDY COLOR</span>
+        BRINQUEDOTECA<span className="italic font-normal">Candy Color</span>
       </h3>
       <p className="text-sm  text-gray-800">
-        As oficinas infantis são uma forma de encantar os pequenos e trazer tranquilidade para os pais durante a festa.
-        Nosso espaço é planejado para se compor com a
+        Delicada e charmosa, a brinquedoteca candy color se integra à paleta do
+        evento sem perder a diversão.
       </p>
     </div>
   );
@@ -149,11 +171,22 @@ export default function Component() {
   const ToyLibraryCard = () => (
     <div className="bg-gray-50 h-[300px] p-6 rounded-lg text-gray-800 flex flex-col justify-center">
       <h3 className="text-lg font-bold uppercase mb-2">
-        BRINQUEDOTECA <span className="italic font-normal">COLORIDONA</span>
+        BRINQUEDOTECA <span className="italic font-normal">Colorida</span>
       </h3>
       <p className="text-sm text-gray-700">
-        As oficinas infantis são uma forma de encantar os pequenos e trazer tranquilidade para os pais durante a festa.
-        Nosso espaço é planejado para se compor com a
+        A versão colorida traz alegria e energia, garantindo entretenimento e
+        harmonia na decoração.
+      </p>
+    </div>
+  );
+  const Customized = () => (
+    <div className="bg-gray-50 h-[300px] p-6 rounded-lg text-gray-800 flex flex-col justify-center">
+      <h3 className="text-lg font-bold uppercase mb-2">
+        BRINQUEDOTECA <span className="italic font-normal">Personalizada</span>
+      </h3>
+      <p className="text-sm text-gray-700">
+        A brinquedoteca temática é personalizada para encantar as crianças e
+        harmonizar com o estilo do seu evento.
       </p>
     </div>
   );
@@ -207,7 +240,7 @@ export default function Component() {
           >
             <Image
               src={items[currentIndex]?.image}
-              alt={items[currentIndex]?.title}
+              alt={'imagem demonstrativa'}
               fill
               className="object-cover"
               priority={currentIndex === 0}
@@ -238,7 +271,9 @@ export default function Component() {
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                currentIndex === index ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
+                currentIndex === index
+                  ? "bg-white w-8"
+                  : "bg-white/50 hover:bg-white/75"
               }`}
             />
           ))}
@@ -319,6 +354,20 @@ export default function Component() {
                     </div>
                     <div className="w-full lg:w-1/3">
                       <ToyLibraryCard />
+                    </div>
+                  </motion.div>
+                  {/* Quarta seção - Biblioteca de Brinquedos */}
+                  <motion.div
+                    className="flex flex-col lg:flex-row gap-8 items-center"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                  >
+                    <div className="w-full lg:w-1/3">
+                      <Customized />
+                    </div>
+                    <div className="w-full lg:w-2/3">
+                      <Carousel items={customizedItems} />
                     </div>
                   </motion.div>
                 </div>

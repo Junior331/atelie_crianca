@@ -56,7 +56,7 @@ const imageToProduct = (image: ImageFile, index: number): Product => {
     name: displayName,
     description: info.description,
     image: image.path,
-    category: "essentials",
+    category: "",
     duration: info.duration,
     ageRange: info.ageRange,
     highlights: info.highlights,

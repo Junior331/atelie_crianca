@@ -112,28 +112,24 @@ export default function FavoritesPage() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                    className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
                   >
                     <div className="relative h-48 bg-gray-100">
-                      {item.workshopFolder && (
-                        <Link 
-                          href={`/workshop/${item.workshopFolder.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="block h-full"
-                        >
-                          <SmartImage
-                            basePath={
-                              item.workshopSubfolder 
-                                ? `/images/workshops/${item.workshopFolder}/${item.workshopSubfolder}`
-                                : `/images/workshops/${item.workshopFolder}`
-                            }
-                            imageName="1"
+                      <Link
+                        href={item.workshopFolder ? `/workshop/${item.workshopFolder.toLowerCase().replace(/\s+/g, '-')}` : '#'}
+                        className="block h-full"
+                      >
+                        {item.image && (
+                          <Image
+                            src={item.image}
                             alt={item.name}
-                            fill={true}
+                            fill
                             className="object-cover hover:scale-105 transition-transform duration-300"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           />
-                        </Link>
-                      )}
-                      
+                        )}
+                      </Link>
+
                       {/* Remove from favorites button */}
                       <button
                         onClick={() => handleRemoveFavorite(item.id)}
@@ -143,36 +139,38 @@ export default function FavoritesPage() {
                       </button>
                     </div>
 
-                    <div className="p-4">
-                      <Link 
-                        href={`/workshop/${item.workshopFolder?.toLowerCase().replace(/\s+/g, '-') || ''}`}
+                    <div className="p-4 flex flex-col flex-grow">
+                      <Link
+                        href={item.workshopFolder ? `/workshop/${item.workshopFolder.toLowerCase().replace(/\s+/g, '-')}` : '#'}
                         className="block"
                       >
                         <h3 className="font-semibold text-[#615C5C] mb-2 hover:text-[#ecced1] transition-colors">
                           {item.name}
                         </h3>
                       </Link>
-                      
+
                       <p className="text-sm text-[#8A8A8A] mb-4 line-clamp-2">
                         {item.description}
                       </p>
 
-                      <div className="space-y-2">
-                        {item.duration && (
-                          <div className="flex items-center text-xs text-[#8A8A8A]">
-                            <span className="font-medium">Duração:</span>
-                            <span className="ml-1">{item.duration}</span>
-                          </div>
-                        )}
-                        {item.ageRange && (
-                          <div className="flex items-center text-xs text-[#8A8A8A]">
-                            <span className="font-medium">Idade:</span>
-                            <span className="ml-1">{item.ageRange}</span>
-                          </div>
-                        )}
-                      </div>
+                      {(item.duration || item.ageRange) && (
+                        <div className="space-y-2 mb-4">
+                          {item.duration && (
+                            <div className="flex items-center text-xs text-[#8A8A8A]">
+                              <span className="font-medium">Duração:</span>
+                              <span className="ml-1">{item.duration}</span>
+                            </div>
+                          )}
+                          {item.ageRange && (
+                            <div className="flex items-center text-xs text-[#8A8A8A]">
+                              <span className="font-medium">Idade:</span>
+                              <span className="ml-1">{item.ageRange}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-                      <div className="flex gap-2 mt-4">
+                      <div className="flex gap-2 mt-auto">
                         <Button
                           onClick={() => handleAddToCart(item)}
                           disabled={addedItems.has(item.id)}
@@ -213,18 +211,20 @@ export default function FavoritesPage() {
                             </>
                           )}
                         </Button>
-                        
-                        <Link 
-                          href={`/workshop/${item.workshopFolder?.toLowerCase().replace(/\s+/g, '-') || ''}`}
-                        >
-                          <Button
-                            variant="outline"
-                            className="border-gray-300 text-[#8A8A8A] hover:border-[#ecced1] hover:text-[#ecced1] text-sm"
-                            size="sm"
+
+                        {item.workshopFolder && (
+                          <Link
+                            href={`/workshop/${item.workshopFolder.toLowerCase().replace(/\s+/g, '-')}`}
                           >
-                            Ver Detalhes
-                          </Button>
-                        </Link>
+                            <Button
+                              variant="outline"
+                              className="border-gray-300 text-[#8A8A8A] hover:border-[#ecced1] hover:text-[#ecced1] text-sm"
+                              size="sm"
+                            >
+                              Ver Detalhes
+                            </Button>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </motion.div>

@@ -347,13 +347,6 @@ const HeroSection = () => {
         </div>
 
         <div className="relative flex-1 flex flex-col items-center px-4 py-8">
-          <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#615C5C] mb-4 text-center">
-              Nossos serviços
-            </h2>
-          </div>
-
-          {/* Desktop Carousel */}
           <div className="hidden md:block w-full max-w-6xl">
             <ServicesCarousel />
           </div>
