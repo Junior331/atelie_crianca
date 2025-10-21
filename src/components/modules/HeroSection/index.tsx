@@ -69,21 +69,21 @@ const cardsData = [
     image: "https://picsum.photos/seed/105/200/300",
   },
 
-  {
-    href: "/portfolio",
-    title: "portfolio",
-    image: "https://picsum.photos/seed/107/200/300",
-  },
+  // {
+  //   href: "/portfolio",
+  //   title: "portfolio",
+  //   image: "https://picsum.photos/seed/107/200/300",
+  // },
   {
     href: "/souvenirstable",
     title: "MESA DE LANCHINHO",
     image: "/images/snack-table.jpeg",
   },
-  {
-    href: "/ateliegroup",
-    title: "Grupo Ateliê",
-    image: "https://picsum.photos/seed/106/200/300",
-  },
+  // {
+  //   href: "/ateliegroup",
+  //   title: "Grupo Ateliê",
+  //   image: "https://picsum.photos/seed/106/200/300",
+  // },
 ];
 
 const featuresData = [
