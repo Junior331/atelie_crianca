@@ -8,7 +8,6 @@ import Image from "next/image";
 
 import { Header } from "@/components/organisms/Header";
 import { Footer } from "@/components/modules";
-import { SmartImage } from "@/components/atoms/SmartImage";
 import { Button, LoadingSpinner } from "@/components/atoms";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useCart } from "@/hooks/use-cart";
