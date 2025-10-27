@@ -381,13 +381,12 @@ export default function Component() {
             <div className="">
               <div className="ml-auto w-full ">
                 <div className=" relative md:h-[600px] flex items-center justify-center">
-                  {/* Imagem de fundo */}
                   <Image
                     width={1200}
                     height={500}
                     src="/images/playroom-cover.png"
                     alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                    className="md:mission-image"
+                    className="playroom-image"
                   />
                 </div>
               </div>
