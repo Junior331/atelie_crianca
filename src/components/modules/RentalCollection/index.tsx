@@ -508,6 +508,12 @@ const RentalCollection = () => {
   };
 
   const handleDetailsClick = (workshopName: string) => {
+    // Se for BRINQUEDOTECA, navegar para a página específica
+    if (workshopName === "BRINQUEDOTECA") {
+      router.push("/playroom");
+      return;
+    }
+
     // Navegar para página de detalhes da oficina (primeiro item)
     const workshopSlug = encodeURIComponent(workshopName.toLowerCase().replace(/\s+/g, "-"));
     router.push(`/workshop/${workshopSlug}`);

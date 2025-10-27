@@ -10,6 +10,7 @@ import { Footer } from "../Footer";
 import { getIcon } from "@/assets/icons";
 import { Header } from "@/components/organisms";
 import { CardContent } from "@/components/organisms/Card";
+import { getProduto } from "@/assets/Produtos";
 
 const portfolioItems = [
   {
@@ -51,7 +52,7 @@ const cardsData = [
   {
     href: "/workshops",
     title: "OFICINAS",
-    image: "https://picsum.photos/seed/102/200/300",
+    image: "/images/oficinas.jpeg",
   },
   {
     href: "/playroom",
@@ -66,7 +67,7 @@ const cardsData = [
   {
     href: "/products",
     title: "PRODUTOS",
-    image: "https://picsum.photos/seed/105/200/300",
+    image: getProduto('arcos', 'arco_disney_personalizado'),
   },
 
   // {

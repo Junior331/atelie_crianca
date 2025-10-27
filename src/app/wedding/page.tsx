@@ -57,31 +57,33 @@ export default function Component() {
   const portfolioItems = [
     {
       id: "1",
-      title: "RECEPÇÃO DE CASAMENTO",
-      subtitle: "Elegante celebração noturna",
       category: "weddings",
-      image: "/images/carousel-image.jpeg",
+      image: "/images/wedding/carousel-image.jpeg",
     },
     {
       id: "2",
-      title: "JANTAR DE GALA CORPORATIVO",
-      subtitle: "Gala anual da empresa",
-      category: "corporate",
-      image: "/images/carousel-image2.jpeg",
+      category: "weddings",
+      image: "/images/wedding/carousel-image2.jpeg",
     },
     {
       id: "3",
-      title: "CASAMENTO AO AR LIVRE",
-      subtitle: "Preparação da cerimónia no jardim",
       category: "weddings",
-      image: "/images/carousel-image3.jpeg",
+      image: "/images/wedding/carousel-image3.jpeg",
     },
     {
       id: "4",
-      title: "FESTA DE ANIVERSÁRIO",
-      subtitle: "Celebração doce",
-      category: "birthdays",
-      image: "/images/carousel-image4.jpeg",
+      category: "weddings",
+      image: "/images/wedding/carousel-image4.jpeg",
+    },
+    {
+      id: "5",
+      category: "weddings",
+      image: "/images/wedding/carousel-image5.jpeg",
+    },
+    {
+      id: "6",
+      category: "weddings",
+      image: "/images/wedding/carousel-image6.jpeg",
     },
   ];
 
@@ -134,7 +136,7 @@ export default function Component() {
           >
             <Image
               src={portfolioItems[currentIndex].image}
-              alt={portfolioItems[currentIndex].title}
+              alt={`imagem demonstrativa`}
               fill
               className="object-cover"
               priority={currentIndex === 0}
