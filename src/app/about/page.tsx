@@ -181,7 +181,7 @@ export default function Component() {
                             <Image
                               width={1200}
                               height={500}
-                              src="/images/children-play-area.jpg"
+                              src="/images/carousel-image2.jpeg"
                               alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                               className="mission-image"
                             />
@@ -210,7 +210,7 @@ export default function Component() {
                           <Image
                             width={1200}
                             height={800}
-                            src="/images/children-play-area.jpg"
+                            src="/images/carousel-image2.jpeg"
                             alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                             className="mission-image"
                           />
