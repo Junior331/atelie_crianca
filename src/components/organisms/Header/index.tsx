@@ -19,6 +19,7 @@ const navigationItems = [
   { name: "Casamentos", href: "/wedding" },
   { name: "Produtos", href: "/products" },
   { name: "Mesa de Lanchinho", href: "/souvenirstable" },
+  { name: "Corporativo", href: "/corporate" },
   // { name: "Portfólio", href: "/portfolio" },
   { name: "Mobiliário", href: "/furniture" },
   { name: "Grupo Ateliê", href: "/ateliegroup" },

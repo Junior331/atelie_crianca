@@ -37,11 +37,10 @@ export default function Component() {
           <section className="relative min-h-screen flex flex-col">
             <div className="">
               <div className="ml-auto w-full">
-                <div className="relative w-full h-auto md:h-[500px] lg:h-[700px] flex items-center justify-center">
+              <div className="relative w-full h-auto max-h-[640px] flex items-center justify-center">
                   <Image
                     src={getImage("capa_grupo")}
                     alt="Conheça o grupo Ateliê de Criança"
-                    fill
                     className="mission-image"
                   />
                 </div>
