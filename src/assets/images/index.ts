@@ -6,6 +6,7 @@ import mesa_05 from "./mesa_05.jpeg";
 import fallback from "./placeholder.svg";
 import capa_grupo from "./capa_grupo.png";
 import banner_home from "./banner_home.png";
+import capa_mobiliario from "./capa_mobiliario.png";
 
 export const images = {
   mesa_01,
@@ -16,6 +17,7 @@ export const images = {
   fallback,
   capa_grupo,
   banner_home,
+  capa_mobiliario,
 };
 
 type IImage = keyof typeof images;
