@@ -192,7 +192,7 @@ export default function Component() {
           <section className="relative min-h-screen flex flex-col">
             <div className="">
               <div className="ml-auto w-full ">
-                <div className=" relative h-[600px] flex items-center justify-center">
+                <div className=" relative md:h-[600px] flex items-center justify-center">
                   {/* Imagem de fundo */}
                   <Image
                     width={1200}

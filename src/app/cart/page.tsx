@@ -36,11 +36,11 @@ export default function CartPage() {
       .join("%0A");
 
     const message =
-`*SOLICITAÇÃO DE ORÇAMENTO - OFICINAS MÁGICAS*
+`*SOLICITAÇÃO DE ORÇAMENTO*
 %0A
 *OFICINAS SELECIONADAS:*%0A${itemsList}
 %0A%0A
-*DADOS DO EVENTO:*%0A• Quantidade de crianças: ${formData.childrenCount}%0A• Horas de evento: ${formData.eventHours}%0A• UF: ${formData.location}
+*DADOS DO EVENTO:*%0A• Quantidade de crianças: ${formData.childrenCount}%0A• Horas de evento: ${formData.eventHours}%0A• Bairro: ${formData.location}
 %0A%0A
 Aguardo retorno para orçamento!`;
 
@@ -66,7 +66,7 @@ Aguardo retorno para orçamento!`;
   };
 
   const isFormValid = () => {
-    // Validação completa: itens, quantidade de crianças, horas de evento e UF
+    // Validação completa: itens, quantidade de crianças, horas de evento e bairro
     return (
       items.length > 0 &&
       formData.childrenCount > 0 &&
@@ -111,21 +111,22 @@ Aguardo retorno para orçamento!`;
                 <h3 className="text-xl font-semibold text-[#8A8A8A] mb-2">Seu carrinho está vazio</h3>
                 <p className="text-[#8A8A8A] mb-6">Adicione algumas oficinas incríveis para começar!</p>
                 <Button
-                  className="bg-[#ecced1] hover:bg-[#ecced1] text-[#615C5C]"
+                  className="bg-[#FC3C80] hover:bg-[#FC3C80] text-[#615C5C]"
                   onClick={() => window.history.back()}
                 >
                   Voltar às Oficinas
                 </Button>
               </motion.div>
             ) : (
-              <div className="flex flex-row  ">
+              <div className="flex flex-row w-full ">
                 {/* Cart Items */}
                 <motion.div
+                  className="flex-1"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.1 }}
                 >
-                  <div className="h-automin-h-full p-4 border-r border-gray-200">
+                  <div className=" h-full p-4 border-r border-gray-200">
                     <h3 className="font-semibold text-2xl flex items-center gap-2 text-[#615C5C] mb-6">Oficinas</h3>
 
                     <div className="space-y-4">
@@ -165,7 +166,7 @@ Aguardo retorno para orçamento!`;
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => removeItem(item.id)}
-                                className="text-[#ecced1] hover:text-[#B8005C] hover:bg-red-50 p-2"
+                                className="text-[#FC3C80] hover:text-[#B8005C] hover:bg-red-50 p-2"
                               >
                                 <Trash2 className="w-5 h-5" />
                               </Button>
@@ -179,6 +180,7 @@ Aguardo retorno para orçamento!`;
 
                 {/* Event Form */}
                 <motion.div
+                  className="flex-1"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
@@ -284,19 +286,18 @@ Aguardo retorno para orçamento!`;
                     </div>
                      <div className="mt-[50px]">
                         <label className="text-sm text-[#615C5C] font-medium mb-1 block text-start">
-                          UF
+                          Bairro
                         </label>
                         <input
                           type="text"
-                          placeholder="Ex: RJ, SP, MG..."
+                          placeholder="Ex: Copacabana, Ipanema..."
                           value={formData.location}
                           onChange={(e) =>
                             setFormData((prev) => ({
                               ...prev,
-                              location: e.target.value.toUpperCase(),
+                              location: e.target.value,
                             }))
                           }
-                          maxLength={2}
                           className={`w-[300px] h-9 p-[5px] border text-[#615C5C] rounded-sm focus:outline-none focus:ring-2 transition-all ${
                             formData.location.trim() === "" && items.length > 0
                               ? "border-red-300 focus:ring-red-200"
@@ -309,16 +310,16 @@ Aguardo retorno para orçamento!`;
 
                 {/* Reserve Button */}
                 <motion.div
-                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 30 }}
                   transition={{ duration: 0.6, delay: 0.5 }}
-                  className="flex justify-center pb-8"
+                  className="flex-1 flex justify-center pb-8"
                 >
-                  <div className="w-full max-w-md flex flex-col justify-center p-[45px] ">
+                  <div className="w-full max-w-md flex flex-col justify-center p-4 ">
                     <Button
                       onClick={handleReserve}
                       disabled={!isFormValid() || isSubmitting}
-                      className={`w-[400px] h-[50px] bg-[#FF5E1F] hover:bg-[#e54e0f] text-white py-4 text-lg rounded-none transition-all ${
+                      className={`max-w-[400px] h-[50px] bg-[#FF5E1F] hover:bg-[#e54e0f] text-white py-4 text-lg rounded-none transition-all ${
                         !isFormValid() || isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                     >
@@ -357,7 +358,7 @@ Aguardo retorno para orçamento!`;
 
                     <Button
                       onClick={handleAddMoreItems}
-                      className="w-[400px] h-[50px] border border-[#615C5C] text-[#615C5C]  py-4 text-lg mt-[20px] rounded-none"
+                      className="max-w-[400px] h-[50px] border border-[#615C5C] text-[#615C5C]  py-4 text-lg mt-[20px] rounded-none"
                       >
                       Adicionar mais itens
                     </Button>
@@ -367,7 +368,7 @@ Aguardo retorno para orçamento!`;
                           <ul className="text-xs mt-1 space-y-1">
                             {formData.childrenCount === 0 && <li>• Quantidade de crianças</li>}
                             {formData.eventHours === 0 && <li>• Horas de evento</li>}
-                            {formData.location.trim() === "" && <li>• UF</li>}
+                            {formData.location.trim() === "" && <li>• Bairro</li>}
                           </ul>
                         </div>
                       )}

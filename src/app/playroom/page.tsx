@@ -147,7 +147,7 @@ export default function Component() {
   const PlayroomCard = () => (
     <div className="bg-gray-50 h-auto p-6 rounded-lg  text-gray-800 flex flex-col justify-center items-center text-center">
       <h3 className="text-lg flex flex-col font-bold uppercase mb-2">
-        BRINQUEDOTECA <span className="italic font-normal">Casamento</span>
+        BRINQUEDOTECA <span className="italic font-normal">Casamentos</span>
       </h3>
       <p className="text-sm  text-gray-800">
         Diversão para crianças em harmonia com a decoração do casamento.

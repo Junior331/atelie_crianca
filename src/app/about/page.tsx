@@ -102,11 +102,11 @@ export default function Component() {
                       QUEM SOMOS?
                     </h2>
                     <p className="text-lg text-gray-700 leading-relaxed">
-                      Há 8 anos, nossa empresa se destaca no mercado de festas
-                      infantis. Somos conhecidos por criar celebrações únicas e
-                      personalizadas. Nosso objetivo principal é trazer diversão
-                      e originalidade para cada evento, garantindo momentos
-                      inesquecíveis.
+                      Há 7 anos, nossa empresa se destaca no mercado de
+                      entretenimento. Somos conhecidos por criar celebrações
+                      únicas e personalizadas. Nosso objetivo principal é trazer
+                      diversão e originalidade para cada evento, garantindo
+                      momentos inesqueciveis.
                     </p>
                   </div>
                 </div>

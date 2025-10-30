@@ -64,7 +64,8 @@ const workshopDescriptions: Record<string, string> = {
   SPA: "Cuidados e brincadeiras de spa infantil",
   "TOTEM MDF": "Customização de totens decorativos",
   "OFICINA DE VARINHA DE CONDÃO": "Customização de varinhas mágicas",
-  "OFICINA DE VARINHA HARRY POTTER": "Personalização de varinhas do Harry Potter",
+  "OFICINA DE VARINHA HARRY POTTER":
+    "Personalização de varinhas do Harry Potter",
   "OFICINA DE VISEIRA": "Pintura e customização de viseiras",
 };
 
@@ -297,12 +298,19 @@ const WorkshopCard = ({
   const getWorkshopDescription = (workshopName: string) => {
     const description = workshopDescriptions[workshopName.toUpperCase()];
     return (
-      description || `Oficina de ${formatWorkshopName(workshopName.toLowerCase())} com múltiplas opções disponíveis`
+      description ||
+      `Oficina de ${formatWorkshopName(
+        workshopName.toLowerCase()
+      )} com múltiplas opções disponíveis`
     );
   };
 
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       <Card
         className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
@@ -326,7 +334,11 @@ const WorkshopCard = ({
               className="absolute inset-0"
             >
               <Image
-                src={getWorkshopImage(folderName, imageIndices[currentImageIndex], subfolder)}
+                src={getWorkshopImage(
+                  folderName,
+                  imageIndices[currentImageIndex],
+                  subfolder
+                )}
                 alt={workshopName}
                 fill
                 className="object-cover"
@@ -344,7 +356,9 @@ const WorkshopCard = ({
                     setCurrentImageIndex(index);
                   }}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    currentImageIndex === index ? "bg-white w-4" : "bg-white/50 hover:bg-white/75"
+                    currentImageIndex === index
+                      ? "bg-white w-4"
+                      : "bg-white/50 hover:bg-white/75"
                   }`}
                 />
               ))}
@@ -355,24 +369,33 @@ const WorkshopCard = ({
           <div className="mb-2">
             <div className="mt-auto flex gap-2 items-end justify-between">
               <div>
-                <h3 className="font-semibold text-[#615C5C]">{formatWorkshopName(workshopName)}</h3>
-                <p className="text-sm text-[#8A8A8A] mt-1">{getWorkshopDescription(workshopName)}</p>
+                <h3 className="font-semibold text-[#615C5C]">
+                  {formatWorkshopName(workshopName)}
+                </h3>
+                <p className="text-sm text-[#8A8A8A] mt-1">
+                  {getWorkshopDescription(workshopName)}
+                </p>
               </div>
 
               <Button
                 size="sm"
                 variant="outline"
                 onClick={(e) => {
-                  e.stopPropagation(); // 🔥 evita abrir o WorkshopCard
+                  e.stopPropagation();
                   onFavoriteClick();
                 }}
-                className="border-none"
+                className="border-none p-0 min-w-5"
               >
                 <Image
                   width={20}
                   height={20}
                   alt="Coração"
-                  src={isFavorite ? "/images/coracao_solid.png" : "/images/coracao.png"}
+                  className="size-5 object-contain"
+                  src={
+                    isFavorite
+                      ? "/images/coracao_solid.png"
+                      : "/images/coracao.png"
+                  }
                 />
               </Button>
             </div>
@@ -389,11 +412,18 @@ const RentalCollection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toggleFavorite, isFavorite } = useFavorites();
 
-  const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
+  const [expandedFolders, setExpandedFolders] = useState<
+    Record<string, boolean>
+  >({});
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
-  const { searchTerm, setSearchTerm, selectedWorkshopFilters, setSelectedWorkshopFilters } = useProducts();
+  const {
+    searchTerm,
+    setSearchTerm,
+    selectedWorkshopFilters,
+    setSelectedWorkshopFilters,
+  } = useProducts();
 
   // Filtrar oficinas baseado na busca e filtros selecionados
   const filteredWorkshops = useMemo(() => {
@@ -401,7 +431,9 @@ const RentalCollection = () => {
 
     // Aplicar busca por termo
     if (searchTerm) {
-      filtered = filtered.filter((workshop) => workshop.toLowerCase().includes(searchTerm.toLowerCase()));
+      filtered = filtered.filter((workshop) =>
+        workshop.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
     // Aplicar filtros selecionados
@@ -415,8 +447,12 @@ const RentalCollection = () => {
         // Verificar se é uma subpasta da BRINQUEDOTECA
         if (workshop === "BRINQUEDOTECA") {
           const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
-          const subfoldersFilters = subfolders.map((sub) => `BRINQUEDOTECA-${sub}`);
-          return subfoldersFilters.some((filter) => selectedWorkshopFilters.includes(filter));
+          const subfoldersFilters = subfolders.map(
+            (sub) => `BRINQUEDOTECA-${sub}`
+          );
+          return subfoldersFilters.some((filter) =>
+            selectedWorkshopFilters.includes(filter)
+          );
         }
 
         return false;
@@ -430,7 +466,9 @@ const RentalCollection = () => {
   const filteredFolders = useMemo(() => {
     if (!filterSearchTerm) return workshopFolders;
 
-    return workshopFolders.filter((folder) => folder.toLowerCase().includes(filterSearchTerm.toLowerCase()));
+    return workshopFolders.filter((folder) =>
+      folder.toLowerCase().includes(filterSearchTerm.toLowerCase())
+    );
   }, [filterSearchTerm]);
 
   const toggleFolder = (folder: string) => {
@@ -445,11 +483,15 @@ const RentalCollection = () => {
       // Se é BRINQUEDOTECA, marcar/desmarcar todas as subpastas
       if (filter === "BRINQUEDOTECA") {
         const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
-        const subfoldersFilters = subfolders.map((sub) => `BRINQUEDOTECA-${sub}`);
+        const subfoldersFilters = subfolders.map(
+          (sub) => `BRINQUEDOTECA-${sub}`
+        );
 
         if (prev.includes(filter)) {
           // Desmarcar BRINQUEDOTECA e todas as suas subpastas
-          return prev.filter((f) => f !== filter && !subfoldersFilters.includes(f));
+          return prev.filter(
+            (f) => f !== filter && !subfoldersFilters.includes(f)
+          );
         } else {
           // Marcar BRINQUEDOTECA e todas as suas subpastas
           const newFilters = [...prev, filter];
@@ -474,8 +516,12 @@ const RentalCollection = () => {
 
           // Verificar se todas as subpastas estão marcadas para marcar a principal
           const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
-          const subfoldersFilters = subfolders.map((sub) => `BRINQUEDOTECA-${sub}`);
-          const allSubfoldersSelected = subfoldersFilters.every((subFilter) => newFilters.includes(subFilter));
+          const subfoldersFilters = subfolders.map(
+            (sub) => `BRINQUEDOTECA-${sub}`
+          );
+          const allSubfoldersSelected = subfoldersFilters.every((subFilter) =>
+            newFilters.includes(subFilter)
+          );
 
           if (allSubfoldersSelected && !newFilters.includes("BRINQUEDOTECA")) {
             newFilters.push("BRINQUEDOTECA");
@@ -503,7 +549,9 @@ const RentalCollection = () => {
 
   const handleImageClick = (workshopName: string, itemIndex: number) => {
     // Navegar para página de detalhes da oficina com item específico
-    const workshopSlug = encodeURIComponent(workshopName.toLowerCase().replace(/\s+/g, "-"));
+    const workshopSlug = encodeURIComponent(
+      workshopName.toLowerCase().replace(/\s+/g, "-")
+    );
     router.push(`/workshop/${workshopSlug}-item-${itemIndex + 1}`);
   };
 
@@ -515,7 +563,9 @@ const RentalCollection = () => {
     }
 
     // Navegar para página de detalhes da oficina (primeiro item)
-    const workshopSlug = encodeURIComponent(workshopName.toLowerCase().replace(/\s+/g, "-"));
+    const workshopSlug = encodeURIComponent(
+      workshopName.toLowerCase().replace(/\s+/g, "-")
+    );
     router.push(`/workshop/${workshopSlug}`);
   };
 
@@ -532,7 +582,10 @@ const RentalCollection = () => {
     const getWorkshopDescription = (workshopName: string) => {
       const description = workshopDescriptions[workshopName.toUpperCase()];
       return (
-        description || `Oficina de ${formatWorkshopName(workshopName.toLowerCase())} com múltiplas opções disponíveis`
+        description ||
+        `Oficina de ${formatWorkshopName(
+          workshopName.toLowerCase()
+        )} com múltiplas opções disponíveis`
       );
     };
 
@@ -585,7 +638,11 @@ const RentalCollection = () => {
       workshopSubfolder: subfolder,
       duration: "1-2 horas",
       ageRange: "5-12 anos",
-      highlights: ["Materiais inclusos", "Atividade criativa", "Lembrança especial"],
+      highlights: [
+        "Materiais inclusos",
+        "Atividade criativa",
+        "Lembrança especial",
+      ],
     };
   };
 
@@ -595,7 +652,9 @@ const RentalCollection = () => {
   };
 
   const isWorkshopFavorite = (workshopName: string) => {
-    const productId = `workshop-${workshopName.toLowerCase().replace(/\s+/g, "-")}`;
+    const productId = `workshop-${workshopName
+      .toLowerCase()
+      .replace(/\s+/g, "-")}`;
     return isFavorite(productId);
   };
 
@@ -620,12 +679,14 @@ const RentalCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#ecced1] hover:bg-[#ecced1] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#FC3C80] hover:bg-[#FC3C80] text-white flex items-center justify-center gap-2"
             >
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
               {getTotalAdvancedFilters() > 0 && (
-                <span className="bg-white/20 px-2 py-1 text-xs">{getTotalAdvancedFilters()}</span>
+                <span className="bg-white/20 px-2 py-1 text-xs">
+                  {getTotalAdvancedFilters()}
+                </span>
               )}
             </Button>
           </div>
@@ -643,31 +704,48 @@ const RentalCollection = () => {
             >
               <div className="min-h-full">
                 <div className="bg-white border border-gray-200 p-6 shadow-sm min-h-full flex flex-col">
-                  <h3 className="text-lg font-semibold text-[#615C5C] mb-4">Filtrar Oficinas</h3>
+                  <h3 className="text-lg font-semibold text-[#615C5C] mb-4">
+                    Filtrar Oficinas
+                  </h3>
 
                   {/* Busca de filtros */}
                   <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                    <Search
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={16}
+                    />
                     <Input
                       type="text"
                       placeholder="Buscar oficinas..."
                       value={filterSearchTerm}
                       onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#ecced1] focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#FC3C80] focus:border-transparent"
                     />
                   </div>
 
                   {/* Lista de oficinas - com scroll */}
                   <div className="space-y-2 flex-1 overflow-y-auto pr-2">
                     {filteredFolders.map((folder) => {
-                      const hasSubfolders = folder === "BRINQUEDOTECA" ? foldersWithSubfolders["BRINQUEDOTECA"] : null;
+                      const hasSubfolders =
+                        folder === "BRINQUEDOTECA"
+                          ? foldersWithSubfolders["BRINQUEDOTECA"]
+                          : null;
 
                       return (
-                        <div key={folder} className="border-b border-gray-100 last:border-b-0 pb-2">
+                        <div
+                          key={folder}
+                          className="border-b border-gray-100 last:border-b-0 pb-2"
+                        >
                           {/* Pasta principal */}
                           <div
-                            className={`flex items-center justify-between ${hasSubfolders ? "cursor-pointer" : ""}`}
-                            onClick={hasSubfolders ? () => toggleFolder(folder) : undefined}
+                            className={`flex items-center justify-between ${
+                              hasSubfolders ? "cursor-pointer" : ""
+                            }`}
+                            onClick={
+                              hasSubfolders
+                                ? () => toggleFolder(folder)
+                                : undefined
+                            }
                           >
                             <label
                               className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 px-2 flex-1"
@@ -675,19 +753,29 @@ const RentalCollection = () => {
                             >
                               <input
                                 type="checkbox"
-                                checked={selectedWorkshopFilters.includes(folder)}
+                                checked={selectedWorkshopFilters.includes(
+                                  folder
+                                )}
                                 onChange={() => toggleAdvancedFilter(folder)}
-                                className="border-gray-300 text-[#ecced1] focus:ring-[#ecced1]"
+                                className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
                               />
-                              <span className="text-sm text-[#615C5C] font-medium">{folder}</span>
+                              <span className="text-sm text-[#615C5C] font-medium">
+                                {folder}
+                              </span>
                             </label>
 
                             {hasSubfolders && (
                               <div className="p-1">
                                 {expandedFolders[folder] ? (
-                                  <ChevronDown size={16} className="text-gray-400" />
+                                  <ChevronDown
+                                    size={16}
+                                    className="text-gray-400"
+                                  />
                                 ) : (
-                                  <ChevronRight size={16} className="text-gray-400" />
+                                  <ChevronRight
+                                    size={16}
+                                    className="text-gray-400"
+                                  />
                                 )}
                               </div>
                             )}
@@ -703,13 +791,25 @@ const RentalCollection = () => {
                                 >
                                   <input
                                     type="checkbox"
-                                    checked={selectedWorkshopFilters.includes(`${folder}-${subfolder}`)}
-                                    onChange={() => toggleAdvancedFilter(`${folder}-${subfolder}`)}
-                                    className="border-gray-300 text-[#ecced1] focus:ring-[#ecced1]"
+                                    checked={selectedWorkshopFilters.includes(
+                                      `${folder}-${subfolder}`
+                                    )}
+                                    onChange={() =>
+                                      toggleAdvancedFilter(
+                                        `${folder}-${subfolder}`
+                                      )
+                                    }
+                                    className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
                                   />
-                                  <span className="text-sm text-[#8A8A8A]">{subfolder}</span>
+                                  <span className="text-sm text-[#8A8A8A]">
+                                    {subfolder}
+                                  </span>
                                   <span className="text-xs text-[#8A8A8A] ml-auto">
-                                    ({subfolderImageCounts[`${folder}-${subfolder}`] || 0})
+                                    (
+                                    {subfolderImageCounts[
+                                      `${folder}-${subfolder}`
+                                    ] || 0}
+                                    )
                                   </span>
                                 </label>
                               ))}
@@ -726,7 +826,7 @@ const RentalCollection = () => {
                       <Button
                         variant="ghost"
                         onClick={clearAllAdvancedFilters}
-                        className="text-sm text-[#ecced1] hover:text-[#ecced1] font-medium w-full"
+                        className="text-sm text-[#FC3C80] hover:text-[#FC3C80] font-medium w-full"
                       >
                         Limpar todos os filtros
                       </Button>
@@ -767,14 +867,19 @@ const RentalCollection = () => {
                 transition={{ delay: 0.4 }}
               >
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-sm text-[#8A8A8A] py-1">Filtros ativos:</span>
+                  <span className="text-sm text-[#8A8A8A] py-1">
+                    Filtros ativos:
+                  </span>
                   {selectedWorkshopFilters.map((filter) => (
                     <span
                       key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#ecced1] text-black text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#FC3C80] text-black text-sm"
                     >
                       {filter}
-                      <button onClick={() => toggleAdvancedFilter(filter)} className="hover:bg-[#ecced1] p-0.5">
+                      <button
+                        onClick={() => toggleAdvancedFilter(filter)}
+                        className="hover:bg-[#FC3C80] p-0.5"
+                      >
                         <X size={12} />
                       </button>
                     </span>
@@ -785,12 +890,17 @@ const RentalCollection = () => {
 
             {/* Grid de oficinas - com scroll */}
             <div className="flex-1 overflow-y-auto">
-              <motion.div className="grid grid-cols-2 md:grid-cols-3 gap-6 pb-8" layout>
+              <motion.div
+                className="grid custom_grid_cols md:grid-cols-3 gap-2 md:gap-6 pb-8"
+                layout
+              >
                 {filteredWorkshops.map((workshopName) => (
                   <WorkshopCard
                     key={workshopName}
                     workshopName={workshopName}
-                    onImageClick={(itemIndex) => handleImageClick(workshopName, itemIndex)}
+                    onImageClick={(itemIndex) =>
+                      handleImageClick(workshopName, itemIndex)
+                    }
                     onDetailsClick={() => handleDetailsClick(workshopName)}
                     onFavoriteClick={() => handleFavoriteClick(workshopName)}
                     isFavorite={isWorkshopFavorite(workshopName)}
@@ -800,7 +910,9 @@ const RentalCollection = () => {
 
               {filteredWorkshops.length === 0 && (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-[#8A8A8A] text-lg">Nenhuma oficina encontrada com os filtros aplicados.</p>
+                  <p className="text-[#8A8A8A] text-lg">
+                    Nenhuma oficina encontrada com os filtros aplicados.
+                  </p>
                 </div>
               )}
             </div>

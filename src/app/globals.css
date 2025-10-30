@@ -73,7 +73,7 @@ input:-webkit-autofill {
     @apply relative z-10;
     margin: 0 auto;
     max-width: 85%;
-    margin-bottom: -95px!important;
+    margin-bottom: -95px !important;
   }
 
   .mission-subtitle {
@@ -97,8 +97,7 @@ input:-webkit-autofill {
   }
 
   .mission-image {
-    @apply w-full h-full object-cover;
-    min-height: 700px;
+    @apply w-full h-full object-contain;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -111,6 +110,11 @@ input:-webkit-autofill {
     .playroom-image {
       min-height: 700px;
     }
+
+    .mission-image {
+      @apply object-cover;
+      /* min-height: 700px; */
+    }
   }
 
   .playroom-image:hover {
@@ -122,13 +126,22 @@ input:-webkit-autofill {
   }
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+.custom_grid_cols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 430px) {
+  .custom_grid_cols {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
 
-input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
 }

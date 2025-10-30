@@ -21,10 +21,10 @@ export default function Component() {
   }, []);
 
   const mockImages = [
-    { id: 1, src: getImage('mesa_01'), colSpan: "col-span-2" },
+    { id: 1, src: getImage('mesa_01'), colSpan: "md:col-span-2" },
     { id: 2, src: getImage('mesa_02') },
     { id: 3, src: getImage('mesa_03') },
-    { id: 4, src: getImage('mesa_04'), colSpan: "col-span-2" },
+    { id: 4, src: getImage('mesa_04'), colSpan: "md:col-span-2" },
     { id: 5, src: getImage('mesa_05'), colSpan: "md:col-span-2" },
     { id: 6, src: getImage('mesa_05') },
   ];
@@ -44,9 +44,8 @@ export default function Component() {
           <Header />
           <section className="relative min-h-screen flex flex-col">
             <div className="">
-              <div className="ml-auto w-full p-6">
-                <div className=" relative h-[700px] flex items-center justify-center">
-                  {/* Imagem de fundo */}
+              <div className="ml-auto w-full ">
+                <div className=" relative md:h-[700px] flex items-center justify-center">
                   <Image
                     width={1200}
                     height={500}
@@ -57,15 +56,15 @@ export default function Component() {
                 </div>
               </div>
 
-              <div className=" grid grid-cols-2 md:grid-cols-3 gap-4 p-6">
+              <div className=" grid grid-cols-1 gap-2 p-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 sm:p-4">
                 {mockImages.map((img) => (
                   <div
                     key={img.id}
-                    className={`bg-red-500 relative flex items-center justify-center h-[300px]  overflow-hidden ${
-                      img.colSpan || ""
+                    className={`flex items-center justify-center min-h-auto md:h-[300px] overflow-hidden ${
+                      img.colSpan
                     }`}
                   >
-                    <Image src={img.src} alt={`Imagem ${img.id}`} fill className="object-cover" />
+                    <Image src={img.src} alt={`Imagem ${img.id}`} className="mission-image" />
                   </div>
                 ))}
               </div>

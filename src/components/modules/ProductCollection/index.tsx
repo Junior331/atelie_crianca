@@ -97,12 +97,13 @@ const ProductCard = ({
                   e.stopPropagation();
                   onFavoriteClick();
                 }}
-                className="border-none p-1 h-auto flex-shrink-0"
+                className="border-none p-1 h-auto flex-shrink-0 min-w-5"
               >
                 <Image
                   width={20}
                   height={20}
                   alt="Coração"
+                  className="size-5 object-contain"
                   src={
                     isFavorite
                       ? "/images/coracao_solid.png"
@@ -120,12 +121,12 @@ const ProductCard = ({
               }}
               className={`w-full ${
                 isInCart
-                  ? "bg-green-500 hover:bg-green-600 text-white"
-                  : "bg-[#ecced1] hover:bg-[#ecced1]/90 text-white"
+                  ? "bg-red-500 hover:bg-red-600 text-white"
+                  : "bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white"
               } flex items-center justify-center gap-2`}
             >
               <ShoppingCart size={16} />
-              {isInCart ? "No Carrinho" : "Adicionar"}
+              {isInCart ? "Remover" : "Adicionar"}
             </Button>
           </div>
         </CardContent>
@@ -138,7 +139,7 @@ const ProductCollection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toggleFavorite, isFavorite } = useFavorites();
-  const { addItem, isInCart } = useCart();
+  const { addItem, removeItem, isInCart } = useCart();
 
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -274,7 +275,13 @@ const ProductCollection = () => {
 
   const handleCartClick = (folder: string, productKey: string) => {
     const product = createProductObject(folder, productKey);
-    addItem(product);
+    const productId = `product-${folder}-${productKey}`;
+
+    if (isInCart(productId)) {
+      removeItem(productId);
+    } else {
+      addItem(product);
+    }
   };
 
   const isProductFavorite = (folder: string, productKey: string) => {
@@ -295,7 +302,7 @@ const ProductCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#ecced1] hover:bg-[#ecced1] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#FC3C80] hover:bg-[#FC3C80] text-white flex items-center justify-center gap-2"
             >
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
@@ -335,7 +342,7 @@ const ProductCollection = () => {
                       placeholder="Buscar categorias..."
                       value={filterSearchTerm}
                       onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#ecced1] focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#FC3C80] focus:border-transparent"
                     />
                   </div>
 
@@ -364,7 +371,7 @@ const ProductCollection = () => {
                                   category
                                 )}
                                 onChange={() => toggleAdvancedFilter(category)}
-                                className="border-gray-300 text-[#ecced1] focus:ring-[#ecced1]"
+                                className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
                               />
                               <span className="text-sm text-[#615C5C] font-medium">
                                 {category}
@@ -385,7 +392,7 @@ const ProductCollection = () => {
                       <Button
                         variant="ghost"
                         onClick={clearAllAdvancedFilters}
-                        className="text-sm text-[#ecced1] hover:text-[#ecced1] font-medium w-full"
+                        className="text-sm text-[#FC3C80] hover:text-[#FC3C80] font-medium w-full"
                       >
                         Limpar todos os filtros
                       </Button>
@@ -432,12 +439,12 @@ const ProductCollection = () => {
                   {selectedProductFilters.map((filter) => (
                     <span
                       key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#ecced1] text-black text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#FC3C80] text-black text-sm"
                     >
                       {filter}
                       <button
                         onClick={() => toggleAdvancedFilter(filter)}
-                        className="hover:bg-[#ecced1] p-0.5"
+                        className="hover:bg-[#FC3C80] p-0.5"
                       >
                         <X size={12} />
                       </button>

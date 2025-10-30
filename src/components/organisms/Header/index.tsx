@@ -16,7 +16,7 @@ const navigationItems = [
   { name: "Quem somos", href: "/about" },
   { name: "Oficinas", href: "/workshops" },
   { name: "Brinquedoteca", href: "/playroom" },
-  { name: "Casamento", href: "/wedding" },
+  { name: "Casamentos", href: "/wedding" },
   { name: "Produtos", href: "/products" },
   { name: "Mesa de Lanchinho", href: "/souvenirstable" },
   // { name: "Portfólio", href: "/portfolio" },
@@ -76,7 +76,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
+                  className="text-[#8A8A8A] hover:text-[#FC3C80] p-2 relative"
                 >
                   <Image
                     src="/images/coracao.png"
@@ -86,7 +86,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                     className="md:mr-1"
                   />
                   {favoritesCount > 0 && (
-                    <span className="absolute -top-[3px] -right-1 bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="absolute -top-[3px] -right-1 bg-[#FC3C80] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {favoritesCount}
                     </span>
                   )}
@@ -98,7 +98,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="text-[#8A8A8A] hover:text-[#ecced1] p-2 relative"
+                  className="text-[#8A8A8A] hover:text-[#FC3C80] p-2 relative"
                 >
                   <Image
                     src="/images/sacola.png"
@@ -108,7 +108,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                     className="mr-1"
                   />
                   {items.length > 0 && (
-                    <span className="absolute -top-[2px] -right-[2px] bg-[#ecced1] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="absolute -top-[2px] -right-[2px] bg-[#FC3C80] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {items.length}
                     </span>
                   )}
@@ -119,7 +119,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
               <Button
                 size="sm"
                 variant="ghost"
-                className="xl:hidden text-[#8A8A8A] hover:text-[#ecced1] p-2"
+                className="xl:hidden text-[#8A8A8A] hover:text-[#FC3C80] p-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
@@ -145,7 +145,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
             >
               <Link
                 href={item.href}
-                className="text-[#8A8A8A] hover:text-[#ecced1] transition-colors duration-200 font-medium text-sm uppercase tracking-wide"
+                className="text-[#8A8A8A] hover:text-[#FC3C80] transition-colors duration-200 font-medium text-sm uppercase tracking-wide"
               >
                 {item.name}
               </Link>
@@ -172,7 +172,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 >
                   <Link
                     href={item.href}
-                    className="text-[#8A8A8A] hover:text-[#ecced1] transition-colors duration-200 font-medium py-2 block text-sm uppercase tracking-wide"
+                    className="text-[#8A8A8A] hover:text-[#FC3C80] transition-colors duration-200 font-medium py-2 block text-sm uppercase tracking-wide"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}

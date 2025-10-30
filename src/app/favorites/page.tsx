@@ -48,27 +48,21 @@ export default function FavoritesPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen"
-      >
+        className="min-h-screen flex flex-col"
+        >
         <Header />
 
-        <div className="py-8">
-          <div className="container mx-auto px-4">
+        <div className="flex-1 py-8">
+        <div className="container mx-auto px-4 h-full">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-12"
+              className="text-center"
             >
-              <h1 className="text-4xl font-bold text-[#615C5C] mb-4">
+              <h1 className="text-4xl font-bold text-[#615C5C]">
                 Meus Favoritos
               </h1>
-              <p className="text-xl text-[#8A8A8A]">
-                {favorites.length === 0 
-                  ? "Você ainda não tem itens favoritos"
-                  : `${favorites.length} ${favorites.length === 1 ? 'item favorito' : 'itens favoritos'}`
-                }
-              </p>
             </motion.div>
 
             {favorites.length === 0 ? (
@@ -76,9 +70,9 @@ export default function FavoritesPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-center py-16"
+                className="text-center py-6"
               >
-                <div 
+                <div
                   className="w-16 h-16 mx-auto mb-4 bg-gray-300"
                   style={{
                     maskImage: "url('/images/coracao.png')",
@@ -88,7 +82,7 @@ export default function FavoritesPage() {
                     maskRepeat: "no-repeat",
                     WebkitMaskRepeat: "no-repeat",
                     maskPosition: "center",
-                    WebkitMaskPosition: "center"
+                    WebkitMaskPosition: "center",
                   }}
                 />
                 <h3 className="text-xl font-semibold text-[#8A8A8A] mb-2">
@@ -98,7 +92,7 @@ export default function FavoritesPage() {
                   Explore nossas oficinas e adicione suas favoritas!
                 </p>
                 <Link href="/workshops">
-                  <Button className="bg-[#ecced1] hover:bg-[#ecced1] text-[#615C5C]">
+                  <Button className="bg-[#FC3C80] hover:bg-[#FC3C80] text-white">
                     Explorar Oficinas
                   </Button>
                 </Link>
@@ -115,7 +109,13 @@ export default function FavoritesPage() {
                   >
                     <div className="relative h-48 bg-gray-100">
                       <Link
-                        href={item.workshopFolder ? `/workshop/${item.workshopFolder.toLowerCase().replace(/\s+/g, '-')}` : '#'}
+                        href={
+                          item.workshopFolder
+                            ? `/workshop/${item.workshopFolder
+                                .toLowerCase()
+                                .replace(/\s+/g, "-")}`
+                            : "#"
+                        }
                         className="block h-full"
                       >
                         {item.image && (
@@ -134,16 +134,22 @@ export default function FavoritesPage() {
                         onClick={() => handleRemoveFavorite(item.id)}
                         className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white flex items-center justify-center shadow-md transition-colors duration-200"
                       >
-                        <Trash2 className="w-4 h-4 text-[#ecced1]" />
+                        <Trash2 className="w-4 h-4 text-[#FC3C80]" />
                       </button>
                     </div>
 
                     <div className="p-4 flex flex-col flex-grow">
                       <Link
-                        href={item.workshopFolder ? `/workshop/${item.workshopFolder.toLowerCase().replace(/\s+/g, '-')}` : '#'}
+                        href={
+                          item.workshopFolder
+                            ? `/workshop/${item.workshopFolder
+                                .toLowerCase()
+                                .replace(/\s+/g, "-")}`
+                            : "#"
+                        }
                         className="block"
                       >
-                        <h3 className="font-semibold text-[#615C5C] mb-2 hover:text-[#ecced1] transition-colors">
+                        <h3 className="font-semibold text-[#615C5C] mb-2 hover:text-[#FC3C80] transition-colors">
                           {item.name}
                         </h3>
                       </Link>
@@ -176,7 +182,7 @@ export default function FavoritesPage() {
                           className={`flex-1 text-white text-sm transition-all duration-300 ${
                             addedItems.has(item.id)
                               ? "bg-green-500 hover:bg-green-500"
-                              : "bg-[#ecced1] hover:bg-[#e9c7ca]"
+                              : "bg-[#FC3C80] hover:bg-[#e9c7ca]"
                           }`}
                           size="sm"
                         >
@@ -213,11 +219,13 @@ export default function FavoritesPage() {
 
                         {item.workshopFolder && (
                           <Link
-                            href={`/workshop/${item.workshopFolder.toLowerCase().replace(/\s+/g, '-')}`}
+                            href={`/workshop/${item.workshopFolder
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}`}
                           >
                             <Button
                               variant="outline"
-                              className="border-gray-300 text-[#8A8A8A] hover:border-[#ecced1] hover:text-[#ecced1] text-sm"
+                              className="border-gray-300 text-[#8A8A8A] hover:border-[#FC3C80] hover:text-[#FC3C80] text-sm"
                               size="sm"
                             >
                               Ver Detalhes

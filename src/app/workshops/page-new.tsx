@@ -351,12 +351,13 @@ export default function Component() {
                               e.stopPropagation();
                               toggleFavorite(imageKey);
                             }}
-                            className="border-none p-1 h-auto flex-shrink-0"
+                            className="border-none p-1 h-auto flex-shrink-0 min-w-5"
                           >
                             <Image
                               width={20}
                               height={20}
                               alt="Coração"
+                              className="size-5 object-contain"
                               src={favorites.has(imageKey) ? "/images/coracao_solid.png" : "/images/coracao.png"}
                             />
                           </Button>
