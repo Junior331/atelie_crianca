@@ -12,8 +12,8 @@ import mesa3 from "./mesa3.jpg";
 import cadeira03 from "./cadeira 03.jpg";
 import cadeira02 from "./cadeira02.jpg";
 import cadeirs from "./cadeirs.jpg";
-import mesa from "./mesa.png";
-import mesa2 from "./mesa2.png";
+import mesa from "./mesa.jpg";
+import mesa2 from "./mesa2.jpg";
 
 export const images = {
   mesa,

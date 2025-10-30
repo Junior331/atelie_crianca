@@ -199,7 +199,7 @@ export default function Component() {
                           : "none",
                       }}
                     />
-                    <div className="flex gap-2 mt-4 justify-center flex-wrap">
+                    {/* <div className="flex gap-2 mt-4 justify-center flex-wrap">
                       {mesaPiqueniqueColors.map((colorOption) => (
                         <button
                           key={colorOption.name}
@@ -222,7 +222,7 @@ export default function Component() {
                           title={colorOption.name}
                         />
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -257,7 +257,7 @@ export default function Component() {
                         }}
                       />
                     </div>
-                    <div className="flex gap-2 mt-4 justify-center flex-wrap">
+                    {/* <div className="flex gap-2 mt-4 justify-center flex-wrap">
                       {mesaMadeiraColors.map((colorOption) => (
                         <button
                           key={colorOption.name}
@@ -279,7 +279,7 @@ export default function Component() {
                           title={colorOption.name}
                         />
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
