@@ -8,7 +8,6 @@ import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import { getImage } from "@/assets/images";
-import { getProduto } from "@/assets/Produtos";
 import { supabase } from "@/lib/supabase";
 
 interface ImageState {
