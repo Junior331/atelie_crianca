@@ -9,17 +9,66 @@ import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import { getImage } from "@/assets/images";
 import { getProduto } from "@/assets/Produtos";
+import { supabase } from "@/lib/supabase";
+
+interface ImageState {
+  [key: string]: string;
+}
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
+  const [images, setImages] = useState<ImageState>({
+    banner: getImage("fallback").src,
+    logo_atelie: "/images/logo-atelie.png",
+    atelie_1: getImage("fallback").src,
+    atelie_2: getImage("fallback").src,
+    atelie_3: getImage("fallback").src,
+    logo_casamentos: "/images/logo-casamentos.png",
+    casamentos_1: getImage("fallback").src,
+    casamentos_2: getImage("fallback").src,
+    casamentos_3: getImage("fallback").src,
+    logo_produtos: "/images/logo-produtos.png",
+    produtos_1: getImage("fallback").src,
+    produtos_2: getImage("fallback").src,
+    produtos_3: getImage("fallback").src,
+    logo_brinquedoteca: "/images/logo-brinquedoteca.png",
+    brinquedoteca_1: getImage("fallback").src,
+    brinquedoteca_2: getImage("fallback").src,
+    brinquedoteca_3: getImage("fallback").src,
+  });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    loadImages();
   }, []);
+
+  const loadImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("page_images")
+        .select("*")
+        .eq("page", "ateliegroup")
+        .order("position");
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const imageMap: { [key: string]: string } = {};
+        data.forEach((img) => {
+          // Remover prefixo "group_" da key para mapear corretamente
+          const cleanKey = img.key.replace("group_", "");
+          imageMap[cleanKey] = img.image_url;
+        });
+
+        setImages((prev) => ({ ...prev, ...imageMap }));
+      }
+    } catch (error) {
+      console.error("Erro ao carregar imagens:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -35,159 +84,171 @@ export default function Component() {
         >
           <Header />
           <section className="relative min-h-screen flex flex-col">
-            <div className="">
-              <div className="ml-auto w-full">
-              <div className="relative w-full h-auto max-h-[640px] flex items-center justify-center">
+            <div className="ml-auto w-full ">
+              <div className="relative h-auto lg:h-[600px] flex items-center justify-center">
+                <Image
+                  width={1200}
+                  height={600}
+                  src={images.banner}
+                  alt="Conheça o grupo Ateliê de Criança"
+                  className="mission-image"
+                />
+              </div>
+            </div>
+
+            {/* Grid de serviços */}
+            <div className="container mx-auto px-6 py-12">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {/* Linha 1 - Ateliê */}
+                <div className="flex items-center justify-center">
                   <Image
-                    src={getImage("capa_grupo")}
-                    alt="Conheça o grupo Ateliê de Criança"
-                    className="mission-image"
+                    src={images.logo_atelie}
+                    alt="Ateliê de Criança"
+                    width={150}
+                    height={80}
+                    className="object-contain"
                   />
                 </div>
-              </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.atelie_1}
+                    alt="Ateliê serviço 1"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.atelie_2}
+                    alt="Ateliê serviço 2"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.atelie_3}
+                    alt="Ateliê serviço 3"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
 
-              {/* Grid de serviços */}
-              <div className="container mx-auto px-6 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {/* Linha 1 - Ateliê */}
-                  <div className="flex items-center justify-center">
-                    <Image
-                      src="/images/logo-atelie.png"
-                      alt="Ateliê de Criança"
-                      width={150}
-                      height={80}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/atelie-1.jpeg"
-                      alt="Ateliê serviço 1"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/atelie-2.jpeg"
-                      alt="Ateliê serviço 2"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/atelie-3.jpeg"
-                      alt="Ateliê serviço 3"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                {/* Linha 2 - Casamentos */}
+                <div className="flex items-center justify-center">
+                  <Image
+                    src={images.logo_casamentos}
+                    alt="Ateliê de Criança Casamentos"
+                    width={150}
+                    height={80}
+                    className="object-contain"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.casamentos_1}
+                    alt="Casamentos serviço 1"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.casamentos_2}
+                    alt="Casamentos serviço 2"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.casamentos_3}
+                    alt="Casamentos serviço 3"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
 
-                  {/* Linha 2 - Casamentos */}
-                  <div className="flex items-center justify-center">
-                    <Image
-                      src="/images/logo-casamentos.png"
-                      alt="Ateliê de Criança Casamentos"
-                      width={150}
-                      height={80}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/casamentos-1.jpeg"
-                      alt="Casamentos serviço 1"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/casamentos-2.jpeg"
-                      alt="Casamentos serviço 2"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/casamentos-3.jpeg"
-                      alt="Casamentos serviço 3"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                {/* Linha 3 - Produtos */}
+                <div className="flex items-center justify-center">
+                  <Image
+                    src={images.logo_produtos}
+                    alt="Ateliê de Criança Produtos"
+                    width={150}
+                    height={80}
+                    className="object-contain"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.produtos_1}
+                    alt="Produtos 1"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.produtos_2}
+                    alt="Produtos 2"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.produtos_3}
+                    alt="Produtos 3"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
 
-                  {/* Linha 3 - Produtos */}
-                  <div className="flex items-center justify-center">
-                    <Image
-                      src="/images/logo-produtos.png"
-                      alt="Ateliê de Criança Produtos"
-                      width={150}
-                      height={80}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src={getProduto("fantasias", "capa_de_princesa")}
-                      alt="Produtos 1"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src={getProduto("fantasias", "mascara")}
-                      alt="Produtos 2"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src={getProduto('fantasias', 'fantasia_de_policial')}
-                      alt="Produtos 3"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-
-                  {/* Linha 4 - Brinquedoteca */}
-                  <div className="flex items-center justify-center">
-                    <Image
-                      src="/images/logo-brinquedoteca.png"
-                      alt="Brinquedoteca"
-                      width={150}
-                      height={80}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/brinquedoteca-1.jpeg"
-                      alt="Brinquedoteca 1"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/brinquedoteca-2.jpeg"
-                      alt="Brinquedoteca 2"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src="/images/brinquedoteca-3.jpeg"
-                      alt="Brinquedoteca 3"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                {/* Linha 4 - Brinquedoteca */}
+                <div className="flex items-center justify-center">
+                  <Image
+                    src={images.logo_brinquedoteca}
+                    alt="Brinquedoteca"
+                    width={150}
+                    height={80}
+                    className="object-contain"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.brinquedoteca_1}
+                    alt="Brinquedoteca 1"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.brinquedoteca_2}
+                    alt="Brinquedoteca 2"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="aspect-square relative">
+                  <Image
+                    src={images.brinquedoteca_3}
+                    alt="Brinquedoteca 3"
+                    fill
+                    sizes="25vw"
+                    className="object-cover"
+                  />
                 </div>
               </div>
             </div>

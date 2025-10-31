@@ -146,13 +146,13 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {/* Navigation Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
             <Link
               href="/admin/souvenirs"
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
               <h2 className="text-xl font-bold text-gray-900 mb-2">Mesa de Doces</h2>
-              <p className="text-gray-600">Editar banner e galeria de imagens da Mesa de Doces</p>
+              <p className="text-gray-600">Editar banner e galeria de imagens</p>
             </Link>
 
             <Link
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
               <h2 className="text-xl font-bold text-gray-900 mb-2">Corporativo</h2>
-              <p className="text-gray-600">Editar banner e galeria de imagens Corporativas</p>
+              <p className="text-gray-600">Editar banner e galeria de imagens</p>
             </Link>
 
             <Link
@@ -168,7 +168,15 @@ export default function AdminDashboard() {
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
               <h2 className="text-xl font-bold text-gray-900 mb-2">Mobiliário</h2>
-              <p className="text-gray-600">Editar banner e 6 imagens do Mobiliário</p>
+              <p className="text-gray-600">Editar banner e 6 imagens</p>
+            </Link>
+
+            <Link
+              href="/admin/ateliegroup"
+              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Ateliê Group</h2>
+              <p className="text-gray-600">Editar banner e grid 4x4</p>
             </Link>
 
             <Link
@@ -176,7 +184,7 @@ export default function AdminDashboard() {
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
               <h2 className="text-xl font-bold text-gray-900 mb-2">Upload Geral</h2>
-              <p className="text-gray-600">Fazer upload de novas imagens para qualquer categoria</p>
+              <p className="text-gray-600">Upload de imagens gerais</p>
             </Link>
           </div>
 
