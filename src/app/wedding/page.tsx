@@ -6,19 +6,60 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
+import { supabase } from "@/lib/supabase";
+import { getImage } from "@/assets/images";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+type PortfolioItem = {
+  id: string;
+  category: string;
+  image: string;
+};
+
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
+  const [bannerImage, setBannerImage] = useState(getImage("fallback").src);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    loadImages();
   }, []);
+
+  const loadImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("page_images")
+        .select("*")
+        .eq("page", "wedding")
+        .order("position");
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const imageMap: { [key: string]: string } = {};
+        data.forEach((img) => {
+          imageMap[img.key] = img.image_url;
+        });
+
+        if (imageMap["wedding_banner"]) {
+          setBannerImage(imageMap["wedding_banner"]);
+        }
+
+        setPortfolioItems((prev) =>
+          prev.map((item, index) => {
+            const key = `wedding_carousel_${String(index + 1).padStart(2, "0")}`;
+            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao carregar imagens:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }
+  };
 
   const featuresData = [
     {
@@ -54,38 +95,14 @@ export default function Component() {
    
   ];
 
-  const portfolioItems = [
-    {
-      id: "1",
-      category: "weddings",
-      image: "/images/wedding/carousel-image.jpeg",
-    },
-    {
-      id: "2",
-      category: "weddings",
-      image: "/images/wedding/carousel-image2.jpeg",
-    },
-    {
-      id: "3",
-      category: "weddings",
-      image: "/images/wedding/carousel-image3.jpeg",
-    },
-    {
-      id: "4",
-      category: "weddings",
-      image: "/images/wedding/carousel-image4.jpeg",
-    },
-    {
-      id: "5",
-      category: "weddings",
-      image: "/images/wedding/carousel-image5.jpeg",
-    },
-    {
-      id: "6",
-      category: "weddings",
-      image: "/images/wedding/carousel-image6.jpeg",
-    },
-  ];
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([
+    { id: "1", category: "weddings", image: getImage("fallback").src },
+    { id: "2", category: "weddings", image: getImage("fallback").src },
+    { id: "3", category: "weddings", image: getImage("fallback").src },
+    { id: "4", category: "weddings", image: getImage("fallback").src },
+    { id: "5", category: "weddings", image: getImage("fallback").src },
+    { id: "6", category: "weddings", image: getImage("fallback").src },
+  ]);
 
   const PortfolioCarousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -198,7 +215,7 @@ export default function Component() {
                     width={1200}
                     height={500}
                     className="mission-image"
-                    src="/images/wedding-cover.png"
+                    src={bannerImage}
                     alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                   />
                 </div>

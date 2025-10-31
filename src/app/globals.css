@@ -117,13 +117,13 @@ input:-webkit-autofill {
     }
   }
 
-  .playroom-image:hover {
+  /* .playroom-image:hover {
     transform: scale(1.02);
   }
 
   .mission-image:hover {
     transform: scale(1.02);
-  }
+  } */
 }
 
 .custom_grid_cols {
