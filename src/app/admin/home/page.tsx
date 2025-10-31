@@ -15,26 +15,68 @@ interface ImageSlot {
   section: string;
 }
 
-const ABOUT_STRUCTURE: ImageSlot[] = [
-  {
-    id: "banner",
-    key: "about_banner",
+const HOME_STRUCTURE: ImageSlot[] = [
+  ...Array.from({ length: 4 }, (_, i) => ({
+    id: `carousel_${i + 1}`,
+    key: `home_carousel_${String(i + 1).padStart(2, "0")}`,
     currentImage: getImage("fallback").src,
-    title: "Banner Principal (Quem Somos)",
-    section: "banner"
+    title: `Carrossel Principal - Imagem ${i + 1}`,
+    section: "carousel",
+  })),
+  {
+    id: "card_quem_somos",
+    key: "home_card_quem_somos",
+    currentImage: getImage("fallback").src,
+    title: "Card: Quem Somos",
+    section: "cards",
+  },
+  {
+    id: "card_oficinas",
+    key: "home_card_oficinas",
+    currentImage: getImage("fallback").src,
+    title: "Card: Oficinas",
+    section: "cards",
+  },
+  {
+    id: "card_brinquedoteca",
+    key: "home_card_brinquedoteca",
+    currentImage: getImage("fallback").src,
+    title: "Card: Brinquedoteca",
+    section: "cards",
+  },
+  {
+    id: "card_casamento",
+    key: "home_card_casamento",
+    currentImage: getImage("fallback").src,
+    title: "Card: Casamento",
+    section: "cards",
+  },
+  {
+    id: "card_produtos",
+    key: "home_card_produtos",
+    currentImage: getImage("fallback").src,
+    title: "Card: Produtos",
+    section: "cards",
+  },
+  {
+    id: "card_mesa_lanchinho",
+    key: "home_card_mesa_lanchinho",
+    currentImage: getImage("fallback").src,
+    title: "Card: Mesa de Lanchinho",
+    section: "cards",
   },
   {
     id: "mission_image",
-    key: "about_mission_image",
+    key: "home_mission_image",
     currentImage: getImage("fallback").src,
     title: "Imagem da Seção Missão",
-    section: "mission"
+    section: "mission",
   },
 ];
 
-export default function AboutAdmin() {
+export default function HomeAdmin() {
   const router = useRouter();
-  const [imageSlots, setImageSlots] = useState<ImageSlot[]>(ABOUT_STRUCTURE);
+  const [imageSlots, setImageSlots] = useState<ImageSlot[]>(HOME_STRUCTURE);
   const [uploading, setUploading] = useState<string | null>(null);
   const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
@@ -54,7 +96,7 @@ export default function AboutAdmin() {
       const { data, error } = await supabase
         .from("page_images")
         .select("*")
-        .eq("page", "about")
+        .eq("page", "home")
         .order("position");
 
       if (error) throw error;
@@ -89,13 +131,13 @@ export default function AboutAdmin() {
       const { data: existingImage } = await supabase
         .from("page_images")
         .select("image_url")
-        .eq("page", "about")
+        .eq("page", "home")
         .eq("key", slot.key)
         .single();
 
       const fileExt = file.name.split(".").pop();
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
-      const filePath = `about/${fileName}`;
+      const filePath = `home/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from("images")
@@ -107,7 +149,7 @@ export default function AboutAdmin() {
 
       const { error: dbError } = await supabase.from("page_images").upsert(
         {
-          page: "about",
+          page: "home",
           key: slot.key,
           image_url: publicUrl,
           position: imageSlots.findIndex((s) => s.id === slot.id),
@@ -117,9 +159,9 @@ export default function AboutAdmin() {
 
       if (dbError) throw dbError;
 
-      if (existingImage?.image_url && existingImage.image_url.includes("about/")) {
-        const oldPath = existingImage.image_url.split("/about/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`about/${oldPath}`]);
+      if (existingImage?.image_url && existingImage.image_url.includes("home/")) {
+        const oldPath = existingImage.image_url.split("/home/")[1];
+        if (oldPath) await supabase.storage.from("images").remove([`home/${oldPath}`]);
       }
 
       setImageSlots((prev) =>
@@ -144,21 +186,21 @@ export default function AboutAdmin() {
       const { data: existingImage } = await supabase
         .from("page_images")
         .select("image_url")
-        .eq("page", "about")
+        .eq("page", "home")
         .eq("key", slot.key)
         .single();
 
-      await supabase.from("page_images").delete().eq("page", "about").eq("key", slot.key);
+      await supabase.from("page_images").delete().eq("page", "home").eq("key", slot.key);
 
-      if (existingImage?.image_url && existingImage.image_url.includes("about/")) {
-        const oldPath = existingImage.image_url.split("/about/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`about/${oldPath}`]);
+      if (existingImage?.image_url && existingImage.image_url.includes("home/")) {
+        const oldPath = existingImage.image_url.split("/home/")[1];
+        if (oldPath) await supabase.storage.from("images").remove([`home/${oldPath}`]);
       }
 
       setImageSlots((prev) =>
         prev.map((s) => {
           if (s.id === slot.id) {
-            const defaultSlot = ABOUT_STRUCTURE.find((ps) => ps.id === slot.id);
+            const defaultSlot = HOME_STRUCTURE.find((hs) => hs.id === slot.id);
             return defaultSlot ? { ...s, currentImage: defaultSlot.currentImage } : { ...s, currentImage: getImage("fallback").src };
           }
           return s;
@@ -187,7 +229,7 @@ export default function AboutAdmin() {
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-4">
               <Link href="/admin" className="text-gray-600 hover:text-gray-900">← Voltar</Link>
-              <h1 className="text-xl font-bold text-gray-900">Editar Quem Somos</h1>
+              <h1 className="text-xl font-bold text-gray-900">Editar Página Inicial</h1>
             </div>
             <button onClick={handleLogout} className="text-gray-700 hover:text-gray-900">Sair</button>
           </div>
@@ -197,43 +239,22 @@ export default function AboutAdmin() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-blue-800 text-sm">
-            💡 <strong>Clique em qualquer imagem</strong> para substituí-la. Total: 3 imagens.
+            💡 <strong>Clique em qualquer imagem</strong> para substituí-la.
           </p>
         </div>
       </div>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 sm:px-0 space-y-8">
-          {/* Banner Principal */}
-          {imageSlots.filter((s) => s.id === "banner").map((slot) => (
-            <div key={slot.id}>
-              <h2 className="text-lg font-semibold mb-2 text-gray-700">Banner Principal (Quem Somos)</h2>
-              <div className="relative">
-                <div className="relative h-[400px] flex items-center justify-center cursor-pointer group overflow-hidden" onClick={() => handleImageClick(slot.id)}>
-                  <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
-                    <span className="text-white text-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                      {uploading === slot.id ? "Uploading..." : "Clique para alterar"}
-                    </span>
-                  </div>
-                  <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
-                </div>
-                <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full shadow-lg z-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
-                </button>
-              </div>
-            </div>
-          ))}
-
-          {/* Seção Missão */}
-          <div className="mb-8">
-            <h3 className="text-md font-medium text-gray-600 mb-3">Seção Missão</h3>
+        <div className="px-4 sm:px-0 space-y-12">
+          {/* === SEÇÃO 1: CARROSSEL PRINCIPAL === */}
+          <div className="border-t-4 border-blue-500 pt-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">SEÇÃO 1: CARROSSEL PRINCIPAL</h2>
+            <p className="text-sm text-gray-600 mb-4">Carrossel de imagens grande no topo da página</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Background da Missão */}
-              {imageSlots.filter((s) => s.id === "mission_bg").map((slot) => (
+              {imageSlots.filter((s) => s.section === "carousel").map((slot) => (
                 <div key={slot.id} className="relative">
                   <h4 className="text-sm font-medium text-gray-500 mb-2">{slot.title}</h4>
-                  <div className="relative h-[300px] cursor-pointer group overflow-hidden rounded shadow" onClick={() => handleImageClick(slot.id)}>
+                  <div className="relative h-[250px] cursor-pointer group overflow-hidden rounded shadow" onClick={() => handleImageClick(slot.id)}>
                     <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
                       <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
@@ -247,9 +268,40 @@ export default function AboutAdmin() {
                   </button>
                 </div>
               ))}
+            </div>
+          </div>
 
-              {/* Imagem da Missão */}
-              {imageSlots.filter((s) => s.id === "mission_image").map((slot) => (
+          {/* === SEÇÃO 2: CARDS DE SERVIÇOS === */}
+          <div className="border-t-4 border-green-500 pt-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">SEÇÃO 2: CARDS DE SERVIÇOS</h2>
+            <p className="text-sm text-gray-600 mb-4">Cards clicáveis que levam para cada seção do site</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {imageSlots.filter((s) => s.section === "cards").map((slot) => (
+                <div key={slot.id} className="relative">
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">{slot.title}</h4>
+                  <div className="relative h-[200px] cursor-pointer group overflow-hidden rounded shadow" onClick={() => handleImageClick(slot.id)}>
+                    <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                      <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        {uploading === slot.id ? "Uploading..." : "Alterar"}
+                      </span>
+                    </div>
+                    <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                  </div>
+                  <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-8 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* === SEÇÃO 3: MISSÃO === */}
+          <div className="border-t-4 border-purple-500 pt-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">SEÇÃO 3: NOSSA MISSÃO</h2>
+            <p className="text-sm text-gray-600 mb-4">Seção final com background e imagem sobreposta</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {imageSlots.filter((s) => s.section === "mission").map((slot) => (
                 <div key={slot.id} className="relative">
                   <h4 className="text-sm font-medium text-gray-500 mb-2">{slot.title}</h4>
                   <div className="relative h-[300px] cursor-pointer group overflow-hidden rounded shadow" onClick={() => handleImageClick(slot.id)}>

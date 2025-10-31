@@ -8,84 +8,18 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Footer } from "../Footer";
 import { getIcon } from "@/assets/icons";
+import { supabase } from "@/lib/supabase";
+import { getImage } from "@/assets/images";
 import { Header } from "@/components/organisms";
 import { CardContent } from "@/components/organisms/Card";
-import { getProduto } from "@/assets/Produtos";
 
-const portfolioItems = [
-  {
-    id: "1",
-    title: "RECEPÇÃO DE CASAMENTO",
-    subtitle: "Elegante celebração noturna",
-    category: "weddings",
-    image: "/images/carousel-image.jpeg",
-  },
-  {
-    id: "2",
-    title: "JANTAR DE GALA CORPORATIVO",
-    subtitle: "Gala anual da empresa",
-    category: "corporate",
-    image: "/images/carousel-image2.jpeg",
-  },
-  {
-    id: "3",
-    title: "CASAMENTO AO AR LIVRE",
-    subtitle: "Preparação da cerimónia no jardim",
-    category: "weddings",
-    image: "/images/carousel-image3.jpeg",
-  },
-  {
-    id: "4",
-    title: "FESTA DE ANIVERSÁRIO",
-    subtitle: "Celebração doce",
-    category: "birthdays",
-    image: "/images/carousel-image4.jpeg",
-  },
-];
-
-const cardsData = [
-  {
-    href: "/about",
-    title: "QUEM SOMOS",
-    image: "/images/who-we-are.jpeg",
-  },
-  {
-    href: "/workshops",
-    title: "OFICINAS",
-    image: "/images/oficinas.jpeg",
-  },
-  {
-    href: "/playroom",
-    title: "BRINQUEDOTECA",
-    image: "/images/toy-library.jpeg",
-  },
-  {
-    href: "/wedding",
-    title: "CASAMENTO",
-    image: "/images/wedding.jpeg",
-  },
-  {
-    href: "/products",
-    title: "PRODUTOS",
-    image: getProduto('arcos', 'arco_disney_personalizado'),
-  },
-
-  // {
-  //   href: "/portfolio",
-  //   title: "portfolio",
-  //   image: "https://picsum.photos/seed/107/200/300",
-  // },
-  {
-    href: "/souvenirstable",
-    title: "MESA DE LANCHINHO",
-    image: "/images/snack-table.jpeg",
-  },
-  // {
-  //   href: "/ateliegroup",
-  //   title: "Grupo Ateliê",
-  //   image: "https://picsum.photos/seed/106/200/300",
-  // },
-];
+type PortfolioItem = {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: string;
+  image: string;
+};
 
 const featuresData = [
   {
@@ -138,24 +72,24 @@ const featuresData = [
   },
 ];
 // Services Carousel Component for Desktop
-const ServicesCarousel = () => {
+const ServicesCarousel = ({ cardsData }: { cardsData: any[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const itemsPerView = 5; // Show 4 cards at a time on desktop
+  const itemsPerView = 5; // Show 5 cards at a time on desktop
 
   const nextSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex((prev) => (prev + 1) % cardsData.length);
     setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning]);
+  }, [isTransitioning, cardsData.length]);
 
   const prevSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex((prev) => (prev - 1 + cardsData.length) % cardsData.length);
     setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning]);
+  }, [isTransitioning, cardsData.length]);
 
   const getVisibleCards = () => {
     const cards = [];
@@ -233,20 +167,24 @@ const ServicesCarousel = () => {
 };
 
 // Portfolio Carousel Component
-const PortfolioCarousel = () => {
+const PortfolioCarousel = ({
+  portfolioItems,
+}: {
+  portfolioItems: PortfolioItem[];
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % portfolioItems.length);
-  }, []);
+  }, [portfolioItems.length]);
 
   const prevSlide = useCallback(() => {
     setCurrentIndex(
       (prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length
     );
-  }, []);
+  }, [portfolioItems.length]);
 
   const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index);
@@ -327,6 +265,107 @@ const PortfolioCarousel = () => {
 };
 
 const HeroSection = () => {
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([
+    {
+      id: "1",
+      title: "RECEPÇÃO DE CASAMENTO",
+      subtitle: "Elegante celebração noturna",
+      category: "weddings",
+      image: getImage("fallback").src,
+    },
+    {
+      id: "2",
+      title: "JANTAR DE GALA CORPORATIVO",
+      subtitle: "Gala anual da empresa",
+      category: "corporate",
+      image: getImage("fallback").src,
+    },
+    {
+      id: "3",
+      title: "CASAMENTO AO AR LIVRE",
+      subtitle: "Preparação da cerimónia no jardim",
+      category: "weddings",
+      image: getImage("fallback").src,
+    },
+    {
+      id: "4",
+      title: "FESTA DE ANIVERSÁRIO",
+      subtitle: "Celebração doce",
+      category: "birthdays",
+      image: getImage("fallback").src,
+    },
+  ]);
+
+  const [cardsData, setCardsData] = useState([
+    { href: "/about", title: "QUEM SOMOS", image: getImage("fallback").src },
+    { href: "/workshops", title: "OFICINAS", image: getImage("fallback").src },
+    {
+      href: "/playroom",
+      title: "BRINQUEDOTECA",
+      image: getImage("fallback").src,
+    },
+    { href: "/wedding", title: "CASAMENTOS", image: getImage("fallback").src },
+    { href: "/products", title: "PRODUTOS", image: getImage("fallback").src },
+    {
+      href: "/souvenirstable",
+      title: "MESA DE LANCHINHO",
+      image: getImage("fallback").src,
+    },
+  ]);
+
+  const [missionImage, setMissionImage] = useState(getImage("fallback").src);
+
+  useEffect(() => {
+    loadImages();
+  }, []);
+
+  const loadImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("page_images")
+        .select("*")
+        .eq("page", "home")
+        .order("position");
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const imageMap: { [key: string]: string } = {};
+        data.forEach((img) => {
+          imageMap[img.key] = img.image_url;
+        });
+
+        setPortfolioItems((prev) =>
+          prev.map((item, index) => {
+            const key = `home_carousel_${String(index + 1).padStart(2, "0")}`;
+            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
+          })
+        );
+
+        const cardKeys = [
+          "quem_somos",
+          "oficinas",
+          "brinquedoteca",
+          "casamento",
+          "produtos",
+          "mesa_lanchinho",
+        ];
+        setCardsData((prev) =>
+          prev.map((card, index) => {
+            const key = `home_card_${cardKeys[index]}`;
+            return imageMap[key] ? { ...card, image: imageMap[key] } : card;
+          })
+        );
+
+        if (imageMap["home_mission_image"]) {
+          setMissionImage(imageMap["home_mission_image"]);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao carregar imagens:", error);
+    }
+  };
+
   return (
     <>
       <Header isSecundary={false} />
@@ -342,14 +381,14 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <PortfolioCarousel />
+              <PortfolioCarousel portfolioItems={portfolioItems} />
             </motion.div>
           </div>
         </div>
 
         <div className="relative flex-1 flex flex-col items-center px-4 py-8">
           <div className="hidden md:block w-full max-w-6xl">
-            <ServicesCarousel />
+            <ServicesCarousel cardsData={cardsData} />
           </div>
 
           {/* Mobile Grid */}
@@ -420,18 +459,15 @@ const HeroSection = () => {
         </div>
 
         {/* Mission Statement Section */}
-        <div
-          className="relative  bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/mission-bg.jpg')" }}
-        >
-          <div className="relative z-10 flex items-center px-4">
+        <div className="relative min-h-[500px] bg-cover bg-center bg-no-repeat">
+          <div className="relative z-10 flex items-center min-h-[500px] px-4">
             <div className="container mx-auto flex items-center">
               <div className="container mx-auto relative md:py-24">
                 {/* Desktop Layout */}
-                <div className="hidden lg:block relative max-w-7xl mx-auto">
+                <div className="hidden xl:block relative max-w-full mx-auto">
                   <div className="flex items-center justify-center relative">
                     {/* Mission Card - Overlapping the image */}
-                    <div className="absolute left-0 top-[150px] z-10 w-full max-w-xl">
+                    <div className="absolute left-[0] z-10 w-full max-w-xl">
                       <div className="mission-card text-center">
                         <div className="mission-subtitle">MAS AFINAL,</div>
                         <h2 className="mission-title">QUAL A NOSSA MISSÃO?</h2>
@@ -445,14 +481,14 @@ const HeroSection = () => {
                     </div>
 
                     {/* Image */}
-                    <div className="ml-auto w-full max-w-3xl">
-                      <div className="mission-image-container">
+                    <div className="ml-auto w-full flex justify-end ">
+                      <div className="mission-image-container md:max-h-[600px]">
                         <Image
                           width={1200}
                           height={500}
-                          src="/images/mission-bg2.jpeg"
+                          src={missionImage}
                           alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                          className="mission-image h-[100px]"
+                          className="mission-image"
                         />
                       </div>
                     </div>
@@ -460,7 +496,7 @@ const HeroSection = () => {
                 </div>
 
                 {/* Mobile Layout */}
-                <div className="lg:hidden max-w-2xl mx-auto">
+                <div className="xl:hidden max-w-2xl mx-auto">
                   {/* Mission Card */}
                   <div className="mission-card mission-card-mobile text-center mb-8">
                     <div className="mission-subtitle">MAS AFINAL,</div>
@@ -479,7 +515,7 @@ const HeroSection = () => {
                       <Image
                         width={1200}
                         height={800}
-                        src="/images/mission-bg2.jpeg"
+                        src={missionImage}
                         alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                         className="mission-image"
                       />
