@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "@/components/modules";
 import { LoadingSpinner } from "@/components/atoms";
 import { Header } from "@/components/organisms";
+import { supabase } from "@/lib/supabase";
+import { getImage } from "@/assets/images";
 import Image from "next/image";
 import { getIcon } from "@/assets/icons";
 
@@ -62,14 +64,44 @@ const featuresData = [
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
+  const [bannerImage, setBannerImage] = useState(getImage("fallback").src);
+  const [missionImage, setMissionImage] = useState(getImage("fallback").src);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    loadImages();
   }, []);
+
+  const loadImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("page_images")
+        .select("*")
+        .eq("page", "about")
+        .order("position");
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const imageMap: { [key: string]: string } = {};
+        data.forEach((img) => {
+          imageMap[img.key] = img.image_url;
+        });
+
+        if (imageMap["about_banner"]) {
+          setBannerImage(imageMap["about_banner"]);
+        }
+        if (imageMap["about_mission_image"]) {
+          setMissionImage(imageMap["about_mission_image"]);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao carregar imagens:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -89,7 +121,7 @@ export default function Component() {
               <div className="relative w-full h-[600px]">
                 <Image
                   fill
-                  src="/images/mission-bg2.jpeg"
+                  src={bannerImage}
                   alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                   className="object-cover"
                 />
@@ -151,7 +183,6 @@ export default function Component() {
             {/* Mission Statement Section */}
             <div
               className="relative min-h-[500px] bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: "url('/images/mission-bg.jpg')" }}
             >
               <div className="relative z-10 flex items-center min-h-[500px] px-4">
                 <div className="container mx-auto flex items-center">
@@ -181,7 +212,7 @@ export default function Component() {
                             <Image
                               width={1200}
                               height={500}
-                              src="/images/carousel-image2.jpeg"
+                              src={missionImage}
                               alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                               className="mission-image"
                             />
@@ -210,7 +241,7 @@ export default function Component() {
                           <Image
                             width={1200}
                             height={800}
-                            src="/images/carousel-image2.jpeg"
+                            src={missionImage}
                             alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                             className="mission-image"
                           />

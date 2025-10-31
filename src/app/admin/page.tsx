@@ -100,6 +100,16 @@ export default function AdminDashboard() {
               <p className="text-gray-600">Editar banner e 22 imagens</p>
             </Link>
 
+            <Link
+              href="/admin/about"
+              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Quem Somos
+              </h2>
+              <p className="text-gray-600">Editar 3 imagens</p>
+            </Link>
+
             {/* <Link
               aria-disabled
               href="/admin/upload"
