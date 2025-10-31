@@ -153,17 +153,18 @@ export default function CorporateAdmin() {
       } = supabase.storage.from("images").getPublicUrl(filePath);
 
       // Salvar ou atualizar no banco de dados
-      const { error: dbError } = await (supabase.from("page_images") as any).upsert(
+      type PageImageUpsert = { page: string; key: string; image_url: string; position: number };
+      const values: PageImageUpsert[] = [
         {
           page: "corporate",
           key: slot.key,
           image_url: publicUrl,
           position: imageSlots.findIndex((s) => s.id === slot.id),
         },
-        {
-          onConflict: "page,key",
-        }
-      );
+      ];
+      const { error: dbError } = await supabase
+        .from("page_images")
+        .upsert(values as unknown as never[], { onConflict: "page,key" });
 
       if (dbError) throw dbError;
 
