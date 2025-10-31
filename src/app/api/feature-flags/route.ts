@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
 
 // Create server-side client with service role for admin operations
 const getSupabaseAdmin = () => {
