@@ -9,6 +9,7 @@ import { Footer } from "@/components/modules";
 import Image from "next/image";
 import { getImage } from "@/assets/images";
 import { supabase } from "@/lib/supabase";
+import { PageImage } from "@/types/database";
 
 interface ImageData {
   id: number;
@@ -53,7 +54,7 @@ export default function Component() {
       if (data && data.length > 0) {
         // Mapear imagens do banco
         const imageMap: { [key: string]: string } = {};
-        data.forEach((img) => {
+        (data as PageImage[]).forEach((img) => {
           imageMap[img.key] = img.image_url;
         });
 

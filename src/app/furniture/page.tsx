@@ -10,6 +10,7 @@ import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import { getImage } from "@/assets/images";
 import { supabase } from "@/lib/supabase";
+import { PageImage } from "@/types/database";
 
 interface ImageData {
   id: string;
@@ -168,7 +169,7 @@ export default function Component() {
 
         if (pageImages && pageImages.length > 0) {
           const imageMap: { [key: string]: string } = {};
-          pageImages.forEach((img) => {
+          (pageImages as PageImage[]).forEach((img) => {
             imageMap[img.key] = img.image_url;
           });
 
@@ -183,16 +184,29 @@ export default function Component() {
         }
 
         // Buscar imagens da seção "Nossa Estrutura"
-        const { data } = await supabase
-          .from('images')
-          .select('id, title, description, image_url, order_position')
-          .eq('category_id', (await supabase.from('categories').select('id').eq('slug', 'furniture').single()).data?.id)
-          .eq('is_active', true)
-          .order('order_position');
+        type CategoryRow = { id: string };
 
-        if (data) {
-          setFurnitureImages(data);
+        const categoryResult = await supabase
+          .from('categories')
+          .select('id')
+          .eq('slug', 'furniture')
+          .single();
+
+        const categoryId = (categoryResult.data as CategoryRow | null)?.id;
+
+        let imagesData: ImageData[] = [];
+        if (categoryId) {
+          const { data } = await supabase
+            .from('images')
+            .select('id, title, description, image_url, order_position')
+            .eq('category_id', categoryId)
+            .eq('is_active', true)
+            .order('order_position');
+
+          if (data) imagesData = data as ImageData[];
         }
+
+        setFurnitureImages(imagesData);
       } catch (error) {
         console.error('Erro ao buscar imagens:', error);
       } finally {

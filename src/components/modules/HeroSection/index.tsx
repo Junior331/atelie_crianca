@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -12,6 +13,7 @@ import { supabase } from "@/lib/supabase";
 import { getImage } from "@/assets/images";
 import { Header } from "@/components/organisms";
 import { CardContent } from "@/components/organisms/Card";
+import { PageImage } from "@/types/database";
 
 type PortfolioItem = {
   id: string;
@@ -20,6 +22,11 @@ type PortfolioItem = {
   category: string;
   image: string;
 };
+type CardsData = {
+  href: string;
+  title: string;
+  image: any;
+}
 
 const featuresData = [
   {
@@ -72,7 +79,7 @@ const featuresData = [
   },
 ];
 // Services Carousel Component for Desktop
-const ServicesCarousel = ({ cardsData }: { cardsData: any[] }) => {
+const ServicesCarousel = ({ cardsData }: { cardsData: CardsData[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const itemsPerView = 5; // Show 5 cards at a time on desktop
@@ -331,7 +338,7 @@ const HeroSection = () => {
 
       if (data && data.length > 0) {
         const imageMap: { [key: string]: string } = {};
-        data.forEach((img) => {
+        (data as PageImage[]).forEach((img) => {
           imageMap[img.key] = img.image_url;
         });
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -6,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
+import type { PageImage } from "@/types/database";
 
 interface ImageSlot {
   id: string;
@@ -91,7 +93,7 @@ export default function AtelieGroupAdmin() {
       if (data && data.length > 0) {
         setImageSlots((prev) =>
           prev.map((slot) => {
-            const dbImage = data.find((img) => img.key === slot.key);
+            const dbImage = (data as PageImage[]).find((img) => img.key === slot.key);
             return dbImage
               ? { ...slot, currentImage: dbImage.image_url }
               : slot;
@@ -124,6 +126,8 @@ export default function AtelieGroupAdmin() {
         .eq("key", slot.key)
         .single();
 
+      const existing = existingImage as PageImage | null;
+
       const fileExt = file.name.split(".").pop();
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `ateliegroup/${fileName}`;
@@ -138,7 +142,7 @@ export default function AtelieGroupAdmin() {
         data: { publicUrl },
       } = supabase.storage.from("images").getPublicUrl(filePath);
 
-      const { error: dbError } = await supabase.from("page_images").upsert(
+      const { error: dbError } = await (supabase.from("page_images") as any).upsert(
         {
           page: "ateliegroup",
           key: slot.key,
@@ -153,10 +157,10 @@ export default function AtelieGroupAdmin() {
       if (dbError) throw dbError;
 
       if (
-        existingImage?.image_url &&
-        existingImage.image_url.includes("ateliegroup/")
+        existing?.image_url &&
+        existing.image_url.includes("ateliegroup/")
       ) {
-        const oldPath = existingImage.image_url.split("/ateliegroup/")[1];
+        const oldPath = existing.image_url.split("/ateliegroup/")[1];
         if (oldPath) {
           await supabase.storage.from("images").remove([`ateliegroup/${oldPath}`]);
         }
@@ -190,6 +194,8 @@ export default function AtelieGroupAdmin() {
         .eq("key", slot.key)
         .single();
 
+      const existing = existingImage as PageImage | null;
+
       const { error: dbError } = await supabase
         .from("page_images")
         .delete()
@@ -199,10 +205,10 @@ export default function AtelieGroupAdmin() {
       if (dbError) throw dbError;
 
       if (
-        existingImage?.image_url &&
-        existingImage.image_url.includes("ateliegroup/")
+        existing?.image_url &&
+        existing.image_url.includes("ateliegroup/")
       ) {
-        const oldPath = existingImage.image_url.split("/ateliegroup/")[1];
+        const oldPath = existing.image_url.split("/ateliegroup/")[1];
         if (oldPath) {
           await supabase.storage.from("images").remove([`ateliegroup/${oldPath}`]);
         }
@@ -308,7 +314,7 @@ export default function AtelieGroupAdmin() {
                     </div>
                     <input
                       type="file"
-                      ref={(el) => (fileInputRefs.current[slot.id] = el)}
+                      ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }}
                       onChange={(e) => handleFileChange(e, slot)}
                       accept="image/*"
                       className="hidden"
@@ -374,7 +380,7 @@ export default function AtelieGroupAdmin() {
                             </div>
                             <input
                               type="file"
-                              ref={(el) => (fileInputRefs.current[slot.id] = el)}
+                              ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }}
                               onChange={(e) => handleFileChange(e, slot)}
                               accept="image/*"
                               className="hidden"
@@ -423,7 +429,7 @@ export default function AtelieGroupAdmin() {
                           </div>
                           <input
                             type="file"
-                            ref={(el) => (fileInputRefs.current[slot.id] = el)}
+                            ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }}
                             onChange={(e) => handleFileChange(e, slot)}
                             accept="image/*"
                             className="hidden"

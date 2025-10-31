@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -6,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
+import type { PageImage } from "@/types/database";
 
 interface ImageSlot {
   id: string;
@@ -91,7 +93,7 @@ export default function PlayroomAdmin() {
       if (data && data.length > 0) {
         setImageSlots((prev) =>
           prev.map((slot) => {
-            const dbImage = data.find((img) => img.key === slot.key);
+            const dbImage = (data as PageImage[]).find((img) => img.key === slot.key);
             return dbImage ? { ...slot, currentImage: dbImage.image_url } : slot;
           })
         );
@@ -122,6 +124,8 @@ export default function PlayroomAdmin() {
         .eq("key", slot.key)
         .single();
 
+      const existing = existingImage as PageImage | null;
+
       const fileExt = file.name.split(".").pop();
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `playroom/${fileName}`;
@@ -134,7 +138,7 @@ export default function PlayroomAdmin() {
 
       const { data: { publicUrl } } = supabase.storage.from("images").getPublicUrl(filePath);
 
-      const { error: dbError } = await supabase.from("page_images").upsert(
+      const { error: dbError } = await (supabase.from("page_images") as any).upsert(
         {
           page: "playroom",
           key: slot.key,
@@ -146,8 +150,8 @@ export default function PlayroomAdmin() {
 
       if (dbError) throw dbError;
 
-      if (existingImage?.image_url && existingImage.image_url.includes("playroom/")) {
-        const oldPath = existingImage.image_url.split("/playroom/")[1];
+      if (existing?.image_url && existing.image_url.includes("playroom/")) {
+        const oldPath = existing.image_url.split("/playroom/")[1];
         if (oldPath) await supabase.storage.from("images").remove([`playroom/${oldPath}`]);
       }
 
@@ -177,10 +181,12 @@ export default function PlayroomAdmin() {
         .eq("key", slot.key)
         .single();
 
+      const existing = existingImage as PageImage | null;
+
       await supabase.from("page_images").delete().eq("page", "playroom").eq("key", slot.key);
 
-      if (existingImage?.image_url && existingImage.image_url.includes("playroom/")) {
-        const oldPath = existingImage.image_url.split("/playroom/")[1];
+      if (existing?.image_url && existing.image_url.includes("playroom/")) {
+        const oldPath = existing.image_url.split("/playroom/")[1];
         if (oldPath) await supabase.storage.from("images").remove([`playroom/${oldPath}`]);
       }
 
@@ -247,7 +253,7 @@ export default function PlayroomAdmin() {
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
                     <span className="text-white text-xl font-bold opacity-0 group-hover:opacity-100">{uploading === slot.id ? "Uploading..." : "Clique para alterar"}</span>
                   </div>
-                  <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                  <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                 </div>
                 <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full shadow-lg z-10">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -271,7 +277,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -290,7 +296,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -309,7 +315,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -335,7 +341,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -354,7 +360,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -373,7 +379,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -399,7 +405,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -418,7 +424,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -437,7 +443,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -463,7 +469,7 @@ export default function PlayroomAdmin() {
                           {uploading === slot.id ? "Uploading..." : "Alterar"}
                         </span>
                       </div>
-                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                      <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>

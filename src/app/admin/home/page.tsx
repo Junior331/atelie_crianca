@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -6,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
+import type { PageImage } from "@/types/database";
 
 interface ImageSlot {
   id: string;
@@ -104,7 +106,7 @@ export default function HomeAdmin() {
       if (data && data.length > 0) {
         setImageSlots((prev) =>
           prev.map((slot) => {
-            const dbImage = data.find((img) => img.key === slot.key);
+            const dbImage = (data as PageImage[]).find((img) => img.key === slot.key);
             return dbImage ? { ...slot, currentImage: dbImage.image_url } : slot;
           })
         );
@@ -135,6 +137,8 @@ export default function HomeAdmin() {
         .eq("key", slot.key)
         .single();
 
+      const existing = existingImage as PageImage | null;
+
       const fileExt = file.name.split(".").pop();
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `home/${fileName}`;
@@ -147,7 +151,7 @@ export default function HomeAdmin() {
 
       const { data: { publicUrl } } = supabase.storage.from("images").getPublicUrl(filePath);
 
-      const { error: dbError } = await supabase.from("page_images").upsert(
+      const { error: dbError } = await (supabase.from("page_images") as any).upsert(
         {
           page: "home",
           key: slot.key,
@@ -159,8 +163,8 @@ export default function HomeAdmin() {
 
       if (dbError) throw dbError;
 
-      if (existingImage?.image_url && existingImage.image_url.includes("home/")) {
-        const oldPath = existingImage.image_url.split("/home/")[1];
+      if (existing?.image_url && existing.image_url.includes("home/")) {
+        const oldPath = existing.image_url.split("/home/")[1];
         if (oldPath) await supabase.storage.from("images").remove([`home/${oldPath}`]);
       }
 
@@ -190,10 +194,12 @@ export default function HomeAdmin() {
         .eq("key", slot.key)
         .single();
 
+      const existing = existingImage as PageImage | null;
+
       await supabase.from("page_images").delete().eq("page", "home").eq("key", slot.key);
 
-      if (existingImage?.image_url && existingImage.image_url.includes("home/")) {
-        const oldPath = existingImage.image_url.split("/home/")[1];
+      if (existing?.image_url && existing.image_url.includes("home/")) {
+        const oldPath = existing.image_url.split("/home/")[1];
         if (oldPath) await supabase.storage.from("images").remove([`home/${oldPath}`]);
       }
 
@@ -261,7 +267,7 @@ export default function HomeAdmin() {
                         {uploading === slot.id ? "Uploading..." : "Alterar"}
                       </span>
                     </div>
-                    <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                   </div>
                   <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-8 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -286,7 +292,7 @@ export default function HomeAdmin() {
                         {uploading === slot.id ? "Uploading..." : "Alterar"}
                       </span>
                     </div>
-                    <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                   </div>
                   <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-8 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
@@ -311,7 +317,7 @@ export default function HomeAdmin() {
                         {uploading === slot.id ? "Uploading..." : "Alterar"}
                       </span>
                     </div>
-                    <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    <input type="file" ref={(el) => { if (el) fileInputRefs.current[slot.id] = el; }} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                   </div>
                   <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-8 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>

@@ -9,6 +9,7 @@ import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import { getImage } from "@/assets/images";
 import { supabase } from "@/lib/supabase";
+import { PageImage } from "@/types/database";
 
 interface ImageState {
   [key: string]: string;
@@ -52,7 +53,7 @@ export default function Component() {
 
       if (data && data.length > 0) {
         const imageMap: { [key: string]: string } = {};
-        data.forEach((img) => {
+        (data as PageImage[]).forEach((img) => {
           // Remover prefixo "group_" da key para mapear corretamente
           const cleanKey = img.key.replace("group_", "");
           imageMap[cleanKey] = img.image_url;

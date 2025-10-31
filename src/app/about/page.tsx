@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -83,7 +84,7 @@ export default function Component() {
 
       if (data && data.length > 0) {
         const imageMap: { [key: string]: string } = {};
-        data.forEach((img) => {
+        data.forEach((img: any) => {
           imageMap[img.key] = img.image_url;
         });
 

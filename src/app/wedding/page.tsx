@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabase";
 import { getImage } from "@/assets/images";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PageImage } from "@/types/database";
 
 type PortfolioItem = {
   id: string;
@@ -37,7 +38,7 @@ export default function Component() {
 
       if (data && data.length > 0) {
         const imageMap: { [key: string]: string } = {};
-        data.forEach((img) => {
+        (data as PageImage[]).forEach((img) => {
           imageMap[img.key] = img.image_url;
         });
 
