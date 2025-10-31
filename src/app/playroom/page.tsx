@@ -6,143 +6,122 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
+import { supabase } from "@/lib/supabase";
+import { getImage } from "@/assets/images";
 import Image from "next/image";
+
 type CarouselItem = {
   id: string;
   image: string;
   category: string;
 };
+
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
+  const [bannerImage, setBannerImage] = useState(getImage("fallback").src);
+
+  // Dados para Brinquedoteca
+  const [playroomItems, setPlayroomItems] = useState<CarouselItem[]>([
+    { id: "1", category: "playroom", image: getImage("fallback").src },
+    { id: "2", category: "playroom", image: getImage("fallback").src },
+    { id: "3", category: "playroom", image: getImage("fallback").src },
+    { id: "4", category: "playroom", image: getImage("fallback").src },
+    { id: "5", category: "playroom", image: getImage("fallback").src },
+    { id: "6", category: "playroom", image: getImage("fallback").src },
+  ]);
+
+  // Dados para Mesa de Lanches (Candy Color)
+  const [snackItems, setSnackItems] = useState<CarouselItem[]>([
+    { id: "1", category: "snacks", image: getImage("fallback").src },
+    { id: "2", category: "snacks", image: getImage("fallback").src },
+    { id: "3", category: "snacks", image: getImage("fallback").src },
+    { id: "4", category: "snacks", image: getImage("fallback").src },
+    { id: "5", category: "snacks", image: getImage("fallback").src },
+    { id: "6", category: "snacks", image: getImage("fallback").src },
+  ]);
+
+  // Dados para Biblioteca de Brinquedos (Colorida)
+  const [toyLibraryItems, setToyLibraryItems] = useState<CarouselItem[]>([
+    { id: "1", category: "toys", image: getImage("fallback").src },
+    { id: "2", category: "toys", image: getImage("fallback").src },
+    { id: "3", category: "toys", image: getImage("fallback").src },
+    { id: "4", category: "toys", image: getImage("fallback").src },
+    { id: "5", category: "toys", image: getImage("fallback").src },
+    { id: "6", category: "toys", image: getImage("fallback").src },
+  ]);
+
+  // Dados para Personalizada
+  const [customizedItems, setCustomizedItems] = useState<CarouselItem[]>([
+    { id: "1", category: "toys", image: getImage("fallback").src },
+    { id: "2", category: "toys", image: getImage("fallback").src },
+    { id: "3", category: "toys", image: getImage("fallback").src },
+  ]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    loadImages();
   }, []);
 
-  
-  // Dados para Brinquedoteca
-  const playroomItems = [
-    {
-      id: "1",
-      category: "playroom",
-      image: "/images/playroom_01.jpg",
-    },
-    {
-      id: "2",
-      category: "playroom",
-      image: "/images/playroom_02.jpg",
-    },
-    {
-      id: "3",
-      category: "playroom",
-      image: "/images/playroom_03.jpg",
-    },
-    {
-      id: "4",
-      category: "playroom",
-      image: "/images/playroom_04.jpg",
-    },
-    {
-      id: "5",
-      category: "playroom",
-      image: "/images/playroom_05.jpg",
-    },
-    {
-      id: "6",
-      category: "playroom",
-      image: "/images/playroom_06.jpg",
-    },
-  ];
+  const loadImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("page_images")
+        .select("*")
+        .eq("page", "playroom")
+        .order("position");
 
-  // Dados para Mesa de Lanches
-  const snackItems = [
-    {
-      id: "1",
-      category: "snacks",
-      image: "/images/snack_01.jpg",
-    },
-    {
-      id: "2",
-      category: "snacks",
-      image: "/images/snack_02.jpg",
-    },
-    {
-      id: "3",
-      category: "snacks",
-      image: "/images/snack_03.jpg",
-    },
-    {
-      id: "4",
-      category: "snacks",
-      image: "/images/snack_04.jpg",
-    },
-    {
-      id: "5",
-      category: "snacks",
-      image: "/images/snack_05.jpg",
-    },
-    {
-      id: "6",
-      category: "snacks",
-      image: "/images/snack_06.jpg",
-    },
-  ];
+      if (error) throw error;
 
-  // Dados para Biblioteca de Brinquedos
-  const toyLibraryItems = [
-    {
-      id: "1",
-      category: "toys",
-      image: "/images/toyLibrary_01.jpg",
-    },
-    {
-      id: "2",
-      category: "toys",
-      image: "/images/toyLibrary_02.jpg",
-    },
-    {
-      id: "3",
-      category: "toys",
-      image: "/images/toyLibrary_03.jpg",
-    },
-    {
-      id: "4",
-      category: "toys",
-      image: "/images/toyLibrary_04.jpg",
-    },
-    {
-      id: "5",
-      category: "toys",
-      image: "/images/toyLibrary_05.jpg",
-    },
-    {
-      id: "6",
-      category: "toys",
-      image: "/images/toyLibrary_06.jpg",
-    },
-  ];
+      if (data && data.length > 0) {
+        const imageMap: { [key: string]: string } = {};
+        data.forEach((img) => {
+          imageMap[img.key] = img.image_url;
+        });
 
-  const customizedItems = [
-    {
-      id: "1",
-      category: "toys",
-      image: "/images/customized_01.jpg",
-    },
-    {
-      id: "2",
-      category: "toys",
-      image: "/images/customized_02.jpg",
-    },
-    {
-      id: "3",
-      category: "toys",
-      image: "/images/customized_03.jpg",
-    },
-  ];
+        // Atualizar banner
+        if (imageMap["playroom_banner"]) {
+          setBannerImage(imageMap["playroom_banner"]);
+        }
+
+        // Atualizar Casamentos (playroom)
+        setPlayroomItems((prev) =>
+          prev.map((item, index) => {
+            const key = `playroom_playroom_${String(index + 1).padStart(2, '0')}`;
+            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
+          })
+        );
+
+        // Atualizar Candy Color (snack)
+        setSnackItems((prev) =>
+          prev.map((item, index) => {
+            const key = `playroom_snack_${String(index + 1).padStart(2, '0')}`;
+            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
+          })
+        );
+
+        // Atualizar Colorida (toyLibrary)
+        setToyLibraryItems((prev) =>
+          prev.map((item, index) => {
+            const key = `playroom_toyLibrary_${String(index + 1).padStart(2, '0')}`;
+            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
+          })
+        );
+
+        // Atualizar Personalizada
+        setCustomizedItems((prev) =>
+          prev.map((item, index) => {
+            const key = `playroom_customized_${String(index + 1).padStart(2, '0')}`;
+            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao carregar imagens:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }
+  };
 
   const PlayroomCard = () => (
     <div className="bg-gray-50 h-auto p-6 rounded-lg  text-gray-800 flex flex-col justify-center items-center text-center">
@@ -384,7 +363,7 @@ export default function Component() {
                   <Image
                     width={1200}
                     height={500}
-                    src="/images/playroom-cover.png"
+                    src={bannerImage}
                     alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
                     className="playroom-image"
                   />

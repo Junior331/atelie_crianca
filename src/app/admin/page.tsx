@@ -1,120 +1,20 @@
-'use client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import Link from 'next/link'
-import Image from 'next/image'
-
-interface Category {
-  id: string
-  name: string
-  slug: string
-}
-
-interface ImageItem {
-  id: string
-  title: string
-  description: string | null
-  image_url: string
-  is_active: boolean
-  order_position: number
-  category_id: string
-  categories: Category
-}
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 export default function AdminDashboard() {
-  const [images, setImages] = useState<ImageItem[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const router = useRouter();
 
-  useEffect(() => {
-    fetchData()
-  }, [selectedCategory])
 
-  const fetchData = async () => {
-    setLoading(true)
-    try {
-      // Fetch categories
-      const { data: categoriesData } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name')
-
-      if (categoriesData) {
-        setCategories(categoriesData)
-      }
-
-      // Fetch images
-      let query = supabase
-        .from('images')
-        .select(`
-          *,
-          categories (
-            id,
-            name,
-            slug
-          )
-        `)
-        .order('order_position')
-
-      if (selectedCategory !== 'all') {
-        query = query.eq('category_id', selectedCategory)
-      }
-
-      const { data: imagesData } = await query
-
-      if (imagesData) {
-        setImages(imagesData as any)
-      }
-    } catch (error) {
-      console.error('Erro ao buscar dados:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    document.cookie = 'supabase-auth-token=; path=/; max-age=0'
-    router.push('/admin/login')
-  }
-
-  const toggleActive = async (id: string, currentStatus: boolean) => {
-    try {
-      await supabase
-        .from('images')
-        .update({ is_active: !currentStatus })
-        .eq('id', id)
-
-      fetchData()
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error)
-    }
-  }
-
-  const deleteImage = async (id: string, storagePath: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta imagem?')) return
-
-    try {
-      // Delete from storage
-      const { error: storageError } = await supabase.storage
-        .from('images')
-        .remove([storagePath])
-
-      if (storageError) throw storageError
-
-      // Delete from database
-      await supabase.from('images').delete().eq('id', id)
-
-      fetchData()
-    } catch (error) {
-      console.error('Erro ao excluir imagem:', error)
-    }
-  }
-
+    await supabase.auth.signOut();
+    document.cookie = "supabase-auth-token=; path=/; max-age=0";
+    router.push("/admin/login");
+  };
   return (
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-sm">
@@ -146,28 +46,38 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {/* Navigation Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
             <Link
               href="/admin/souvenirs"
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Mesa de Doces</h2>
-              <p className="text-gray-600">Editar banner e galeria de imagens</p>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Mesa de Doces
+              </h2>
+              <p className="text-gray-600">
+                Editar banner e galeria de imagens
+              </p>
             </Link>
 
             <Link
               href="/admin/corporate"
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Corporativo</h2>
-              <p className="text-gray-600">Editar banner e galeria de imagens</p>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Corporativo
+              </h2>
+              <p className="text-gray-600">
+                Editar banner e galeria de imagens
+              </p>
             </Link>
 
             <Link
               href="/admin/furniture"
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Mobiliário</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Mobiliário
+              </h2>
               <p className="text-gray-600">Editar banner e 6 imagens</p>
             </Link>
 
@@ -175,20 +85,36 @@ export default function AdminDashboard() {
               href="/admin/ateliegroup"
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Ateliê Group</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Ateliê Group
+              </h2>
               <p className="text-gray-600">Editar banner e grid 4x4</p>
             </Link>
-
             <Link
+              href="/admin/playroom"
+              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Brinquedoteca
+              </h2>
+              <p className="text-gray-600">Editar banner e 22 imagens</p>
+            </Link>
+
+            {/* <Link
+              aria-disabled
               href="/admin/upload"
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
             >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Upload Geral</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Upload Geral
+              </h2>
               <p className="text-gray-600">Upload de imagens gerais</p>
-            </Link>
+            </Link> */}
           </div>
 
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Todas as Imagens</h3>
+          {/* <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Todas as Imagens
+          </h3>
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Filtrar por categoria:
@@ -247,11 +173,11 @@ export default function AdminDashboard() {
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           img.is_active
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {img.is_active ? 'Ativa' : 'Inativa'}
+                        {img.is_active ? "Ativa" : "Inativa"}
                       </span>
                       <span className="text-sm text-gray-500">
                         Ordem: {img.order_position}
@@ -262,7 +188,7 @@ export default function AdminDashboard() {
                         onClick={() => toggleActive(img.id, img.is_active)}
                         className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md text-sm hover:bg-blue-700"
                       >
-                        {img.is_active ? 'Desativar' : 'Ativar'}
+                        {img.is_active ? "Desativar" : "Ativar"}
                       </button>
                       <button
                         onClick={() => deleteImage(img.id, img.image_url)}
@@ -275,9 +201,9 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
-          )}
+          )} */}
         </div>
       </main>
     </div>
-  )
+  );
 }
