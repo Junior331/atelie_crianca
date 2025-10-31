@@ -209,12 +209,9 @@ export default function PlayroomAdmin() {
     router.push("/admin/login");
   };
 
-  const sections = [
-    { name: "casamentos", title: "Brinquedoteca Casamentos", count: 6 },
-    { name: "candy", title: "Brinquedoteca Candy Color", count: 6 },
-    { name: "colorida", title: "Brinquedoteca Colorida", count: 6 },
-    { name: "personalizada", title: "Brinquedoteca Personalizada", count: 3 },
-  ];
+  const getSlotsBySection = (sectionName: string) => {
+    return imageSlots.filter((s) => s.section === sectionName);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -259,64 +256,222 @@ export default function PlayroomAdmin() {
             </div>
           ))}
 
-          {/* Seções */}
-          <div className="space-y-8">
-            {sections.map((section) => (
-              <div key={section.name}>
-                <h3 className="text-md font-medium text-gray-600 mb-3">{section.title}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {imageSlots.filter((s) => s.section === section.name).map((slot) => (
-                    <div key={slot.id} className="relative">
-                      <div
-                        className="aspect-square relative cursor-pointer group overflow-hidden rounded shadow"
-                        onClick={() => handleImageClick(slot.id)}
-                      >
-                        <Image
-                          src={slot.currentImage}
-                          alt={slot.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 25vw"
-                          className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
-                          <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                            {uploading === slot.id ? "Uploading..." : "Alterar"}
-                          </span>
-                        </div>
-                        <input
-                          type="file"
-                          ref={(el) => (fileInputRefs.current[slot.id] = el)}
-                          onChange={(e) => handleFileChange(e, slot)}
-                          accept="image/*"
-                          className="hidden"
-                        />
+          {/* Brinquedoteca Casamentos */}
+          <div className="mb-8">
+            <h3 className="text-md font-medium text-gray-600 mb-3">Brinquedoteca Casamentos</h3>
+            <div className="flex flex-col gap-4">
+              {/* Primeira linha: 30% - 70% */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("casamentos").slice(0, 2).map((slot, idx) => (
+                  <div key={slot.id} className={`relative ${idx === 0 ? 'w-full md:w-[30%]' : 'w-full md:w-[70%]'} h-[200px]`}>
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveImage(slot);
-                        }}
-                        className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg transition-all z-10"
-                        title="Remover imagem"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-3 w-3"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
                     </div>
-                  ))}
-                </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+              {/* Segunda linha: 70% - 30% */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("casamentos").slice(2, 4).map((slot, idx) => (
+                  <div key={slot.id} className={`relative ${idx === 0 ? 'w-full md:w-[70%]' : 'w-full md:w-[30%]'} h-[200px]`}>
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {/* Terceira linha: 30% - 70% */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("casamentos").slice(4, 6).map((slot, idx) => (
+                  <div key={slot.id} className={`relative ${idx === 0 ? 'w-full md:w-[30%]' : 'w-full md:w-[70%]'} h-[200px]`}>
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Brinquedoteca Candy Color */}
+          <div className="mb-8">
+            <h3 className="text-md font-medium text-gray-600 mb-3">Brinquedoteca Candy Color</h3>
+            <div className="flex flex-col gap-4">
+              {/* Primeira linha: 30% - 70% */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("candy").slice(0, 2).map((slot, idx) => (
+                  <div key={slot.id} className={`relative ${idx === 0 ? 'w-full md:w-[30%]' : 'w-full md:w-[70%]'} h-[200px]`}>
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {/* Segunda linha: 70% - 30% */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("candy").slice(2, 4).map((slot, idx) => (
+                  <div key={slot.id} className={`relative ${idx === 0 ? 'w-full md:w-[70%]' : 'w-full md:w-[30%]'} h-[200px]`}>
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {/* Terceira linha: 30% - 70% */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("candy").slice(4, 6).map((slot, idx) => (
+                  <div key={slot.id} className={`relative ${idx === 0 ? 'w-full md:w-[30%]' : 'w-full md:w-[70%]'} h-[200px]`}>
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Brinquedoteca Colorida */}
+          <div className="mb-8">
+            <h3 className="text-md font-medium text-gray-600 mb-3">Brinquedoteca Colorida</h3>
+            <div className="flex flex-col gap-4">
+              {/* Primeira linha: 30% - 70% */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("colorida").slice(0, 2).map((slot, idx) => (
+                  <div key={slot.id} className={`relative ${idx === 0 ? 'w-full md:w-[30%]' : 'w-full md:w-[70%]'} h-[200px]`}>
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {/* Segunda linha: 100% */}
+              <div className="flex gap-4 h-[200px]">
+                {getSlotsBySection("colorida").slice(2, 3).map((slot) => (
+                  <div key={slot.id} className="relative w-full h-[200px]">
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {/* Terceira linha: 3 imagens iguais */}
+              <div className="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
+                {getSlotsBySection("colorida").slice(3, 6).map((slot) => (
+                  <div key={slot.id} className="relative w-full md:w-1/3 h-[200px]">
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Brinquedoteca Personalizada */}
+          <div className="mb-8">
+            <h3 className="text-md font-medium text-gray-600 mb-3">Brinquedoteca Personalizada</h3>
+            <div className="flex flex-col gap-4">
+              {/* 3 linhas de 100% cada */}
+              {getSlotsBySection("personalizada").map((slot) => (
+                <div key={slot.id} className="flex gap-4 h-[200px]">
+                  <div className="relative w-full h-[200px]">
+                    <div className="relative w-full h-full cursor-pointer group overflow-hidden rounded-lg shadow" onClick={() => handleImageClick(slot.id)}>
+                      <Image src={slot.currentImage} alt={slot.title} fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">
+                        <span className="text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                          {uploading === slot.id ? "Uploading..." : "Alterar"}
+                        </span>
+                      </div>
+                      <input type="file" ref={(el) => (fileInputRefs.current[slot.id] = el)} onChange={(e) => handleFileChange(e, slot)} accept="image/*" className="hidden" />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); handleRemoveImage(slot); }} className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg z-10" title="Remover">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </main>
