@@ -30,15 +30,17 @@ export default function UploadPage() {
   }, []);
 
   const fetchCategories = async () => {
+    type CategoryRow = { id: string; name: string; slug: string };
     const { data } = await supabase
       .from("categories")
-      .select("*")
+      .select("id, name, slug")
       .order("name");
 
     if (data) {
-      setCategories(data);
-      if (data.length > 0) {
-        setSelectedCategory(data[0].id);
+      const rows = data as CategoryRow[];
+      setCategories(rows);
+      if (rows.length > 0) {
+        setSelectedCategory(rows[0].id);
       }
     }
   };
@@ -86,15 +88,29 @@ export default function UploadPage() {
       } = supabase.storage.from("images").getPublicUrl(filePath);
 
       // Insert into database
-      const { error: dbError } = await supabase.from("images").insert({
-        category_id: selectedCategory,
-        title,
-        description: description || null,
-        image_url: publicUrl,
-        storage_path: filePath,
-        order_position: orderPosition,
-        is_active: true,
-      });
+      type ImageInsert = {
+        category_id: string;
+        title: string;
+        description: string | null;
+        image_url: string;
+        storage_path: string;
+        order_position: number;
+        is_active: boolean;
+      };
+      const insertValues: ImageInsert[] = [
+        {
+          category_id: selectedCategory,
+          title,
+          description: description || null,
+          image_url: publicUrl,
+          storage_path: filePath,
+          order_position: orderPosition,
+          is_active: true,
+        },
+      ];
+      const { error: dbError } = await supabase
+        .from("images")
+        .insert(insertValues as unknown as never[]);
 
       if (dbError) throw dbError;
 
