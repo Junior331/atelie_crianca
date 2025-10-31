@@ -9,6 +9,15 @@ import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import { getImage } from "@/assets/images";
+import { supabase } from "@/lib/supabase";
+
+interface ImageData {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string;
+  order_position: number;
+}
 
 const mesaPiqueniqueColors = [
   {
@@ -136,13 +145,62 @@ export default function Component() {
   const [selectedMesaMadeiraColor, setSelectedMesaMadeiraColor] = useState<
     (typeof mesaMadeiraColors)[0] | null
   >(null);
+  const [furnitureImages, setFurnitureImages] = useState<ImageData[]>([]);
+
+  // Estados para imagens personalizáveis
+  const [bannerImage, setBannerImage] = useState(getImage("fallback").src);
+  const [cadeirasPlasticas, setCadeirasPlasticas] = useState(getImage("fallback").src);
+  const [mesaPiquenique, setMesaPiquenique] = useState(getImage("fallback").src);
+  const [cadeirasMadeira, setCadeirasMadeira] = useState(getImage("fallback").src);
+  const [mesaMadeira, setMesaMadeira] = useState(getImage("fallback").src);
+  const [cadeirasBrancas, setCadeirasBrancas] = useState(getImage("fallback").src);
+  const [mesaRedonda, setMesaRedonda] = useState(getImage("fallback").src);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    const fetchImages = async () => {
+      try {
+        // Buscar imagens personalizáveis da página
+        const { data: pageImages } = await supabase
+          .from('page_images')
+          .select('*')
+          .eq('page', 'furniture')
+          .order('position');
 
-    return () => clearTimeout(timer);
+        if (pageImages && pageImages.length > 0) {
+          const imageMap: { [key: string]: string } = {};
+          pageImages.forEach((img) => {
+            imageMap[img.key] = img.image_url;
+          });
+
+          // Atualizar estados com imagens do banco
+          if (imageMap['furniture_banner']) setBannerImage(imageMap['furniture_banner']);
+          if (imageMap['furniture_cadeiras_plasticas']) setCadeirasPlasticas(imageMap['furniture_cadeiras_plasticas']);
+          if (imageMap['furniture_mesa_piquenique']) setMesaPiquenique(imageMap['furniture_mesa_piquenique']);
+          if (imageMap['furniture_cadeiras_madeira']) setCadeirasMadeira(imageMap['furniture_cadeiras_madeira']);
+          if (imageMap['furniture_mesa_madeira']) setMesaMadeira(imageMap['furniture_mesa_madeira']);
+          if (imageMap['furniture_cadeiras_brancas']) setCadeirasBrancas(imageMap['furniture_cadeiras_brancas']);
+          if (imageMap['furniture_mesa_redonda']) setMesaRedonda(imageMap['furniture_mesa_redonda']);
+        }
+
+        // Buscar imagens da seção "Nossa Estrutura"
+        const { data } = await supabase
+          .from('images')
+          .select('id, title, description, image_url, order_position')
+          .eq('category_id', (await supabase.from('categories').select('id').eq('slug', 'furniture').single()).data?.id)
+          .eq('is_active', true)
+          .order('order_position');
+
+        if (data) {
+          setFurnitureImages(data);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar imagens:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchImages();
   }, []);
 
   return (
@@ -162,7 +220,9 @@ export default function Component() {
             {/* Banner */}
               <div className="relative w-full h-auto max-h-[640px] flex items-center justify-center overflow-hidden">
                 <Image
-                  src={getImage("capa_mobiliario")}
+                  width={1200}
+                  height={500}
+                  src={bannerImage}
                   alt="Nossos Mobiliários"
                   className="mission-image"
                 />
@@ -182,13 +242,13 @@ export default function Component() {
                     <Image
                       width={600}
                       height={200}
-                      src={getImage("cadeirs")}
+                      src={cadeirasPlasticas}
                       alt="Cadeiras plásticas coloridas"
                     />
                   </div>
                   <div className="flex flex-col items-center">
                     <Image
-                      src={getImage("mesa")}
+                      src={mesaPiquenique}
                       alt="Mesa de piquenique rosa"
                       width={600}
                       height={200}
@@ -231,7 +291,7 @@ export default function Component() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                   <div>
                     <Image
-                      src={getImage("cadeira02")}
+                      src={cadeirasMadeira}
                       alt="Cadeiras de madeira coloridas"
                       width={600}
                       height={200}
@@ -240,7 +300,7 @@ export default function Component() {
                   <div className="flex flex-col items-center">
                     <div className="relative">
                       <Image
-                        src={getImage("mesa2")}
+                        src={mesaMadeira}
                         alt="Mesa de madeira"
                         width={600}
                         height={200}
@@ -288,7 +348,7 @@ export default function Component() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                   <div>
                     <Image
-                      src={getImage("cadeira03")}
+                      src={cadeirasBrancas}
                       alt="Cadeiras brancas variadas"
                       width={600}
                       height={200}
@@ -296,7 +356,7 @@ export default function Component() {
                   </div>
                   <div className="flex flex-col items-center">
                     <Image
-                      src={getImage("mesa3")}
+                      src={mesaRedonda}
                       alt="Mesa redonda branca"
                       width={600}
                       height={150}
@@ -305,80 +365,33 @@ export default function Component() {
                 </div>
               </div>
 
-              {/* Nossa Estrutura */}
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">
-                NOSSA ESTRUTURA
-              </h2>
+              {/* Nossa Estrutura - Imagens do Supabase */}
+              {furnitureImages.length > 0 && (
+                <>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                    NOSSA ESTRUTURA
+                  </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Variedade */}
-                <div className="space-y-4">
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src="/images/mobiliario/variedade.jpg"
-                      alt="Variedade"
-                      fill
-                      className="object-cover"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {furnitureImages.map((img) => (
+                      <div key={img.id} className="space-y-4">
+                        <div className="relative h-64 overflow-hidden rounded-lg">
+                          <Image
+                            src={img.image_url}
+                            alt={img.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900">{img.title}</h3>
+                        {img.description && (
+                          <p className="text-gray-700">{img.description}</p>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Variedade</h3>
-                  <p className="text-gray-700">
-                    Nosso acervo conta com várias opções
-                  </p>
-                </div>
-
-                {/* Simplicidade */}
-                <div className="space-y-4">
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src="/images/mobiliario/simplicidade.jpg"
-                      alt="Simplicidade"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    Simplicidade
-                  </h3>
-                  <p className="text-gray-700">
-                    Acervo que se adequa ao seu evento
-                  </p>
-                </div>
-
-                {/* Personalidade */}
-                <div className="space-y-4">
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src="/images/mobiliario/personalidade.jpg"
-                      alt="Personalidade"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    Personalidade
-                  </h3>
-                  <p className="text-gray-700">
-                    Temos um acervo personalizável
-                  </p>
-                </div>
-
-                {/* Tamanho */}
-                <div className="space-y-4">
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src="/images/mobiliario/tamanho.jpg"
-                      alt="Tamanho"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900">Tamanho</h3>
-                  <p className="text-gray-700">
-                    Nossa estrutura ocupou um campo de futebol
-                  </p>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </section>
           <Footer />

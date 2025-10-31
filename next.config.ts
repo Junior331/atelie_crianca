@@ -10,6 +10,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "fulbaxplriohotozocfr.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
         hostname: "picsum.photos",
       },
     ],

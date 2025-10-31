@@ -23,9 +23,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
+    <html lang="pt-br" suppressHydrationWarning>
       <link rel="icon" href="/favicon.png" sizes="any" />
-      <body className={`${notoSans.variable} antialiased`}>
+      <body className={`${notoSans.variable} antialiased`} suppressHydrationWarning>
         <CartProvider>{children}</CartProvider>
       </body>
     </html>

@@ -8,26 +8,76 @@ import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
 import Image from "next/image";
 import { getImage } from "@/assets/images";
+import { supabase } from "@/lib/supabase";
+
+interface ImageData {
+  id: number;
+  src: string;
+  colSpan?: string;
+}
+
+// Array fixo que define a estrutura do grid (6 posições)
+const GALLERY_STRUCTURE = [
+  { id: 1, colSpan: "md:col-span-2" },
+  { id: 2, colSpan: undefined },
+  { id: 3, colSpan: undefined },
+  { id: 4, colSpan: "md:col-span-2" },
+  { id: 5, colSpan: "md:col-span-2" },
+  { id: 6, colSpan: undefined },
+];
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(true);
+  const [bannerImage, setBannerImage] = useState(getImage("fallback").src);
+  const [galleryImages, setGalleryImages] = useState<ImageData[]>(
+    GALLERY_STRUCTURE.map((item) => ({
+      ...item,
+      src: getImage("fallback").src,
+    }))
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    loadImages();
   }, []);
 
-  const mockImages = [
-    { id: 1, src: getImage('mesa_01'), colSpan: "md:col-span-2" },
-    { id: 2, src: getImage('mesa_02') },
-    { id: 3, src: getImage('mesa_03') },
-    { id: 4, src: getImage('mesa_04'), colSpan: "md:col-span-2" },
-    { id: 5, src: getImage('mesa_05'), colSpan: "md:col-span-2" },
-    { id: 6, src: getImage('mesa_05') },
-  ];
+  const loadImages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("page_images")
+        .select("*")
+        .eq("page", "souvenirs")
+        .order("position");
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Mapear imagens do banco
+        const imageMap: { [key: string]: string } = {};
+        data.forEach((img) => {
+          imageMap[img.key] = img.image_url;
+        });
+
+        // Atualizar banner se existir
+        if (imageMap["souvenirs_banner"]) {
+          setBannerImage(imageMap["souvenirs_banner"]);
+        }
+
+        // Atualizar galeria - usar setGalleryImages com função callback
+        setGalleryImages((prevImages) =>
+          prevImages.map((img, index) => {
+            const key = `souvenirs_mesa_0${index + 1}`;
+            return imageMap[key] ? { ...img, src: imageMap[key] } : img;
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao carregar imagens:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -43,28 +93,30 @@ export default function Component() {
         >
           <Header />
           <section className="relative min-h-screen flex flex-col">
-            <div className="">
-              <div className="ml-auto w-full ">
-                <div className=" relative md:h-[700px] flex items-center justify-center">
-                  <Image
-                    width={1200}
-                    height={500}
-                    src="/images/table-cover-snack.png"
-                    alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                    className="mission-image"
-                  />
-                </div>
+            <div className="ml-auto w-full ">
+              <div className="relative h-auto lg:h-[600px] flex items-center justify-center">
+                <Image
+                  width={1200}
+                  height={500}
+                  src={bannerImage}
+                  alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
+                  className="mission-image scale-100"
+                />
               </div>
 
               <div className=" grid grid-cols-1 gap-2 p-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 sm:p-4">
-                {mockImages.map((img) => (
+                {galleryImages.map((img) => (
                   <div
                     key={img.id}
-                    className={`flex items-center justify-center min-h-auto md:h-[300px] overflow-hidden ${
-                      img.colSpan
-                    }`}
+                    className={`flex items-center justify-center min-h-auto md:h-[300px] overflow-hidden ${img.colSpan}`}
                   >
-                    <Image src={img.src} alt={`Imagem ${img.id}`} className="mission-image" />
+                    <Image
+                      width={600}
+                      height={200}
+                      src={img.src || getImage("fallback")}
+                      alt={`Imagem ${img.id}`}
+                      className="mission-image"
+                    />
                   </div>
                 ))}
               </div>
