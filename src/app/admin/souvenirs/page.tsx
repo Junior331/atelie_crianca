@@ -275,7 +275,7 @@ export default function SouvenirsAdmin() {
                 ← Voltar
               </Link>
               <h1 className="text-xl font-bold text-gray-900">
-                Editar Mesa de Doces
+                Editar Mesa de Lanchinho
               </h1>
             </div>
             <div className="flex items-center">
@@ -320,7 +320,7 @@ export default function SouvenirsAdmin() {
                       width={slot.width}
                       height={slot.height}
                       src={slot.currentImage}
-                      alt="Banner Mesa de Doces"
+                      alt="Banner Mesa de Lanchinho"
                       className="mission-image"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/80 transition-all flex items-center justify-center">

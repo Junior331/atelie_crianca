@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/hooks/use-cart";
+import { FeatureFlagsProvider } from "@/hooks/use-feature-flags";
 
 const notoSans = Noto_Sans({
   weight: ["400", "500", "600", "700"],
@@ -26,7 +27,9 @@ export default function RootLayout({
     <html lang="pt-br" suppressHydrationWarning>
       <link rel="icon" href="/favicon.png" sizes="any" />
       <body className={`${notoSans.variable} antialiased`} suppressHydrationWarning>
-        <CartProvider>{children}</CartProvider>
+        <FeatureFlagsProvider>
+          <CartProvider>{children}</CartProvider>
+        </FeatureFlagsProvider>
       </body>
     </html>
   );

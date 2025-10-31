@@ -3,16 +3,94 @@
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useFeatureFlags } from "@/hooks/use-feature-flags";
+import { useState } from "react";
 
 export default function AdminDashboard() {
   const router = useRouter();
-
-
+  const { flags, toggleFlag } = useFeatureFlags();
+  const [toggling, setToggling] = useState<string | null>(null);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     document.cookie = "supabase-auth-token=; path=/; max-age=0";
     router.push("/admin/login");
+  };
+
+  const handleToggleFlag = async (id: string, currentValue: boolean) => {
+    setToggling(id);
+    try {
+      await toggleFlag(id, !currentValue);
+    } catch (error) {
+      console.error("Error toggling flag:", error);
+    } finally {
+      setToggling(null);
+    }
+  };
+
+  // Service cards configuration
+  const serviceCards = [
+    {
+      name: "Página Inicial",
+      slug: "home",
+      href: "/admin/home",
+      description: "Editar 11 imagens (3 seções)",
+      hasFlag: false,
+    },
+    {
+      name: "Mesa de Lanchinho",
+      slug: "souvenirstable",
+      href: "/admin/souvenirs",
+      description: "Editar banner e galeria de imagens",
+      hasFlag: true,
+    },
+    {
+      name: "Corporativo",
+      slug: "corporate",
+      href: "/admin/corporate",
+      description: "Editar banner e galeria de imagens",
+      hasFlag: true,
+    },
+    {
+      name: "Mobiliário",
+      slug: "furniture",
+      href: "/admin/furniture",
+      description: "Editar banner e 6 imagens",
+      hasFlag: true,
+    },
+    {
+      name: "Ateliê Group",
+      slug: "ateliegroup",
+      href: "/admin/ateliegroup",
+      description: "Editar banner e grid 4x4",
+      hasFlag: true,
+    },
+    {
+      name: "Brinquedoteca",
+      slug: "playroom",
+      href: "/admin/playroom",
+      description: "Editar banner e 22 imagens",
+      hasFlag: true,
+    },
+    {
+      name: "Quem Somos",
+      slug: "about",
+      href: "/admin/about",
+      description: "Editar 3 imagens",
+      hasFlag: true,
+    },
+    {
+      name: "Casamentos",
+      slug: "wedding",
+      href: "/admin/wedding",
+      description: "Editar banner e 6 imagens",
+      hasFlag: true,
+    },
+  ];
+
+  // Get flag status for a service
+  const getFlagForService = (slug: string) => {
+    return flags.find((f) => f.slug === slug);
   };
   return (
     <div className="min-h-screen bg-gray-100">
@@ -51,101 +129,102 @@ export default function AdminDashboard() {
 
       <main className="mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          {/* Navigation Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-            <Link
-              href="/admin/home"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Página Inicial
-              </h2>
-              <p className="text-gray-600">Editar 11 imagens (3 seções)</p>
-            </Link>
+          {/* Feature Flags Section */}
+          <div className="mb-8 bg-white p-6 rounded-lg shadow">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Controle de Visibilidade (Feature Flags)
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Ative ou desative páginas/rotas no site. Quando desativada, a
+              página não aparecerá no menu.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {flags.map((flag) => {
+                const isToggling = toggling === flag.id;
+                return (
+                  <div
+                    key={flag.id}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900">
+                        {flag.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {flag.description}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleToggleFlag(flag.id, flag.is_enabled)}
+                      disabled={isToggling}
+                      className={`ml-4 relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        flag.is_enabled ? "bg-pink-600" : "bg-gray-200"
+                      } ${
+                        isToggling
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-pointer"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          flag.is_enabled ? "translate-x-6" : "translate-x-1"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
-            <Link
-              href="/admin/souvenirs"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Mesa de Doces
-              </h2>
-              <p className="text-gray-600">
-                Editar banner e galeria de imagens
-              </p>
-            </Link>
+          {/* Service Cards Section */}
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Seção 2: Cards de Serviços
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            {serviceCards.map((card) => {
+              const flag = getFlagForService(card.slug);
+              const isEnabled = flag?.is_enabled ?? true;
+              const showFlag = card.hasFlag;
 
-            <Link
-              href="/admin/corporate"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Corporativo
-              </h2>
-              <p className="text-gray-600">
-                Editar banner e galeria de imagens
-              </p>
-            </Link>
-
-            <Link
-              href="/admin/furniture"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Mobiliário
-              </h2>
-              <p className="text-gray-600">Editar banner e 6 imagens</p>
-            </Link>
-
-            <Link
-              href="/admin/ateliegroup"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Ateliê Group
-              </h2>
-              <p className="text-gray-600">Editar banner e grid 4x4</p>
-            </Link>
-            <Link
-              href="/admin/playroom"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Brinquedoteca
-              </h2>
-              <p className="text-gray-600">Editar banner e 22 imagens</p>
-            </Link>
-
-            <Link
-              href="/admin/about"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Quem Somos
-              </h2>
-              <p className="text-gray-600">Editar 3 imagens</p>
-            </Link>
-
-            <Link
-              href="/admin/wedding"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Casamentos
-              </h2>
-              <p className="text-gray-600">Editar banner e 6 imagens</p>
-            </Link>
-
-            {/* <Link
-              aria-disabled
-              href="/admin/upload"
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Upload Geral
-              </h2>
-              <p className="text-gray-600">Upload de imagens gerais</p>
-            </Link> */}
+              return (
+                <div
+                  key={card.slug}
+                  className={`flex flex-col justify-between bg-white p-6 rounded-lg shadow transition-all ${
+                    !isEnabled && showFlag
+                      ? "opacity-50 border-2 border-red-300"
+                      : ""
+                  }`}
+                >
+                  <div className="flex flex-col gap-2 mb-4">
+                    <h2 className="text-xl font-bold text-gray-900">
+                      {card.name}
+                    </h2>
+                    <p className="text-gray-600 text-sm ">{card.description}</p>
+                    {showFlag && (
+                      <p className="text-xs text-gray-500 ">
+                        Status:{" "}
+                        <span
+                          className={
+                            isEnabled
+                              ? "text-green-600 font-medium"
+                              : "text-red-600 font-medium"
+                          }
+                        >
+                          {isEnabled ? "Visível no site" : "Oculto no site"}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    href={card.href}
+                    className="block text-center px-4 py-2 rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700"
+                  >
+                    Editar Página
+                  </Link>
+                </div>
+              );
+            })}
           </div>
 
           {/* <h3 className="text-lg font-semibold text-gray-900 mb-4">

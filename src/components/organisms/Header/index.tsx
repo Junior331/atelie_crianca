@@ -11,24 +11,30 @@ import { HeaderProps } from "./@types";
 import { Button } from "@/components/atoms";
 import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useFeatureFlags } from "@/hooks/use-feature-flags";
 
-const navigationItems = [
-  { name: "Quem somos", href: "/about" },
-  { name: "Oficinas", href: "/workshops" },
-  { name: "Brinquedoteca", href: "/playroom" },
-  { name: "Casamentos", href: "/wedding" },
-  { name: "Produtos", href: "/products" },
-  { name: "Mesa de Lanchinho", href: "/souvenirstable" },
-  { name: "Corporativo", href: "/corporate" },
-  // { name: "Portfólio", href: "/portfolio" },
-  { name: "Mobiliário", href: "/furniture" },
-  { name: "Grupo Ateliê", href: "/ateliegroup" },
+const allNavigationItems = [
+  { name: "Quem somos", href: "/about", slug: "about" },
+  { name: "Oficinas", href: "/workshops", slug: "workshops" },
+  { name: "Brinquedoteca", href: "/playroom", slug: "playroom" },
+  { name: "Casamentos", href: "/wedding", slug: "wedding" },
+  { name: "Produtos", href: "/products", slug: "products" },
+  { name: "Mesa de Lanchinho", href: "/souvenirstable", slug: "souvenirstable" },
+  { name: "Corporativo", href: "/corporate", slug: "corporate" },
+  { name: "Mobiliário", href: "/furniture", slug: "furniture" },
+  { name: "Grupo Ateliê", href: "/ateliegroup", slug: "ateliegroup" },
 ];
 
 const Header = ({ isSecundary = true }: HeaderProps) => {
   const { items } = useCart();
   const { favoritesCount } = useFavorites();
+  const { isEnabled } = useFeatureFlags();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Filter navigation items based on feature flags
+  const navigationItems = allNavigationItems.filter((item) =>
+    isEnabled(item.slug)
+  );
 
   return (
     <motion.header
