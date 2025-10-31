@@ -8,6 +8,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button, LoadingSpinner } from "@/components/atoms";
 import { Header } from "@/components/organisms/Header";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useCart } from "@/hooks/use-cart";
 import { Product } from "@/types/product";
 import { workshopFolders } from "@/utils/workshop-categories";
 import { Footer } from "@/components/modules";
@@ -18,6 +19,7 @@ export default function WorkshopDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { addItem } = useCart();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -159,8 +161,7 @@ export default function WorkshopDetailPage() {
 
   const handleAddToCart = () => {
     if (!currentProduct) return;
-
-    // Adicionar a quantidade especificada
+    addItem(currentProduct);
   };
 
   const handleToggleFavorite = () => {
