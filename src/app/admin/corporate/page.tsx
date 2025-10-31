@@ -277,7 +277,7 @@ export default function CorporateAdmin() {
             <div className="flex items-center">
               <button
                 onClick={handleLogout}
-                className="text-gray-700 hover:text-gray-900"
+                className="text-gray-700 hover:text-gray-900 cursor-pointer"
               >
                 Sair
               </button>

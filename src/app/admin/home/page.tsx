@@ -237,7 +237,7 @@ export default function HomeAdmin() {
               <Link href="/admin" className="text-gray-600 hover:text-gray-900">← Voltar</Link>
               <h1 className="text-xl font-bold text-gray-900">Editar Página Inicial</h1>
             </div>
-            <button onClick={handleLogout} className="text-gray-700 hover:text-gray-900">Sair</button>
+            <button onClick={handleLogout} className="text-gray-700 hover:text-gray-900 cursor-pointer">Sair</button>
           </div>
         </div>
       </nav>
