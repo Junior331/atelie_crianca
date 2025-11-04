@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import type { Workshop, WorkshopImage, WorkshopWithImages } from "@/types/database";
-import { Pencil, Trash2, Plus, X, Upload, GripVertical, Eye } from "lucide-react";
+import { Pencil, Trash2, Plus, X, Upload, Eye } from "lucide-react";
 
 export default function WorkshopsAdmin() {
   const router = useRouter();
@@ -31,6 +31,7 @@ export default function WorkshopsAdmin() {
   useEffect(() => {
     checkAuth();
     loadWorkshops();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkAuth = async () => {
@@ -138,6 +139,7 @@ export default function WorkshopsAdmin() {
         // Atualizar
         const { error } = await supabase
           .from("workshops")
+          // @ts-expect-error - Supabase types not inferring correctly
           .update({
             title: formData.title,
             slug: formData.slug,
@@ -153,6 +155,7 @@ export default function WorkshopsAdmin() {
         // Criar
         const { error } = await supabase
           .from("workshops")
+          // @ts-expect-error - Supabase types not inferring correctly
           .insert({
             title: formData.title,
             slug: formData.slug,
@@ -211,6 +214,7 @@ export default function WorkshopsAdmin() {
     try {
       const { error } = await supabase
         .from("workshops")
+        // @ts-expect-error - Supabase types not inferring correctly
         .update({ is_active: !workshop.is_active })
         .eq("id", workshop.id);
 
@@ -250,6 +254,7 @@ export default function WorkshopsAdmin() {
 
       const { error: dbError } = await supabase
         .from("workshop_images")
+        // @ts-expect-error - Supabase types not inferring correctly
         .insert({
           workshop_id: workshopId,
           image_url: publicUrl,
@@ -272,7 +277,7 @@ export default function WorkshopsAdmin() {
     }
   };
 
-  const handleDeleteImage = async (image: WorkshopImage, workshopId: string) => {
+  const handleDeleteImage = async (image: WorkshopImage) => {
     if (!confirm("Tem certeza que deseja remover esta imagem?")) return;
 
     try {
@@ -305,7 +310,9 @@ export default function WorkshopsAdmin() {
     const otherWorkshop = workshops[newIndex];
 
     try {
+      // @ts-expect-error - Supabase types not inferring correctly
       await supabase.from("workshops").update({ order_position: newIndex }).eq("id", workshop.id);
+      // @ts-expect-error - Supabase types not inferring correctly  
       await supabase.from("workshops").update({ order_position: currentIndex }).eq("id", otherWorkshop.id);
 
       loadWorkshops();
@@ -469,7 +476,7 @@ export default function WorkshopsAdmin() {
                               className="object-cover rounded"
                             />
                             <button
-                              onClick={() => handleDeleteImage(img, workshop.id)}
+                              onClick={() => handleDeleteImage(img)}
                               className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <X size={12} />

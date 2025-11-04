@@ -5,7 +5,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useRef, useState, useMemo, useEffect } from "react";
+import { useRef, useState, useMemo, useEffect, useCallback } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -37,9 +37,9 @@ const WorkshopCard = ({
   const imageCount = workshop.workshop_images.length;
 
   // Função para alternar imagens
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageCount);
-  };
+  }, [imageCount]);
 
   // Iniciar/parar o intervalo baseado no hover
   useEffect(() => {
@@ -57,7 +57,7 @@ const WorkshopCard = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isHovered, imageCount]);
+  }, [isHovered, imageCount, nextImage]);
 
   // Reset para primeira imagem quando sai do hover
   useEffect(() => {

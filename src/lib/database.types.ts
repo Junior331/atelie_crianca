@@ -70,6 +70,73 @@ export interface Database {
           updated_at?: string
         }
       }
+      workshops: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          description: string | null
+          is_active: boolean
+          order_position: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          description?: string | null
+          is_active?: boolean
+          order_position?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title?: string
+          description?: string | null
+          is_active?: boolean
+          order_position?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      workshop_images: {
+        Row: {
+          id: string
+          workshop_id: string
+          image_url: string
+          order_position: number
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          workshop_id: string
+          image_url: string
+          order_position?: number
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          workshop_id?: string
+          image_url?: string
+          order_position?: number
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
     }
   }
 }
