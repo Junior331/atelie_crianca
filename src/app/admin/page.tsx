@@ -38,6 +38,13 @@ export default function AdminDashboard() {
       hasFlag: false,
     },
     {
+      name: "Oficinas",
+      slug: "workshops",
+      href: "/admin/workshops",
+      description: "Gerenciar oficinas (criar, editar, imagens)",
+      hasFlag: false,
+    },
+    {
       name: "Mesa de Lanchinho",
       slug: "souvenirstable",
       href: "/admin/souvenirs",

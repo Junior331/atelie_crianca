@@ -1,199 +1,31 @@
+// NOVA VERSÃO - Usando dados do banco Supabase
+// Este arquivo é uma alternativa ao index.tsx que usa dados dinâmicos do banco
+// Para ativar, renomeie index.tsx para index-old.tsx e este arquivo para index.tsx
+
 "use client";
 
-import { Search, ChevronDown, ChevronRight, X } from "lucide-react";
-import { useRef, useState, useMemo, useEffect, useCallback } from "react";
+import { Search, X } from "lucide-react";
+import { useRef, useState, useMemo, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { Card } from "@/components/organisms";
 import { Button, Input } from "@/components/atoms";
-import { useProducts } from "@/hooks/use-products";
-import { useFavorites } from "@/hooks/use-favorites";
 import { CardContent } from "@/components/organisms/Card";
-import {
-  workshopFolders,
-  foldersWithSubfolders,
-  subfolderImageCounts,
-} from "@/utils/workshop-categories";
-import { Product } from "@/types/product";
-import { getWorkshopImage, getWorkshopImageCount } from "@/assets/workshop";
-
-// Descrições específicas para cada oficina
-const workshopDescriptions: Record<string, string> = {
-  AQUÁRIO: "Montagem e decoração de aquários temáticos",
-  "OFICINA DE ARCO DISNEY": "Montagem e customização de arcos temáticos",
-  "OFICINA DE ASA DE BORBOLETA": "Customização de asas de borboletas",
-  "OFICINA DE BELEZA": "Maquiagem e penteados",
-  "OFICINA DE BIJU": "Criação de biju e chaveiros",
-  "OFICINA DE BISCOITOS DECORADOS": "Decoração de biscoitos",
-  BISCUIT: "Modelagem e decoração em biscuit",
-  "OFICINA DE BODYS DE BEBÊ": "Personalização de bodys",
-  "OFICINA DE BOLHAS DE SABAO": "Brincadeira e experiência lúdica com bolhas",
-  "OFICINA DE BOLSAS DE PALHA": "Customização de bolsas",
-  "OFICINA DE BONE": "Personalização criativa de bonés",
-  "BRINCADEIRAS RAIZ": "Resgate de jogos e brincadeiras tradicionais",
-  BRINQUEDOTECA: "Resgate de jogos e brincadeiras tradicionais",
-  "OFICINA DE BUCKET": "Pintura e customização de chapéus bucket",
-  "OFICINA DE CADERNINHOS": "Personalização de caderninhos",
-  "CAIXA DE FADA": "Pintura e decoração de caixas artesanais",
-  "OFICINA DE CAMISAS": "Customização de camisas",
-  "CAPA HARRY POTTER": "Customização de capas do Harry Potter",
-  "OFICINA DE CAPA DE SUPER-HERÓI": "Customização de capas ",
-  CARMED: "Atividades especiais Carmed",
-  "OFICINA DE CARTINHAS": "Produção e decoração de cartinhas criativas",
-  "OFICINA DE CARTOLA": "Customização de cartolas",
-  "CHAPEU DE PALHA": "Customização de chapéus de palha",
-  CIENTISTA: "Experiências e atividades de cientista",
-  "OFICINA DE COLAGEM E CRIATIVIDADE": "Customização de totem",
-  "OFICINA DE CUPCAKE": "Decoração de cupcakes",
-  "OFICINA DE ESMALTAÇAO": "Pintura de unhas",
-  "ESPAÇO SONINHO": "Espaço relaxante e atividades calmas",
-  "OFICINA DE ESTOJO": "Customização de estojos",
-  "OFICINA DE FANTOCHES": "Montagem de personagens em fantoche",
-  "OFICINA DE JARDINAGEM": "Plantio e cuidado com mudinhas",
-  "MAQUIAGEM ARTÍSTICA": "Pintura livre no rosto e maquiagem artística",
-  "OFICINA DE MASCARA": "Decoração de máscaras temáticas",
-  "PINTURA EM BOBBIE GOODS": "Pintura em produtos Bobbie Goods",
-  "OFICINA DE PINTURA NA TELA": "Arte em mini telas de pintura",
-  "OFICINA DE PINTURA NO CAVALETE": "Pintura em cavalete",
-  "OFICINA DE RECICLAGEM": "Arte e materiais a partir de reciclados",
-  RECREAÇOES: "Dinâmicas e brincadeiras",
-  "OFICINA DE SLIME": "Confecção de slimes coloridos",
-  "SLIME NEON": "Confecção de slimes neon",
-  SPA: "Cuidados e brincadeiras de spa infantil",
-  "TOTEM MDF": "Customização de totens decorativos",
-  "OFICINA DE VARINHA DE CONDÃO": "Customização de varinhas mágicas",
-  "OFICINA DE VARINHA HARRY POTTER":
-    "Personalização de varinhas do Harry Potter",
-  "OFICINA DE VISEIRA": "Pintura e customização de viseiras",
-};
-
-// Portfolio items data
-// const portfolioItems = [
-//   {
-//     id: "1",
-//     title: "RECEPÇÃO DE CASAMENTO",
-//     subtitle: "Elegante celebração noturna",
-//     category: "weddings",
-//     image: "/images/wedding-elegant.png",
-//   },
-//   {
-//     id: "2",
-//     title: "JANTAR DE GALA CORPORATIVO",
-//     subtitle: "Gala anual da empresa",
-//     category: "corporate",
-//     image: "/images/corporate-event.png",
-//   },
-//   {
-//     id: "3",
-//     title: "CASAMENTO AO AR LIVRE",
-//     subtitle: "Preparação da cerimónia no jardim",
-//     category: "weddings",
-//     image: "/images/outdoor-wedding-ceremony.jpg",
-//   },
-//   {
-//     id: "4",
-//     title: "FESTA DE ANIVERSÁRIO",
-//     subtitle: "Celebração doce",
-//     category: "birthdays",
-//     image: "/images/birthday-party-pink.jpg",
-//   },
-// ];
-
-// Portfolio Carousel Component
-// const PortfolioCarousel = () => {
-//   const [currentIndex, setCurrentIndex] = useState(0);
-//   const [isAutoPlay, setIsAutoPlay] = useState(true);
-
-//   const nextSlide = useCallback(() => {
-//     setCurrentIndex((prev) => (prev + 1) % portfolioItems.length);
-//   }, []);
-
-//   const prevSlide = useCallback(() => {
-//     setCurrentIndex((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
-//   }, []);
-
-//   const goToSlide = useCallback((index: number) => {
-//     setCurrentIndex(index);
-//   }, []);
-
-//   // Auto-play functionality
-//   useEffect(() => {
-//     if (!isAutoPlay) return;
-
-//     const interval = setInterval(nextSlide, 4000);
-//     return () => clearInterval(interval);
-//   }, [nextSlide, isAutoPlay]);
-
-//   return (
-//     <div
-//       className="relative w-full h-96 md:h-[500px] overflow-hidden bg-gray-100 group"
-//       onMouseEnter={() => setIsAutoPlay(false)}
-//       onMouseLeave={() => setIsAutoPlay(true)}
-//     >
-//       {/* Main Image */}
-//       <AnimatePresence mode="wait">
-//         <motion.div
-//           key={currentIndex}
-//           initial={{ opacity: 0, scale: 1.1 }}
-//           animate={{ opacity: 1, scale: 1 }}
-//           exit={{ opacity: 0, scale: 0.95 }}
-//           transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-//           className="absolute inset-0"
-//         >
-//           <Image
-//             src={portfolioItems[currentIndex].image}
-//             alt={portfolioItems[currentIndex].title}
-//             fill
-//             className="object-cover"
-//             priority={currentIndex === 0}
-//           />
-//           <div className="absolute inset-0 bg-black/20" />
-//         </motion.div>
-//       </AnimatePresence>
-
-//       {/* Navigation Arrows */}
-//       <button
-//         onClick={prevSlide}
-//         className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-//       >
-//         <ChevronLeft size={20} className="text-gray-800" />
-//       </button>
-
-//       <button
-//         onClick={nextSlide}
-//         className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-//       >
-//         <ChevronRight size={20} className="text-gray-800" />
-//       </button>
-
-//       {/* Dots Indicator */}
-//       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
-//         {portfolioItems.map((_, index) => (
-//           <button
-//             key={index}
-//             onClick={() => goToSlide(index)}
-//             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-//               currentIndex === index ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
-//             }`}
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
+import { useWorkshops } from "@/hooks/use-workshops";
+import { useFavorites } from "@/hooks/use-favorites";
+import type { WorkshopWithImages } from "@/types/database";
+import type { Product } from "@/types/product";
 
 // Componente para o card de oficina com hover infinito
 const WorkshopCard = ({
-  workshopName,
-  onImageClick,
+  workshop,
   onDetailsClick,
   onFavoriteClick,
   isFavorite,
 }: {
-  workshopName: string;
-  onImageClick: (itemIndex: number) => void;
+  workshop: WorkshopWithImages;
   onDetailsClick: () => void;
   onFavoriteClick: () => void;
   isFavorite: boolean;
@@ -202,69 +34,17 @@ const WorkshopCard = ({
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Mapear nome da oficina para pasta correspondente
-  const getFolderName = (name: string) => {
-    const mapping: Record<string, string> = {
-      "OFICINA DE ARCO DISNEY": "ARCO DISNEY",
-      "OFICINA DE ASA DE BORBOLETA": "ASA DE BORBOLETA",
-      "OFICINA DE BELEZA": "BELEZA",
-      "OFICINA DE BIJU": "BIJU COM CHAVEIROS",
-      "OFICINA DE BISCOITOS DECORADOS": "BISCOITOS DECORADOS",
-      "OFICINA DE BODYS DE BEBÊ": "BODYS",
-      "OFICINA DE BOLHAS DE SABAO": "BOLHAS DE SABAO",
-      "OFICINA DE BOLSAS DE PALHA": "BOLSAS DE PALHA",
-      "OFICINA DE BONE": "BONE",
-      "OFICINA DE BUCKET": "BUCKET",
-      "OFICINA DE CADERNINHOS": "CADERNINHOS",
-      "OFICINA DE CAMISAS": "CAMISAS",
-      "OFICINA DE CAPA DE SUPER-HERÓI": "CAPAS HEROIS",
-      "OFICINA DE CARTINHAS": "CARTINHAS",
-      "OFICINA DE CARTOLA": "CARTOLA",
-      "OFICINA DE COLAGEM E CRIATIVIDADE": "COLAGEM E CRIATIVIDADE",
-      "OFICINA DE CUPCAKE": "CUPCAKE",
-      "OFICINA DE ESMALTAÇAO": "ESMALTAÇAO",
-      "OFICINA DE ESTOJO": "ESTOJO",
-      "OFICINA DE FANTOCHES": "FANTOCHES",
-      "OFICINA DE JARDINAGEM": "JARDINAGEM",
-      "OFICINA DE MASCARA": "MASCARA",
-      "OFICINA DE PINTURA NA TELA": "PINTURA EM TELA",
-      "OFICINA DE PINTURA NO CAVALETE": "PINTURA NO CAVALETE",
-      "OFICINA DE RECICLAGEM": "RECICLAGEM",
-      "OFICINA DE SLIME": "SLIME",
-      "OFICINA DE VARINHA DE CONDÃO": "VARINHA E COROA",
-      "OFICINA DE VARINHA HARRY POTTER": "VARINHA HARRY POTTER",
-      "OFICINA DE VISEIRA": "VISEIRA",
-    };
-    return mapping[name] || name;
-  };
-
-  const folderName = getFolderName(workshopName);
-
-  // Obter a subpasta se for BRINQUEDOTECA
-  const getSubfolder = () => {
-    if (folderName === "BRINQUEDOTECA") {
-      return "COLORIDA"; // Usar COLORIDA como padrão
-    }
-    return undefined;
-  };
-
-  const subfolder = getSubfolder();
-
-  // Obter o número de imagens para esta oficina
-  const imageCount = getWorkshopImageCount(folderName, subfolder);
-
-  // Array com os índices das imagens (1, 2, 3, etc.)
-  const imageIndices = Array.from({ length: imageCount }, (_, i) => i + 1);
+  const imageCount = workshop.workshop_images.length;
 
   // Função para alternar imagens
-  const nextImage = useCallback(() => {
+  const nextImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageCount);
-  }, [imageCount]);
+  };
 
   // Iniciar/parar o intervalo baseado no hover
   useEffect(() => {
     if (isHovered && imageCount > 1) {
-      intervalRef.current = setInterval(nextImage, 2000); // Troca a cada 2.8s (800ms + 2s)
+      intervalRef.current = setInterval(nextImage, 2000);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -277,7 +57,7 @@ const WorkshopCard = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isHovered, imageCount, nextImage]);
+  }, [isHovered, imageCount]);
 
   // Reset para primeira imagem quando sai do hover
   useEffect(() => {
@@ -285,25 +65,6 @@ const WorkshopCard = ({
       setCurrentImageIndex(0);
     }
   }, [isHovered]);
-
-  const formatWorkshopName = (name: string) => {
-    return name
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
-  // Obter a descrição específica da oficina
-  const getWorkshopDescription = (workshopName: string) => {
-    const description = workshopDescriptions[workshopName.toUpperCase()];
-    return (
-      description ||
-      `Oficina de ${formatWorkshopName(
-        workshopName.toLowerCase()
-      )} com múltiplas opções disponíveis`
-    );
-  };
 
   return (
     <motion.div
@@ -317,51 +78,52 @@ const WorkshopCard = ({
         onMouseLeave={() => setIsHovered(false)}
         onClick={onDetailsClick}
       >
-        <div
-          className="relative w-full h-64 overflow-hidden cursor-pointer"
-          onClick={() => onImageClick(currentImageIndex)}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentImageIndex}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{
-                duration: 0.6,
-                ease: [0.4, 0, 0.2, 1],
-              }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={getWorkshopImage(
-                  folderName,
-                  imageIndices[currentImageIndex],
-                  subfolder
-                )}
-                alt={workshopName}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              />
-            </motion.div>
-          </AnimatePresence>
-          {imageCount > 1 && (
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
-              {imageIndices.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => {
-                    e.stopPropagation(); // Evita disparar o clique no card
-                    setCurrentImageIndex(index);
+        <div className="relative w-full h-64 overflow-hidden cursor-pointer">
+          {imageCount > 0 ? (
+            <>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentImageIndex}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: [0.4, 0, 0.2, 1],
                   }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    currentImageIndex === index
-                      ? "bg-white w-4"
-                      : "bg-white/50 hover:bg-white/75"
-                  }`}
-                />
-              ))}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={workshop.workshop_images[currentImageIndex].image_url}
+                    alt={workshop.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  />
+                </motion.div>
+              </AnimatePresence>
+              {imageCount > 1 && (
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
+                  {workshop.workshop_images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentImageIndex(index);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        currentImageIndex === index
+                          ? "bg-white w-4"
+                          : "bg-white/50 hover:bg-white/75"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+              <p className="text-gray-400">Sem imagem</p>
             </div>
           )}
         </div>
@@ -369,11 +131,9 @@ const WorkshopCard = ({
           <div className="mb-2">
             <div className="mt-auto flex gap-2 items-end justify-between">
               <div>
-                <h3 className="font-semibold text-[#615C5C]">
-                  {formatWorkshopName(workshopName)}
-                </h3>
+                <h3 className="font-semibold text-[#615C5C]">{workshop.title}</h3>
                 <p className="text-sm text-[#8A8A8A] mt-1">
-                  {getWorkshopDescription(workshopName)}
+                  {workshop.description || "Oficina criativa"}
                 </p>
               </div>
 
@@ -411,231 +171,58 @@ const RentalCollection = () => {
   const router = useRouter();
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { workshops, loading } = useWorkshops();
 
-  const [expandedFolders, setExpandedFolders] = useState<
-    Record<string, boolean>
-  >({});
-  const [filterSearchTerm, setFilterSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
-  const {
-    searchTerm,
-    setSearchTerm,
-    selectedWorkshopFilters,
-    setSelectedWorkshopFilters,
-  } = useProducts();
-
-  // Filtrar oficinas baseado na busca e filtros selecionados
+  // Filtrar oficinas baseado na busca e filtros
   const filteredWorkshops = useMemo(() => {
-    let filtered = workshopFolders;
+    let filtered = workshops;
 
     // Aplicar busca por termo
     if (searchTerm) {
       filtered = filtered.filter((workshop) =>
-        workshop.toLowerCase().includes(searchTerm.toLowerCase())
+        workshop.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        workshop.description?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Aplicar filtros selecionados
-    if (selectedWorkshopFilters.length > 0) {
-      filtered = filtered.filter((workshop) => {
-        // Verificar se a oficina está nos filtros selecionados
-        if (selectedWorkshopFilters.includes(workshop)) {
-          return true;
-        }
-
-        // Verificar se é uma subpasta da BRINQUEDOTECA
-        if (workshop === "BRINQUEDOTECA") {
-          const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
-          const subfoldersFilters = subfolders.map(
-            (sub) => `BRINQUEDOTECA-${sub}`
-          );
-          return subfoldersFilters.some((filter) =>
-            selectedWorkshopFilters.includes(filter)
-          );
-        }
-
-        return false;
-      });
+    if (selectedFilters.length > 0) {
+      filtered = filtered.filter((workshop) =>
+        selectedFilters.includes(workshop.id)
+      );
     }
 
     return filtered;
-  }, [searchTerm, selectedWorkshopFilters]);
+  }, [workshops, searchTerm, selectedFilters]);
 
-  // Filtrar pastas baseado na busca dos filtros
-  const filteredFolders = useMemo(() => {
-    if (!filterSearchTerm) return workshopFolders;
-
-    return workshopFolders.filter((folder) =>
-      folder.toLowerCase().includes(filterSearchTerm.toLowerCase())
+  const toggleFilter = (filterId: string) => {
+    setSelectedFilters((prev) =>
+      prev.includes(filterId)
+        ? prev.filter((f) => f !== filterId)
+        : [...prev, filterId]
     );
-  }, [filterSearchTerm]);
-
-  const toggleFolder = (folder: string) => {
-    setExpandedFolders((prev) => ({
-      ...prev,
-      [folder]: !prev[folder],
-    }));
   };
 
-  const toggleAdvancedFilter = (filter: string) => {
-    setSelectedWorkshopFilters((prev) => {
-      // Se é BRINQUEDOTECA, marcar/desmarcar todas as subpastas
-      if (filter === "BRINQUEDOTECA") {
-        const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
-        const subfoldersFilters = subfolders.map(
-          (sub) => `BRINQUEDOTECA-${sub}`
-        );
-
-        if (prev.includes(filter)) {
-          // Desmarcar BRINQUEDOTECA e todas as suas subpastas
-          return prev.filter(
-            (f) => f !== filter && !subfoldersFilters.includes(f)
-          );
-        } else {
-          // Marcar BRINQUEDOTECA e todas as suas subpastas
-          const newFilters = [...prev, filter];
-          subfoldersFilters.forEach((subFilter) => {
-            if (!newFilters.includes(subFilter)) {
-              newFilters.push(subFilter);
-            }
-          });
-          return newFilters;
-        }
-      }
-
-      // Se é uma subpasta da BRINQUEDOTECA
-      if (filter.startsWith("BRINQUEDOTECA-")) {
-        let newFilters: string[];
-        if (prev.includes(filter)) {
-          newFilters = prev.filter((f) => f !== filter);
-          // Se desmarcar uma subpasta, desmarcar também a pasta principal
-          newFilters = newFilters.filter((f) => f !== "BRINQUEDOTECA");
-        } else {
-          newFilters = [...prev, filter];
-
-          // Verificar se todas as subpastas estão marcadas para marcar a principal
-          const subfolders = foldersWithSubfolders["BRINQUEDOTECA"] || [];
-          const subfoldersFilters = subfolders.map(
-            (sub) => `BRINQUEDOTECA-${sub}`
-          );
-          const allSubfoldersSelected = subfoldersFilters.every((subFilter) =>
-            newFilters.includes(subFilter)
-          );
-
-          if (allSubfoldersSelected && !newFilters.includes("BRINQUEDOTECA")) {
-            newFilters.push("BRINQUEDOTECA");
-          }
-        }
-        return newFilters;
-      }
-
-      // Para outras pastas, comportamento normal
-      if (prev.includes(filter)) {
-        return prev.filter((f) => f !== filter);
-      } else {
-        return [...prev, filter];
-      }
-    });
+  const clearAllFilters = () => {
+    setSelectedFilters([]);
   };
 
-  const clearAllAdvancedFilters = () => {
-    setSelectedWorkshopFilters([]);
+  const handleDetailsClick = (workshop: WorkshopWithImages) => {
+    router.push(`/workshop/${workshop.slug}`);
   };
 
-  const getTotalAdvancedFilters = () => {
-    return selectedWorkshopFilters.length;
-  };
-
-  const handleImageClick = (workshopName: string, itemIndex: number) => {
-    // Navegar para página de detalhes da oficina com item específico
-    const workshopSlug = encodeURIComponent(
-      workshopName.toLowerCase().replace(/\s+/g, "-")
-    );
-    router.push(`/workshop/${workshopSlug}-item-${itemIndex + 1}`);
-  };
-
-  const handleDetailsClick = (workshopName: string) => {
-    // Se for BRINQUEDOTECA, navegar para a página específica
-    if (workshopName === "BRINQUEDOTECA") {
-      router.push("/playroom");
-      return;
-    }
-
-    // Navegar para página de detalhes da oficina (primeiro item)
-    const workshopSlug = encodeURIComponent(
-      workshopName.toLowerCase().replace(/\s+/g, "-")
-    );
-    router.push(`/workshop/${workshopSlug}`);
-  };
-
-  const createWorkshopProduct = (workshopName: string): Product => {
-    const formatWorkshopName = (name: string) => {
-      return name
-        .toLowerCase()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-    };
-
-    // Obter a descrição específica da oficina
-    const getWorkshopDescription = (workshopName: string) => {
-      const description = workshopDescriptions[workshopName.toUpperCase()];
-      return (
-        description ||
-        `Oficina de ${formatWorkshopName(
-          workshopName.toLowerCase()
-        )} com múltiplas opções disponíveis`
-      );
-    };
-
-    // Mapear nome da oficina para pasta correspondente
-    const getFolderName = (name: string) => {
-      const mapping: Record<string, string> = {
-        "OFICINA DE ARCO DISNEY": "ARCO DISNEY",
-        "OFICINA DE ASA DE BORBOLETA": "ASA DE BORBOLETA",
-        "OFICINA DE BELEZA": "BELEZA",
-        "OFICINA DE BIJU": "BIJU COM CHAVEIROS",
-        "OFICINA DE BISCOITOS DECORADOS": "BISCOITOS DECORADOS",
-        "OFICINA DE BODYS DE BEBÊ": "BODYS",
-        "OFICINA DE BOLHAS DE SABAO": "BOLHAS DE SABAO",
-        "OFICINA DE BOLSAS DE PALHA": "BOLSAS DE PALHA",
-        "OFICINA DE BONE": "BONE",
-        "OFICINA DE BUCKET": "BUCKET",
-        "OFICINA DE CADERNINHOS": "CADERNINHOS",
-        "OFICINA DE CAMISAS": "CAMISAS",
-        "OFICINA DE CAPA DE SUPER-HERÓI": "CAPAS HEROIS",
-        "OFICINA DE CARTINHAS": "CARTINHAS",
-        "OFICINA DE CARTOLA": "CARTOLA",
-        "OFICINA DE COLAGEM E CRIATIVIDADE": "COLAGEM E CRIATIVIDADE",
-        "OFICINA DE CUPCAKE": "CUPCAKE",
-        "OFICINA DE ESMALTAÇAO": "ESMALTAÇAO",
-        "OFICINA DE ESTOJO": "ESTOJO",
-        "OFICINA DE FANTOCHES": "FANTOCHES",
-        "OFICINA DE JARDINAGEM": "JARDINAGEM",
-        "OFICINA DE MASCARA": "MASCARA",
-        "OFICINA DE PINTURA NA TELA": "PINTURA EM TELA",
-        "OFICINA DE PINTURA NO CAVALETE": "PINTURA NO CAVALETE",
-        "OFICINA DE RECICLAGEM": "RECICLAGEM",
-        "OFICINA DE SLIME": "SLIME",
-        "OFICINA DE VARINHA DE CONDÃO": "VARINHA E COROA",
-        "OFICINA DE VARINHA HARRY POTTER": "VARINHA HARRY POTTER",
-        "OFICINA DE VISEIRA": "VISEIRA",
-      };
-      return mapping[name] || name;
-    };
-
-    const folderName = getFolderName(workshopName);
-    const subfolder = folderName === "BRINQUEDOTECA" ? "COLORIDA" : undefined;
-
+  const createWorkshopProduct = (workshop: WorkshopWithImages): Product => {
     return {
-      id: `workshop-${workshopName.toLowerCase().replace(/\s+/g, "-")}`,
-      name: formatWorkshopName(workshopName),
-      description: getWorkshopDescription(workshopName),
+      id: `workshop-${workshop.slug}`,
+      name: workshop.title,
+      description: workshop.description || "Oficina criativa",
       category: "favorites",
-      image: getWorkshopImage(folderName, 1, subfolder),
-      workshopFolder: workshopName,
-      workshopSubfolder: subfolder,
+      image: workshop.workshop_images[0]?.image_url || "/images/fallback.png",
+      workshopFolder: workshop.title,
       duration: "1-2 horas",
       ageRange: "5-12 anos",
       highlights: [
@@ -646,33 +233,18 @@ const RentalCollection = () => {
     };
   };
 
-  const handleFavoriteClick = (workshopName: string) => {
-    const product = createWorkshopProduct(workshopName);
+  const handleFavoriteClick = (workshop: WorkshopWithImages) => {
+    const product = createWorkshopProduct(workshop);
     toggleFavorite(product);
   };
 
-  const isWorkshopFavorite = (workshopName: string) => {
-    const productId = `workshop-${workshopName
-      .toLowerCase()
-      .replace(/\s+/g, "-")}`;
+  const isWorkshopFavorite = (workshop: WorkshopWithImages) => {
+    const productId = `workshop-${workshop.slug}`;
     return isFavorite(productId);
   };
 
   return (
     <section ref={ref} className="bg-white">
-      {/* <div className="bg-white">
-        <div className="container max-w-none px-4">
-          <motion.div
-            className="mb-6"
-            initial={{ opacity: 0, y: 50 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <PortfolioCarousel />
-          </motion.div>
-        </div>
-      </div> */}
-
       <div className="min-h-screen flex flex-col lg:flex-row mt-4">
         <div className="w-full container max-w-none px-4 flex flex-col lg:flex-row md:gap-8 min-h-full">
           {/* Botão de Filtros Mobile */}
@@ -683,9 +255,9 @@ const RentalCollection = () => {
             >
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
-              {getTotalAdvancedFilters() > 0 && (
+              {selectedFilters.length > 0 && (
                 <span className="bg-white/20 px-2 py-1 text-xs">
-                  {getTotalAdvancedFilters()}
+                  {selectedFilters.length}
                 </span>
               )}
             </Button>
@@ -708,124 +280,35 @@ const RentalCollection = () => {
                     Filtrar Oficinas
                   </h3>
 
-                  {/* Busca de filtros */}
-                  <div className="relative mb-4">
-                    <Search
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={16}
-                    />
-                    <Input
-                      type="text"
-                      placeholder="Buscar oficinas..."
-                      value={filterSearchTerm}
-                      onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#FC3C80] focus:border-transparent"
-                    />
-                  </div>
-
                   {/* Lista de oficinas - com scroll */}
                   <div className="space-y-2 flex-1 overflow-y-auto pr-2">
-                    {filteredFolders.map((folder) => {
-                      const hasSubfolders =
-                        folder === "BRINQUEDOTECA"
-                          ? foldersWithSubfolders["BRINQUEDOTECA"]
-                          : null;
-
-                      return (
-                        <div
-                          key={folder}
-                          className="border-b border-gray-100 last:border-b-0 pb-2"
-                        >
-                          {/* Pasta principal */}
-                          <div
-                            className={`flex items-center justify-between ${
-                              hasSubfolders ? "cursor-pointer" : ""
-                            }`}
-                            onClick={
-                              hasSubfolders
-                                ? () => toggleFolder(folder)
-                                : undefined
-                            }
-                          >
-                            <label
-                              className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 px-2 flex-1"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={selectedWorkshopFilters.includes(
-                                  folder
-                                )}
-                                onChange={() => toggleAdvancedFilter(folder)}
-                                className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
-                              />
-                              <span className="text-sm text-[#615C5C] font-medium">
-                                {folder}
-                              </span>
-                            </label>
-
-                            {hasSubfolders && (
-                              <div className="p-1">
-                                {expandedFolders[folder] ? (
-                                  <ChevronDown
-                                    size={16}
-                                    className="text-gray-400"
-                                  />
-                                ) : (
-                                  <ChevronRight
-                                    size={16}
-                                    className="text-gray-400"
-                                  />
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Subpastas */}
-                          {hasSubfolders && expandedFolders[folder] && (
-                            <div className="ml-6 mt-2 space-y-1">
-                              {hasSubfolders.map((subfolder) => (
-                                <label
-                                  key={`${folder}-${subfolder}`}
-                                  className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedWorkshopFilters.includes(
-                                      `${folder}-${subfolder}`
-                                    )}
-                                    onChange={() =>
-                                      toggleAdvancedFilter(
-                                        `${folder}-${subfolder}`
-                                      )
-                                    }
-                                    className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
-                                  />
-                                  <span className="text-sm text-[#8A8A8A]">
-                                    {subfolder}
-                                  </span>
-                                  <span className="text-xs text-[#8A8A8A] ml-auto">
-                                    (
-                                    {subfolderImageCounts[
-                                      `${folder}-${subfolder}`
-                                    ] || 0}
-                                    )
-                                  </span>
-                                </label>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                    {workshops.map((workshop) => (
+                      <label
+                        key={workshop.id}
+                        className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 px-2"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedFilters.includes(workshop.id)}
+                          onChange={() => toggleFilter(workshop.id)}
+                          className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
+                        />
+                        <span className="text-sm text-[#615C5C]">
+                          {workshop.title}
+                        </span>
+                        <span className="text-xs text-[#8A8A8A] ml-auto">
+                          ({workshop.workshop_images.length})
+                        </span>
+                      </label>
+                    ))}
                   </div>
 
                   {/* Limpar filtros */}
-                  {getTotalAdvancedFilters() > 0 && (
+                  {selectedFilters.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-gray-200">
                       <Button
                         variant="ghost"
-                        onClick={clearAllAdvancedFilters}
+                        onClick={clearAllFilters}
                         className="text-sm text-[#FC3C80] hover:text-[#FC3C80] font-medium w-full"
                       >
                         Limpar todos os filtros
@@ -859,7 +342,7 @@ const RentalCollection = () => {
             </motion.div>
 
             {/* Filtros ativos */}
-            {getTotalAdvancedFilters() > 0 && (
+            {selectedFilters.length > 0 && (
               <motion.div
                 className="mb-4"
                 initial={{ opacity: 0 }}
@@ -870,50 +353,59 @@ const RentalCollection = () => {
                   <span className="text-sm text-[#8A8A8A] py-1">
                     Filtros ativos:
                   </span>
-                  {selectedWorkshopFilters.map((filter) => (
-                    <span
-                      key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#FC3C80] text-black text-sm"
-                    >
-                      {filter}
-                      <button
-                        onClick={() => toggleAdvancedFilter(filter)}
-                        className="hover:bg-[#FC3C80] p-0.5"
+                  {selectedFilters.map((filterId) => {
+                    const workshop = workshops.find((w) => w.id === filterId);
+                    return (
+                      <span
+                        key={filterId}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#FC3C80] text-black text-sm"
                       >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  ))}
+                        {workshop?.title}
+                        <button
+                          onClick={() => toggleFilter(filterId)}
+                          className="hover:bg-[#FC3C80] p-0.5"
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
+                    );
+                  })}
                 </div>
               </motion.div>
             )}
 
-            {/* Grid de oficinas - com scroll */}
+            {/* Grid de oficinas */}
             <div className="flex-1 overflow-y-auto">
-              <motion.div
-                className="grid custom_grid_cols md:grid-cols-3 gap-2 md:gap-6 pb-8"
-                layout
-              >
-                {filteredWorkshops.map((workshopName) => (
-                  <WorkshopCard
-                    key={workshopName}
-                    workshopName={workshopName}
-                    onImageClick={(itemIndex) =>
-                      handleImageClick(workshopName, itemIndex)
-                    }
-                    onDetailsClick={() => handleDetailsClick(workshopName)}
-                    onFavoriteClick={() => handleFavoriteClick(workshopName)}
-                    isFavorite={isWorkshopFavorite(workshopName)}
-                  />
-                ))}
-              </motion.div>
-
-              {filteredWorkshops.length === 0 && (
+              {loading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FC3C80] mb-4 mx-auto"></div>
+                    <p className="text-[#8A8A8A]">Carregando oficinas...</p>
+                  </div>
+                </div>
+              ) : filteredWorkshops.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
                   <p className="text-[#8A8A8A] text-lg">
-                    Nenhuma oficina encontrada com os filtros aplicados.
+                    {workshops.length === 0
+                      ? "Nenhuma oficina cadastrada ainda."
+                      : "Nenhuma oficina encontrada com os filtros aplicados."}
                   </p>
                 </div>
+              ) : (
+                <motion.div
+                  className="grid custom_grid_cols md:grid-cols-3 gap-2 md:gap-6 pb-8"
+                  layout
+                >
+                  {filteredWorkshops.map((workshop) => (
+                    <WorkshopCard
+                      key={workshop.id}
+                      workshop={workshop}
+                      onDetailsClick={() => handleDetailsClick(workshop)}
+                      onFavoriteClick={() => handleFavoriteClick(workshop)}
+                      isFavorite={isWorkshopFavorite(workshop)}
+                    />
+                  ))}
+                </motion.div>
               )}
             </div>
           </div>
