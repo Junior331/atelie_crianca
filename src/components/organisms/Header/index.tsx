@@ -56,7 +56,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
         <div className="mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             <motion.div
-              className="flex-shrink-0"
+              className="flex-shrink-0 flex-1 flex items-center justify-center"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -74,7 +74,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
 
             {/* Right side - Icons */}
             <motion.div
-              className="flex-1 flex items-center justify-end space-x-2"
+              className="flex items-center justify-end space-x-2"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
