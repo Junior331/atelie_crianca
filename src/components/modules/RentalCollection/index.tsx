@@ -175,9 +175,20 @@ const RentalCollection = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
-  // Filtrar oficinas baseado na busca e filtros
+  // Extrair categorias únicas das oficinas
+  const categories = useMemo(() => {
+    const categoryMap = new Map();
+    workshops.forEach((workshop) => {
+      if (workshop.workshop_category) {
+        categoryMap.set(workshop.workshop_category.id, workshop.workshop_category);
+      }
+    });
+    return Array.from(categoryMap.values()).sort((a, b) => a.order_position - b.order_position);
+  }, [workshops]);
+
+  // Filtrar oficinas baseado na busca e categorias selecionadas
   const filteredWorkshops = useMemo(() => {
     let filtered = workshops;
 
@@ -189,26 +200,26 @@ const RentalCollection = () => {
       );
     }
 
-    // Aplicar filtros selecionados
-    if (selectedFilters.length > 0) {
+    // Aplicar filtros de categoria
+    if (selectedCategoryIds.length > 0) {
       filtered = filtered.filter((workshop) =>
-        selectedFilters.includes(workshop.id)
+        workshop.category_id && selectedCategoryIds.includes(workshop.category_id)
       );
     }
 
     return filtered;
-  }, [workshops, searchTerm, selectedFilters]);
+  }, [workshops, searchTerm, selectedCategoryIds]);
 
-  const toggleFilter = (filterId: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(filterId)
-        ? prev.filter((f) => f !== filterId)
-        : [...prev, filterId]
+  const toggleCategoryFilter = (categoryId: string) => {
+    setSelectedCategoryIds((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
     );
   };
 
   const clearAllFilters = () => {
-    setSelectedFilters([]);
+    setSelectedCategoryIds([]);
   };
 
   const handleDetailsClick = (workshop: WorkshopWithImages) => {
@@ -251,13 +262,15 @@ const RentalCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#FC3C80] hover:bg-[#FC3C80] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#FC3C80] hover:bg-pink-600 text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
             >
-              <Search size={16} />
-              {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
-              {selectedFilters.length > 0 && (
-                <span className="bg-white/20 px-2 py-1 text-xs">
-                  {selectedFilters.length}
+              <Search size={20} />
+              <span className="font-semibold">
+                {isFiltersOpen ? "Esconder Categorias" : "Filtrar por Categoria"}
+              </span>
+              {selectedCategoryIds.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-white text-[#FC3C80] font-bold px-2.5 py-1 text-xs rounded-full shadow-md border-2 border-[#FC3C80]">
+                  {selectedCategoryIds.length}
                 </span>
               )}
             </Button>
@@ -275,43 +288,80 @@ const RentalCollection = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <div className="min-h-full">
-                <div className="bg-white border border-gray-200 p-6 shadow-sm min-h-full flex flex-col">
-                  <h3 className="text-lg font-semibold text-[#615C5C] mb-4">
-                    Filtrar Oficinas
+                <div className="bg-white border border-gray-200 p-6 shadow-sm min-h-full flex flex-col rounded-lg">
+                  <h3 className="text-xl font-bold text-[#615C5C] mb-2">
+                    Filtrar por Categoria
                   </h3>
+                  <p className="text-xs text-[#8A8A8A] mb-6">
+                    Selecione uma ou mais categorias para filtrar as oficinas
+                  </p>
 
-                  {/* Lista de oficinas - com scroll */}
-                  <div className="space-y-2 flex-1 overflow-y-auto pr-2">
-                    {workshops.map((workshop) => (
-                      <label
-                        key={workshop.id}
-                        className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 px-2"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedFilters.includes(workshop.id)}
-                          onChange={() => toggleFilter(workshop.id)}
-                          className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
-                        />
-                        <span className="text-sm text-[#615C5C]">
-                          {workshop.title}
-                        </span>
-                        <span className="text-xs text-[#8A8A8A] ml-auto">
-                          ({workshop.workshop_images.length})
-                        </span>
-                      </label>
-                    ))}
+                  {/* Lista de categorias */}
+                  <div className="space-y-3 flex-1">
+                    {categories.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-sm text-[#8A8A8A]">Nenhuma categoria disponível</p>
+                      </div>
+                    ) : (
+                      categories.map((category) => {
+                        const workshopsInCategory = workshops.filter(
+                          (w) => w.category_id === category.id
+                        ).length;
+                        const isSelected = selectedCategoryIds.includes(category.id);
+
+                        return (
+                          <label
+                            key={category.id}
+                            className={`flex items-center gap-3 py-3 px-4 cursor-pointer rounded-lg transition-all duration-200 border-2 ${
+                              isSelected
+                                ? "bg-[#FC3C80] border-[#FC3C80] shadow-md"
+                                : "bg-white border-gray-200 hover:border-[#FC3C80] hover:bg-pink-50"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => toggleCategoryFilter(category.id)}
+                                className="w-5 h-5 border-2 border-gray-300 text-[#FC3C80] focus:ring-2 focus:ring-[#FC3C80] focus:ring-offset-0 rounded cursor-pointer"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <span className={`block text-base font-semibold truncate ${
+                                isSelected ? "text-white" : "text-[#615C5C]"
+                              }`}>
+                                {category.name}
+                              </span>
+                              {category.description && (
+                                <span className={`block text-xs truncate mt-0.5 ${
+                                  isSelected ? "text-white/80" : "text-[#8A8A8A]"
+                                }`}>
+                                  {category.description}
+                                </span>
+                              )}
+                            </div>
+                            <div className={`flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-bold ${
+                              isSelected
+                                ? "bg-white text-[#FC3C80]"
+                                : "bg-gray-100 text-[#615C5C]"
+                            }`}>
+                              {workshopsInCategory}
+                            </div>
+                          </label>
+                        );
+                      })
+                    )}
                   </div>
 
                   {/* Limpar filtros */}
-                  {selectedFilters.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
+                  {selectedCategoryIds.length > 0 && (
+                    <div className="mt-6 pt-4 border-t border-gray-200">
                       <Button
                         variant="ghost"
                         onClick={clearAllFilters}
-                        className="text-sm text-[#FC3C80] hover:text-[#FC3C80] font-medium w-full"
+                        className="text-sm text-[#FC3C80] hover:text-white hover:bg-[#FC3C80] font-semibold w-full py-3 rounded-lg border-2 border-[#FC3C80] transition-all"
                       >
-                        Limpar todos os filtros
+                        Limpar Filtros ({selectedCategoryIds.length})
                       </Button>
                     </div>
                   )}
@@ -342,35 +392,62 @@ const RentalCollection = () => {
             </motion.div>
 
             {/* Filtros ativos */}
-            {selectedFilters.length > 0 && (
+            {selectedCategoryIds.length > 0 && (
               <motion.div
-                className="mb-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                className="mb-6 bg-pink-50 border border-pink-200 rounded-lg p-4"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
               >
-                <div className="flex flex-wrap gap-2">
-                  <span className="text-sm text-[#8A8A8A] py-1">
-                    Filtros ativos:
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-[#615C5C]">
+                    Filtrando por:
                   </span>
-                  {selectedFilters.map((filterId) => {
-                    const workshop = workshops.find((w) => w.id === filterId);
+                  {selectedCategoryIds.map((categoryId) => {
+                    const category = categories.find((c) => c.id === categoryId);
                     return (
-                      <span
-                        key={filterId}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#FC3C80] text-black text-sm"
+                      <motion.span
+                        key={categoryId}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#FC3C80] text-white text-sm font-semibold rounded-full shadow-sm hover:shadow-md transition-all"
                       >
-                        {workshop?.title}
+                        {category?.name}
                         <button
-                          onClick={() => toggleFilter(filterId)}
-                          className="hover:bg-[#FC3C80] p-0.5"
+                          onClick={() => toggleCategoryFilter(categoryId)}
+                          className="hover:bg-white/20 rounded-full p-1 transition-colors"
+                          aria-label={`Remover filtro ${category?.name}`}
                         >
-                          <X size={12} />
+                          <X size={14} strokeWidth={3} />
                         </button>
-                      </span>
+                      </motion.span>
                     );
                   })}
+                  <button
+                    onClick={clearAllFilters}
+                    className="ml-auto text-sm text-[#FC3C80] hover:text-[#615C5C] font-semibold underline transition-colors"
+                  >
+                    Limpar tudo
+                  </button>
                 </div>
+              </motion.div>
+            )}
+
+            {/* Contador de resultados */}
+            {!loading && filteredWorkshops.length > 0 && (
+              <motion.div
+                className="mb-4 flex items-center justify-between"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <p className="text-sm text-[#8A8A8A]">
+                  Mostrando <span className="font-bold text-[#615C5C]">{filteredWorkshops.length}</span> {filteredWorkshops.length === 1 ? "oficina" : "oficinas"}
+                  {selectedCategoryIds.length > 0 && (
+                    <span> na{selectedCategoryIds.length > 1 ? 's' : ''} categoria{selectedCategoryIds.length > 1 ? 's' : ''} selecionada{selectedCategoryIds.length > 1 ? 's' : ''}</span>
+                  )}
+                </p>
               </motion.div>
             )}
 
@@ -384,13 +461,39 @@ const RentalCollection = () => {
                   </div>
                 </div>
               ) : filteredWorkshops.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-[#8A8A8A] text-lg">
-                    {workshops.length === 0
-                      ? "Nenhuma oficina cadastrada ainda."
-                      : "Nenhuma oficina encontrada com os filtros aplicados."}
-                  </p>
-                </div>
+                <motion.div
+                  className="flex flex-col items-center justify-center h-full py-16"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="text-center max-w-md">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <h3 className="text-xl font-bold text-[#615C5C] mb-2">
+                      {workshops.length === 0
+                        ? "Nenhuma oficina cadastrada"
+                        : "Nenhuma oficina encontrada"}
+                    </h3>
+                    <p className="text-[#8A8A8A] mb-6">
+                      {workshops.length === 0
+                        ? "Ainda não há oficinas disponíveis no momento."
+                        : selectedCategoryIds.length > 0
+                        ? "Não encontramos oficinas nesta categoria. Tente selecionar outras categorias ou limpar os filtros."
+                        : "Não encontramos oficinas com este termo de busca. Tente pesquisar por outro termo."}
+                    </p>
+                    {(selectedCategoryIds.length > 0 || searchTerm) && (
+                      <Button
+                        onClick={() => {
+                          clearAllFilters();
+                          setSearchTerm("");
+                        }}
+                        className="bg-[#FC3C80] hover:bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                      >
+                        Limpar Filtros e Busca
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
               ) : (
                 <motion.div
                   className="grid custom_grid_cols md:grid-cols-3 gap-2 md:gap-6 pb-8"

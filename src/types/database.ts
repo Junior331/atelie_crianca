@@ -8,11 +8,23 @@ export interface PageImage {
   updated_at?: string;
 }
 
+export interface WorkshopCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  is_active: boolean;
+  order_position: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Workshop {
   id: string;
   slug: string;
   title: string;
   description: string | null;
+  category_id: string | null;
   is_active: boolean;
   order_position: number;
   created_at: string;
@@ -30,4 +42,5 @@ export interface WorkshopImage {
 
 export interface WorkshopWithImages extends Workshop {
   workshop_images: WorkshopImage[];
+  workshop_category?: WorkshopCategory;
 }

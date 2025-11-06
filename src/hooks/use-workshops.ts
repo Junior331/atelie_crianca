@@ -20,7 +20,8 @@ export const useWorkshops = () => {
         .from("workshops")
         .select(`
           *,
-          workshop_images(*)
+          workshop_images(*),
+          workshop_category:workshop_categories(*)
         `)
         .eq("is_active", true)
         .order("order_position", { ascending: true });

@@ -12,6 +12,7 @@ import { Pencil, Trash2, Plus, X, Upload, Eye } from "lucide-react";
 export default function WorkshopsAdmin() {
   const router = useRouter();
   const [workshops, setWorkshops] = useState<WorkshopWithImages[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingWorkshop, setEditingWorkshop] = useState<WorkshopWithImages | null>(null);
@@ -24,6 +25,7 @@ export default function WorkshopsAdmin() {
     title: "",
     slug: "",
     description: "",
+    category_id: "",
     is_active: true,
     order_position: 0,
   });
@@ -31,12 +33,28 @@ export default function WorkshopsAdmin() {
   useEffect(() => {
     checkAuth();
     loadWorkshops();
+    loadCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) router.push("/admin/login");
+  };
+
+  const loadCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("workshop_categories")
+        .select("*")
+        .eq("is_active", true)
+        .order("order_position", { ascending: true });
+
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error) {
+      console.error("Erro ao carregar categorias:", error);
+    }
   };
 
   const loadWorkshops = async () => {
@@ -46,7 +64,8 @@ export default function WorkshopsAdmin() {
         .from("workshops")
         .select(`
           *,
-          workshop_images(*)
+          workshop_images(*),
+          workshop_category:workshop_categories(*)
         `)
         .order("order_position", { ascending: true });
 
@@ -90,6 +109,7 @@ export default function WorkshopsAdmin() {
       title: "",
       slug: "",
       description: "",
+      category_id: "",
       is_active: true,
       order_position: workshops.length,
     });
@@ -102,6 +122,7 @@ export default function WorkshopsAdmin() {
       title: workshop.title,
       slug: workshop.slug,
       description: workshop.description || "",
+      category_id: workshop.category_id || "",
       is_active: workshop.is_active,
       order_position: workshop.order_position,
     });
@@ -144,6 +165,7 @@ export default function WorkshopsAdmin() {
             title: formData.title,
             slug: formData.slug,
             description: formData.description,
+            category_id: formData.category_id || null,
             is_active: formData.is_active,
             order_position: formData.order_position,
           })
@@ -160,6 +182,7 @@ export default function WorkshopsAdmin() {
             title: formData.title,
             slug: formData.slug,
             description: formData.description,
+            category_id: formData.category_id || null,
             is_active: formData.is_active,
             order_position: formData.order_position,
           });
@@ -353,13 +376,28 @@ export default function WorkshopsAdmin() {
         <div className="px-4 sm:px-0">
           {/* Header Actions */}
           <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-            <button
-              onClick={openCreateModal}
-              className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 flex items-center gap-2"
-            >
-              <Plus size={20} />
-              Nova Oficina
-            </button>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                onClick={openCreateModal}
+                className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 flex items-center gap-2 shadow-sm"
+              >
+                <Plus size={20} />
+                Nova Oficina
+              </button>
+
+              <Link
+                href="/admin/categories"
+                className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center gap-2 shadow-sm transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7"/>
+                  <rect x="14" y="3" width="7" height="7"/>
+                  <rect x="14" y="14" width="7" height="7"/>
+                  <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                Gerenciar Categorias
+              </Link>
+            </div>
 
             <input
               type="text"
@@ -434,6 +472,11 @@ export default function WorkshopsAdmin() {
                       <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                         <span>📸 {workshop.workshop_images.length} {workshop.workshop_images.length === 1 ? "imagem" : "imagens"}</span>
                         <span>📍 Posição: {workshop.order_position + 1}</span>
+                        {workshop.workshop_category && (
+                          <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium">
+                            {workshop.workshop_category.name}
+                          </span>
+                        )}
                       </div>
 
                       {/* Actions */}
@@ -568,6 +611,39 @@ export default function WorkshopsAdmin() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     placeholder="Descreva a oficina..."
                   />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Categoria
+                    </label>
+                    <Link
+                      href="/admin/categories"
+                      target="_blank"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-pink-600 hover:text-pink-700 hover:underline bg-pink-50 px-3 py-1 rounded-full transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 5v14M5 12h14"/>
+                      </svg>
+                      Gerenciar Categorias
+                    </Link>
+                  </div>
+                  <select
+                    value={formData.category_id}
+                    onChange={(e) => handleFormChange("category_id", e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  >
+                    <option value="">Sem categoria</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    As categorias são usadas para filtrar as oficinas na página pública
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2">
