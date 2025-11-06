@@ -12,6 +12,7 @@ import { Button } from "@/components/atoms";
 import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useFeatureFlags } from "@/hooks/use-feature-flags";
+import { SearchBar } from "@/components/organisms/SearchBar";
 
 const allNavigationItems = [
   { name: "Quem somos", href: "/about", slug: "about" },
@@ -19,7 +20,11 @@ const allNavigationItems = [
   { name: "Brinquedoteca", href: "/playroom", slug: "playroom" },
   { name: "Casamentos", href: "/wedding", slug: "wedding" },
   { name: "Produtos", href: "/products", slug: "products" },
-  { name: "Mesa de Lanchinho", href: "/souvenirstable", slug: "souvenirstable" },
+  {
+    name: "Mesa de Lanchinho",
+    href: "/souvenirstable",
+    slug: "souvenirstable",
+  },
   { name: "Corporativo", href: "/corporate", slug: "corporate" },
   { name: "Mobiliário", href: "/furniture", slug: "furniture" },
   { name: "Grupo Ateliê", href: "/ateliegroup", slug: "ateliegroup" },
@@ -49,11 +54,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
       {/* Top bar with logo and icons */}
       <div>
         <div className="mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Left side - empty for balance */}
-            <div className="flex-1" />
-
-            {/* Center - Logo */}
+          <div className="flex items-center justify-between gap-4">
             <motion.div
               className="flex-shrink-0"
               initial={{ opacity: 0, y: -10 }}
@@ -78,6 +79,15 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
+              <motion.div
+                className="flex-1 max-w-96 hidden md:block"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <SearchBar />
+              </motion.div>
+
               {/* Favorites Icon */}
               <Link href="/favorites" className="!mr-1">
                 <Button
@@ -169,6 +179,11 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
+            {/* Mobile Search */}
+            <div className="md:hidden mb-4">
+              <SearchBar />
+            </div>
+
             <div className="flex flex-col space-y-3">
               {navigationItems.map((item, index) => (
                 <motion.div

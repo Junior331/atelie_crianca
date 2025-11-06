@@ -17,8 +17,7 @@ export default function WorkshopsAdmin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingWorkshop, setEditingWorkshop] = useState<WorkshopWithImages | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState<string | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -250,53 +249,73 @@ export default function WorkshopsAdmin() {
     }
   };
 
-  const handleUploadImage = async (workshopId: string) => {
-    const file = fileInputRef.current?.files?.[0];
-    if (!file) return;
+  const handleUploadImage = async (workshopId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
 
-    setUploading(true);
+    setUploading(workshopId);
 
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${workshopId}-${Date.now()}.${fileExt}`;
-      const filePath = `workshops/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("images")
-        .getPublicUrl(filePath);
-
-      // Obter a próxima posição
       const workshop = workshops.find(w => w.id === workshopId);
-      const nextPosition = workshop ? workshop.workshop_images.length : 0;
+      let currentPosition = workshop ? workshop.workshop_images.length : 0;
 
-      const { error: dbError } = await supabase
-        .from("workshop_images")
-        // @ts-expect-error - Supabase types not inferring correctly
-        .insert({
+      const imagesToInsert: { workshop_id: string; image_url: string; order_position: number }[] = [];
+
+      // Upload de todas as imagens
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${workshopId}-${Date.now()}-${i}.${fileExt}`;
+        const filePath = `workshops/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("images")
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error(`Erro ao fazer upload de ${file.name}:`, uploadError);
+          continue; // Continua com os próximos arquivos
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("images")
+          .getPublicUrl(filePath);
+
+        imagesToInsert.push({
           workshop_id: workshopId,
           image_url: publicUrl,
-          order_position: nextPosition,
+          order_position: currentPosition + i,
         });
+      }
 
-      if (dbError) throw dbError;
+      // Inserir todas as imagens no banco de uma vez
+      if (imagesToInsert.length > 0) {
+        const { error: dbError } = await supabase
+          .from("workshop_images")
+          // @ts-expect-error - Supabase types not inferring correctly
+          .insert(imagesToInsert);
 
-      alert("Imagem enviada com sucesso!");
+        if (dbError) throw dbError;
+      }
+
+      const successCount = imagesToInsert.length;
+      const failCount = files.length - successCount;
+
+      if (failCount > 0) {
+        alert(`${successCount} imagem(ns) enviada(s) com sucesso! ${failCount} falhou(aram).`);
+      } else {
+        alert(`${successCount} imagem(ns) enviada(s) com sucesso!`);
+      }
+
       loadWorkshops();
 
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      // Limpar o input
+      event.target.value = "";
     } catch (error) {
       console.error("Erro ao fazer upload:", error);
-      alert("Erro ao fazer upload da imagem");
+      alert("Erro ao fazer upload das imagens");
     } finally {
-      setUploading(false);
+      setUploading(null);
     }
   };
 
@@ -529,19 +548,24 @@ export default function WorkshopsAdmin() {
                       </div>
                       <div>
                         <input
-                          ref={fileInputRef}
                           type="file"
                           accept="image/*"
-                          onChange={() => handleUploadImage(workshop.id)}
+                          multiple
+                          onChange={(e) => handleUploadImage(workshop.id, e)}
                           className="hidden"
                           id={`upload-${workshop.id}`}
+                          disabled={uploading === workshop.id}
                         />
                         <label
                           htmlFor={`upload-${workshop.id}`}
-                          className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 flex items-center gap-2 cursor-pointer justify-center"
+                          className={`px-4 py-2 rounded-md flex items-center gap-2 justify-center transition-colors ${
+                            uploading === workshop.id
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-pink-600 hover:bg-pink-700 cursor-pointer"
+                          } text-white`}
                         >
                           <Upload size={16} />
-                          {uploading ? "Enviando..." : "Upload Nova Imagem"}
+                          {uploading === workshop.id ? "Enviando..." : "Upload de Imagens"}
                         </label>
                       </div>
                     </div>
