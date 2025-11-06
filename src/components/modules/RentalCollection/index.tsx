@@ -262,7 +262,7 @@ const RentalCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#FC3C80] hover:bg-pink-600 text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
+              className="w-full bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
             >
               <Search size={20} />
               <span className="font-semibold">
@@ -487,7 +487,7 @@ const RentalCollection = () => {
                           clearAllFilters();
                           setSearchTerm("");
                         }}
-                        className="bg-[#FC3C80] hover:bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                        className="bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
                       >
                         Limpar Filtros e Busca
                       </Button>

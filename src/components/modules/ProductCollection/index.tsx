@@ -7,58 +7,39 @@ import Image from "next/image";
 
 import { Card } from "@/components/organisms";
 import { Button, Input } from "@/components/atoms";
-import { useProducts } from "@/hooks/use-products";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useCart } from "@/hooks/use-cart";
 import { CardContent } from "@/components/organisms/Card";
-import {
-  productFolders,
-  productCategories,
-  getProductCategory,
-  categoryDescriptions,
-  folderProductCounts,
-  getTotalProducts,
-} from "@/utils/product-categories";
-import { Product } from "@/types/product";
-import { produtos } from "@/assets/Produtos";
+import { useProductsDB } from "@/hooks/use-products-db";
+import type { ProductWithImages } from "@/types/database";
+import type { Product } from "@/types/product";
 
-// Componente para o card de produto
-const ProductCard = ({
-  folder,
-  productKey,
-  onImageClick,
+// Componente para o card de produto do banco (um card por imagem)
+const ProductImageCard = ({
+  product,
+  imageUrl,
+  imageIndex,
+  imageId,
+  imageName,
+  imageDescription,
   onFavoriteClick,
   onCartClick,
+  onImageClick,
   isFavorite,
   isInCart,
 }: {
-  folder: string;
-  productKey: string;
-  onImageClick: () => void;
+  product: ProductWithImages;
+  imageUrl: string;
+  imageIndex: number;
+  imageId: string;
+  imageName: string | null;
+  imageDescription: string | null;
   onFavoriteClick: () => void;
   onCartClick: () => void;
+  onImageClick: () => void;
   isFavorite: boolean;
   isInCart: boolean;
 }) => {
-  const formatProductName = (key: string) => {
-    return key
-      .replace(/^(acessorios|arcos|brindes|fantasias)_/i, "")
-      .replace(/_/g, " ")
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
-  const getProductDescription = (folder: string) => {
-    const category = getProductCategory(folder);
-    return categoryDescriptions[category] || "Produto especial";
-  };
-
-  const imageSrc =
-    produtos[folder as keyof typeof produtos]?.[productKey as never] ||
-    produtos.fallback;
-
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -67,14 +48,14 @@ const ProductCard = ({
     >
       <Card className="h-full hover:shadow-lg transition-shadow duration-300 flex flex-col">
         <div
-          className="relative w-full h-64 overflow-hidden cursor-pointer bg-gray-100"
+          className="relative w-full h-64 overflow-hidden bg-gray-100 cursor-pointer"
           onClick={onImageClick}
         >
           <Image
-            src={imageSrc}
-            alt={formatProductName(productKey)}
+            src={imageUrl}
+            alt={imageName || `${product.name} ${imageIndex + 1}`}
             fill
-            className="object-cover hover:scale-110 transition-transform duration-300"
+            className="object-cover"
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         </div>
@@ -83,10 +64,13 @@ const ProductCard = ({
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-[#615C5C] truncate">
-                  {formatProductName(productKey)}
+                  {imageName || product.name}
                 </h3>
                 <p className="text-sm text-[#8A8A8A] mt-1">
-                  {getProductDescription(folder)}
+                  {imageDescription ||
+                    product.description ||
+                    product.product_category?.description ||
+                    "Produto especial"}
                 </p>
               </div>
 
@@ -125,7 +109,13 @@ const ProductCard = ({
                   : "bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white"
               } flex items-center justify-center gap-2`}
             >
-              <ShoppingCart size={16} />
+              <Image
+                src="/images/sacola branca.png"
+                alt="Sacola"
+                width={16}
+                height={16}
+                className="mr-1"
+              />
               {isInCart ? "Remover" : "Adicionar"}
             </Button>
           </div>
@@ -140,157 +130,119 @@ const ProductCollection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toggleFavorite, isFavorite } = useFavorites();
   const { addItem, removeItem, isInCart } = useCart();
+  const { products, loading } = useProductsDB();
 
-  const [filterSearchTerm, setFilterSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<{
-    folder: string;
-    key: string;
-  } | null>(null);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const {
-    searchTerm,
-    setSearchTerm,
-    selectedProductFilters,
-    setSelectedProductFilters,
-  } = useProducts();
-
-  // Obter todos os produtos de todas as pastas
-  const allProducts = useMemo(() => {
-    const products: { folder: string; key: string }[] = [];
-
-    productFolders.forEach((folder) => {
-      const folderProducts = produtos[folder as keyof typeof produtos];
-      if (folderProducts && typeof folderProducts === "object") {
-        Object.keys(folderProducts).forEach((key) => {
-          products.push({ folder, key });
-        });
+  // Extrair categorias únicas dos produtos
+  const categories = useMemo(() => {
+    const categoryMap = new Map();
+    products.forEach((product) => {
+      if (product.product_category) {
+        categoryMap.set(product.product_category.id, product.product_category);
       }
     });
+    return Array.from(categoryMap.values()).sort(
+      (a, b) => a.order_position - b.order_position
+    );
+  }, [products]);
 
-    return products;
-  }, []);
-
-  // Filtrar produtos baseado na busca e filtros selecionados
+  // Filtrar produtos baseado na busca e categorias selecionadas
   const filteredProducts = useMemo(() => {
-    let filtered = allProducts;
+    let filtered = products;
 
     // Aplicar busca por termo
     if (searchTerm) {
       filtered = filtered.filter(
         (product) =>
-          product.key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.folder.toLowerCase().includes(searchTerm.toLowerCase())
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.description?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Aplicar filtros selecionados
-    if (selectedProductFilters.length > 0) {
-      // Se "Todos" está selecionado, mostrar todos os produtos
-      if (selectedProductFilters.includes("Todos")) {
-        return filtered;
-      }
-
-      // Filtrar por categorias selecionadas
-      filtered = filtered.filter((product) => {
-        const category = getProductCategory(product.folder);
-        return selectedProductFilters.includes(category);
-      });
+    // Aplicar filtros de categoria
+    if (selectedCategoryIds.length > 0) {
+      filtered = filtered.filter(
+        (product) =>
+          product.category_id &&
+          selectedCategoryIds.includes(product.category_id)
+      );
     }
 
     return filtered;
-  }, [searchTerm, selectedProductFilters, allProducts]);
+  }, [products, searchTerm, selectedCategoryIds]);
 
-  // Filtrar categorias baseado na busca dos filtros
-  const filteredCategories = useMemo(() => {
-    const categories = Object.keys(productCategories);
-
-    if (!filterSearchTerm) return categories;
-
-    return categories.filter((category) =>
-      category.toLowerCase().includes(filterSearchTerm.toLowerCase())
+  // Contar total de imagens dos produtos filtrados
+  const totalImages = useMemo(() => {
+    return filteredProducts.reduce(
+      (acc, product) => acc + product.product_images.length,
+      0
     );
-  }, [filterSearchTerm]);
+  }, [filteredProducts]);
 
-  const toggleAdvancedFilter = (filter: string) => {
-    setSelectedProductFilters((prev) => {
-      // Se é "Todos", marcar/desmarcar tudo
-      if (filter === "Todos") {
-        if (prev.includes("Todos")) {
-          return [];
-        } else {
-          return ["Todos"];
-        }
-      }
-
-      // Se estava marcado "Todos" e marcou outra categoria, desmarcar "Todos"
-      const newFilters = prev.filter((f) => f !== "Todos");
-
-      // Para outras categorias, comportamento normal
-      if (newFilters.includes(filter)) {
-        return newFilters.filter((f) => f !== filter);
-      } else {
-        return [...newFilters, filter];
-      }
-    });
+  const toggleCategoryFilter = (categoryId: string) => {
+    setSelectedCategoryIds((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
+    );
   };
 
-  const clearAllAdvancedFilters = () => {
-    setSelectedProductFilters([]);
+  const clearAllFilters = () => {
+    setSelectedCategoryIds([]);
   };
 
-  const getTotalAdvancedFilters = () => {
-    return selectedProductFilters.length;
-  };
-
-  const handleImageClick = (folder: string, productKey: string) => {
-    setSelectedImage({ folder, key: productKey });
-  };
-
-  const createProductObject = (folder: string, productKey: string): Product => {
-    const getProductDescription = (folder: string) => {
-      const category = getProductCategory(folder);
-      return categoryDescriptions[category] || "Produto especial";
-    };
-
-    const imageSrc =
-      produtos[folder as keyof typeof produtos]?.[productKey as never] ||
-      produtos.fallback;
-
+  const createProductForCart = (
+    product: ProductWithImages,
+    imageUrl: string,
+    imageId: string
+  ): Product => {
     return {
-      id: `product-${folder}-${productKey}`,
-      name: productKey,
-      description: getProductDescription(folder),
-      category: getProductCategory(folder),
-      image: imageSrc,
-      duration: "",
-      ageRange: "",
+      id: `product-${product.slug}-${imageId}`,
+      name: product.name,
+      description: product.description || "Produto especial",
+      category: product.product_category?.name || "Produtos",
+      image: imageUrl,
+      duration: "Sob consulta",
+      ageRange: "Todas as idades",
+      highlights: ["Produto de qualidade", "Disponível para locação"],
     };
   };
 
-  const handleFavoriteClick = (folder: string, productKey: string) => {
-    const product = createProductObject(folder, productKey);
-    toggleFavorite(product);
+  const handleFavoriteClick = (
+    product: ProductWithImages,
+    imageUrl: string,
+    imageId: string
+  ) => {
+    const cartProduct = createProductForCart(product, imageUrl, imageId);
+    toggleFavorite(cartProduct);
   };
 
-  const handleCartClick = (folder: string, productKey: string) => {
-    const product = createProductObject(folder, productKey);
-    const productId = `product-${folder}-${productKey}`;
+  const handleCartClick = (
+    product: ProductWithImages,
+    imageUrl: string,
+    imageId: string
+  ) => {
+    const cartProduct = createProductForCart(product, imageUrl, imageId);
+    const productId = `product-${product.slug}-${imageId}`;
 
     if (isInCart(productId)) {
       removeItem(productId);
     } else {
-      addItem(product);
+      addItem(cartProduct);
     }
   };
 
-  const isProductFavorite = (folder: string, productKey: string) => {
-    const productId = `product-${folder}-${productKey}`;
+  const isProductFavorite = (product: ProductWithImages, imageId: string) => {
+    const productId = `product-${product.slug}-${imageId}`;
     return isFavorite(productId);
   };
 
-  const isProductInCart = (folder: string, productKey: string) => {
-    const productId = `product-${folder}-${productKey}`;
+  const isProductInCart = (product: ProductWithImages, imageId: string) => {
+    const productId = `product-${product.slug}-${imageId}`;
     return isInCart(productId);
   };
 
@@ -302,13 +254,17 @@ const ProductCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#FC3C80] hover:bg-[#FC3C80] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
             >
-              <Search size={16} />
-              {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
-              {getTotalAdvancedFilters() > 0 && (
-                <span className="bg-white/20 px-2 py-1 text-xs">
-                  {getTotalAdvancedFilters()}
+              <Search size={20} />
+              <span className="font-semibold">
+                {isFiltersOpen
+                  ? "Esconder Categorias"
+                  : "Filtrar por Categoria"}
+              </span>
+              {selectedCategoryIds.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-white text-[#FC3C80] font-bold px-2.5 py-1 text-xs rounded-full shadow-md border-2 border-[#FC3C80]">
+                  {selectedCategoryIds.length}
                 </span>
               )}
             </Button>
@@ -326,75 +282,95 @@ const ProductCollection = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <div className="min-h-full">
-                <div className="bg-white border border-gray-200 p-6 shadow-sm min-h-full flex flex-col">
-                  <h3 className="text-lg font-semibold text-[#615C5C] mb-4">
-                    Filtrar Produtos
+                <div className="bg-white border border-gray-200 p-6 shadow-sm min-h-full flex flex-col rounded-lg">
+                  <h3 className="text-xl font-bold text-[#615C5C] mb-2">
+                    Filtrar por Categoria
                   </h3>
+                  <p className="text-xs text-[#8A8A8A] mb-6">
+                    Selecione uma ou mais categorias para filtrar os produtos
+                  </p>
 
-                  {/* Busca de filtros */}
-                  <div className="relative mb-4">
-                    <Search
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={16}
-                    />
-                    <Input
-                      type="text"
-                      placeholder="Buscar categorias..."
-                      value={filterSearchTerm}
-                      onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#FC3C80] focus:border-transparent"
-                    />
-                  </div>
+                  {/* Lista de categorias */}
+                  <div className="space-y-3 flex-1">
+                    {categories.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-sm text-[#8A8A8A]">
+                          Nenhuma categoria disponível
+                        </p>
+                      </div>
+                    ) : (
+                      categories.map((category) => {
+                        // Contar total de imagens dos produtos nesta categoria
+                        const imagesInCategory = products
+                          .filter((p) => p.category_id === category.id)
+                          .reduce((acc, p) => acc + p.product_images.length, 0);
+                        const isSelected = selectedCategoryIds.includes(
+                          category.id
+                        );
 
-                  {/* Lista de categorias - com scroll */}
-                  <div className="space-y-2 flex-1 overflow-y-auto pr-2">
-                    {filteredCategories.map((category) => {
-                      const folder =
-                        productCategories[
-                          category as keyof typeof productCategories
-                        ];
-                      const productCount =
-                        category === "Todos"
-                          ? getTotalProducts()
-                          : folderProductCounts[folder] || 0;
-
-                      return (
-                        <div
-                          key={category}
-                          className="border-b border-gray-100 last:border-b-0 pb-2"
-                        >
-                          <label className="flex items-center justify-between gap-2 py-2 cursor-pointer hover:bg-gray-50 px-2">
-                            <div className="flex items-center gap-2 flex-1">
+                        return (
+                          <label
+                            key={category.id}
+                            className={`flex items-center gap-3 py-3 px-4 cursor-pointer rounded-lg transition-all duration-200 border-2 ${
+                              isSelected
+                                ? "bg-[#FC3C80] border-[#FC3C80] shadow-md"
+                                : "bg-white border-gray-200 hover:border-[#FC3C80] hover:bg-pink-50"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center">
                               <input
                                 type="checkbox"
-                                checked={selectedProductFilters.includes(
-                                  category
-                                )}
-                                onChange={() => toggleAdvancedFilter(category)}
-                                className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
+                                checked={isSelected}
+                                onChange={() =>
+                                  toggleCategoryFilter(category.id)
+                                }
+                                className="w-5 h-5 border-2 border-gray-300 text-[#FC3C80] focus:ring-2 focus:ring-[#FC3C80] focus:ring-offset-0 rounded cursor-pointer"
                               />
-                              <span className="text-sm text-[#615C5C] font-medium">
-                                {category}
-                              </span>
                             </div>
-                            <span className="text-xs text-[#8A8A8A]">
-                              ({productCount})
-                            </span>
+                            <div className="flex-1 min-w-0">
+                              <span
+                                className={`block text-base font-semibold truncate ${
+                                  isSelected ? "text-white" : "text-[#615C5C]"
+                                }`}
+                              >
+                                {category.name}
+                              </span>
+                              {category.description && (
+                                <span
+                                  className={`block text-xs truncate mt-0.5 ${
+                                    isSelected
+                                      ? "text-white/80"
+                                      : "text-[#8A8A8A]"
+                                  }`}
+                                >
+                                  {category.description}
+                                </span>
+                              )}
+                            </div>
+                            <div
+                              className={`flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-bold ${
+                                isSelected
+                                  ? "bg-white text-[#FC3C80]"
+                                  : "bg-gray-100 text-[#615C5C]"
+                              }`}
+                            >
+                              {imagesInCategory}
+                            </div>
                           </label>
-                        </div>
-                      );
-                    })}
+                        );
+                      })
+                    )}
                   </div>
 
                   {/* Limpar filtros */}
-                  {getTotalAdvancedFilters() > 0 && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
+                  {selectedCategoryIds.length > 0 && (
+                    <div className="mt-6 pt-4 border-t border-gray-200">
                       <Button
                         variant="ghost"
-                        onClick={clearAllAdvancedFilters}
-                        className="text-sm text-[#FC3C80] hover:text-[#FC3C80] font-medium w-full"
+                        onClick={clearAllFilters}
+                        className="text-sm text-[#FC3C80] hover:text-white hover:bg-[#FC3C80] font-semibold w-full py-3 rounded-lg border-2 border-[#FC3C80] transition-all"
                       >
-                        Limpar todos os filtros
+                        Limpar Filtros ({selectedCategoryIds.length})
                       </Button>
                     </div>
                   )}
@@ -425,120 +401,188 @@ const ProductCollection = () => {
             </motion.div>
 
             {/* Filtros ativos */}
-            {getTotalAdvancedFilters() > 0 && (
+            {selectedCategoryIds.length > 0 && (
               <motion.div
-                className="mb-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
+                className="mb-6 bg-pink-50 border border-pink-200 rounded-lg p-4"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
               >
-                <div className="flex flex-wrap gap-2">
-                  <span className="text-sm text-[#8A8A8A] py-1">
-                    Filtros ativos:
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-[#615C5C]">
+                    Filtrando por:
                   </span>
-                  {selectedProductFilters.map((filter) => (
-                    <span
-                      key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#FC3C80] text-black text-sm"
-                    >
-                      {filter}
-                      <button
-                        onClick={() => toggleAdvancedFilter(filter)}
-                        className="hover:bg-[#FC3C80] p-0.5"
+                  {selectedCategoryIds.map((categoryId) => {
+                    const category = categories.find(
+                      (c) => c.id === categoryId
+                    );
+                    return (
+                      <motion.span
+                        key={categoryId}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#FC3C80] text-white text-sm font-semibold rounded-full shadow-sm hover:shadow-md transition-all"
                       >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  ))}
+                        {category?.name}
+                        <button
+                          onClick={() => toggleCategoryFilter(categoryId)}
+                          className="hover:bg-white/20 rounded-full p-1 transition-colors"
+                          aria-label={`Remover filtro ${category?.name}`}
+                        >
+                          <X size={14} strokeWidth={3} />
+                        </button>
+                      </motion.span>
+                    );
+                  })}
+                  <button
+                    onClick={clearAllFilters}
+                    className="ml-auto text-sm text-[#FC3C80] hover:text-[#615C5C] font-semibold underline transition-colors"
+                  >
+                    Limpar tudo
+                  </button>
                 </div>
               </motion.div>
             )}
 
-            {/* Grid de produtos - com scroll */}
-            <div className="flex-1 overflow-y-auto">
+            {/* Contador de resultados */}
+            {!loading && totalImages > 0 && (
               <motion.div
-                className="grid grid-cols-2 md:grid-cols-3 gap-6 pb-8"
-                layout
+                className="mb-4 flex items-center justify-between"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
               >
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={`${product.folder}-${product.key}`}
-                    folder={product.folder}
-                    productKey={product.key}
-                    onImageClick={() =>
-                      handleImageClick(product.folder, product.key)
-                    }
-                    onFavoriteClick={() =>
-                      handleFavoriteClick(product.folder, product.key)
-                    }
-                    onCartClick={() =>
-                      handleCartClick(product.folder, product.key)
-                    }
-                    isFavorite={isProductFavorite(product.folder, product.key)}
-                    isInCart={isProductInCart(product.folder, product.key)}
-                  />
-                ))}
+                <p className="text-sm text-[#8A8A8A]">
+                  Mostrando{" "}
+                  <span className="font-bold text-[#615C5C]">
+                    {totalImages}
+                  </span>{" "}
+                  {totalImages === 1 ? "produto" : "produtos"}
+                  {selectedCategoryIds.length > 0 && (
+                    <span>
+                      {" "}
+                      na{selectedCategoryIds.length > 1 ? "s" : ""} categoria
+                      {selectedCategoryIds.length > 1 ? "s" : ""} selecionada
+                      {selectedCategoryIds.length > 1 ? "s" : ""}
+                    </span>
+                  )}
+                </p>
               </motion.div>
+            )}
 
-              {filteredProducts.length === 0 && (
+            {/* Grid de produtos */}
+            <div className="flex-1 overflow-y-auto">
+              {loading ? (
                 <div className="flex items-center justify-center h-full">
-                  <p className="text-[#8A8A8A] text-lg">
-                    Nenhum produto encontrado com os filtros aplicados.
-                  </p>
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FC3C80] mb-4 mx-auto"></div>
+                    <p className="text-[#8A8A8A]">Carregando produtos...</p>
+                  </div>
                 </div>
+              ) : filteredProducts.length === 0 ? (
+                <motion.div
+                  className="flex flex-col items-center justify-center h-full py-16"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="text-center max-w-md">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <h3 className="text-xl font-bold text-[#615C5C] mb-2">
+                      {products.length === 0
+                        ? "Nenhum produto cadastrado"
+                        : "Nenhum produto encontrado"}
+                    </h3>
+                    <p className="text-[#8A8A8A] mb-6">
+                      {products.length === 0
+                        ? "Ainda não há produtos disponíveis no momento."
+                        : selectedCategoryIds.length > 0
+                        ? "Não encontramos produtos nesta categoria. Tente selecionar outras categorias ou limpar os filtros."
+                        : "Não encontramos produtos com este termo de busca. Tente pesquisar por outro termo."}
+                    </p>
+                    {(selectedCategoryIds.length > 0 || searchTerm) && (
+                      <Button
+                        onClick={() => {
+                          clearAllFilters();
+                          setSearchTerm("");
+                        }}
+                        className="bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                      >
+                        Limpar Filtros e Busca
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  className="grid custom_grid_cols md:grid-cols-3 gap-2 md:gap-6 pb-8"
+                  layout
+                >
+                  {filteredProducts.flatMap((product) =>
+                    product.product_images.map((image, imageIndex) => (
+                      <ProductImageCard
+                        key={`${product.id}-${image.id}`}
+                        product={product}
+                        imageUrl={image.image_url}
+                        imageIndex={imageIndex}
+                        imageId={image.id}
+                        imageName={image.name}
+                        imageDescription={image.description}
+                        onFavoriteClick={() =>
+                          handleFavoriteClick(
+                            product,
+                            image.image_url,
+                            image.id
+                          )
+                        }
+                        onCartClick={() =>
+                          handleCartClick(product, image.image_url, image.id)
+                        }
+                        onImageClick={() => setSelectedImage(image.image_url)}
+                        isFavorite={isProductFavorite(product, image.id)}
+                        isInCart={isProductInCart(product, image.id)}
+                      />
+                    ))
+                  )}
+                </motion.div>
               )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Image Modal */}
+      {/* Modal de imagem */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
             onClick={() => setSelectedImage(null)}
           >
             <motion.div
-              initial={{ scale: 0.8 }}
+              initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="relative max-w-6xl max-h-[90vh] w-full h-full"
+              exit={{ scale: 0.9 }}
+              className="relative max-w-7xl max-h-[90vh] w-full h-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
-                src={
-                  produtos[selectedImage.folder as keyof typeof produtos]?.[
-                    selectedImage.key as never
-                  ] || produtos.fallback
-                }
-                alt={selectedImage.key}
-                fill
-                className="object-contain"
-                sizes="90vw"
-              />
               <button
                 onClick={() => setSelectedImage(null)}
-                className="absolute -top-6 right-0 bg-white/10 hover:bg-white/20 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
+                className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X size={32} />
               </button>
+              <div className="relative w-full h-full">
+                <Image
+                  src={selectedImage}
+                  alt="Imagem ampliada"
+                  fill
+                  className="object-contain"
+                />
+              </div>
             </motion.div>
           </motion.div>
         )}

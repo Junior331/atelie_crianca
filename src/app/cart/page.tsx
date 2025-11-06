@@ -111,7 +111,7 @@ Aguardo retorno para orçamento!`;
                 <h3 className="text-xl font-semibold text-[#8A8A8A] mb-2">Seu carrinho está vazio</h3>
                 <p className="text-[#8A8A8A] mb-6">Adicione algumas oficinas incríveis para começar!</p>
                 <Button
-                  className="bg-[#FC3C80] hover:bg-[#FC3C80] text-[#615C5C]"
+                  className="bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-[#615C5C]"
                   onClick={() => window.history.back()}
                 >
                   Voltar às Oficinas

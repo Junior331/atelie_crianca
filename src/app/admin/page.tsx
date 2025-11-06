@@ -45,6 +45,27 @@ export default function AdminDashboard() {
       hasFlag: false,
     },
     {
+      name: "Categorias de Oficinas",
+      slug: "categories",
+      href: "/admin/categories",
+      description: "Gerenciar categorias das oficinas",
+      hasFlag: false,
+    },
+    {
+      name: "Produtos",
+      slug: "products",
+      href: "/admin/products",
+      description: "Gerenciar produtos (arcos, acessórios, etc)",
+      hasFlag: false,
+    },
+    {
+      name: "Categorias de Produtos",
+      slug: "product-categories",
+      href: "/admin/product-categories",
+      description: "Gerenciar categorias dos produtos",
+      hasFlag: false,
+    },
+    {
       name: "Mesa de Lanchinho",
       slug: "souvenirstable",
       href: "/admin/souvenirs",

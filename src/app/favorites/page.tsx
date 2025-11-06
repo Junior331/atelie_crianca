@@ -92,7 +92,7 @@ export default function FavoritesPage() {
                   Explore nossas oficinas e adicione suas favoritas!
                 </p>
                 <Link href="/workshops">
-                  <Button className="bg-[#FC3C80] hover:bg-[#FC3C80] text-white">
+                  <Button className="bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white">
                     Explorar Oficinas
                   </Button>
                 </Link>
@@ -206,7 +206,7 @@ export default function FavoritesPage() {
                           ) : (
                             <>
                               <Image
-                                src="/images/sacola.png"
+                                src="/images/sacola branca.png"
                                 alt="Sacola"
                                 width={16}
                                 height={16}
