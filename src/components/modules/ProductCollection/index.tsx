@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, X, ShoppingCart } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useRef, useState, useMemo } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -14,12 +14,10 @@ import { useProductsDB } from "@/hooks/use-products-db";
 import type { ProductWithImages } from "@/types/database";
 import type { Product } from "@/types/product";
 
-// Componente para o card de produto do banco (um card por imagem)
 const ProductImageCard = ({
   product,
   imageUrl,
   imageIndex,
-  imageId,
   imageName,
   imageDescription,
   onFavoriteClick,
