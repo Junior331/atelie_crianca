@@ -127,10 +127,10 @@ export default function Component() {
                   className="object-cover"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/90 to-transparent" />
+                <div className="absolute inset-0 " />
 
                 <div className="absolute inset-0 flex items-center">
-                  <div className="max-w-2xl px-8">
+                  <div className="max-w-2xl px-8 mission-card ml-6">
                     <h2 className="text-4xl font-bold text-gray-900 mb-6">
                       QUEM SOMOS?
                     </h2>

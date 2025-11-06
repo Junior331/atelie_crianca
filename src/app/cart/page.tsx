@@ -118,7 +118,7 @@ Aguardo retorno para orçamento!`;
                 </Button>
               </motion.div>
             ) : (
-              <div className="flex flex-row w-full ">
+              <div className="flex flex-col lg:flex-row w-full ">
                 {/* Cart Items */}
                 <motion.div
                   className="flex-1"
@@ -126,7 +126,7 @@ Aguardo retorno para orçamento!`;
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.1 }}
                 >
-                  <div className=" h-full p-4 border-r border-gray-200">
+                  <div className=" h-full p-4  border-b lg:border-r lg:border-b-0 border-gray-200">
                     <h3 className="font-semibold text-2xl flex items-center gap-2 text-[#615C5C] mb-6">Oficinas</h3>
 
                     <div className="space-y-4">
@@ -185,7 +185,7 @@ Aguardo retorno para orçamento!`;
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
                 >
-                  <div className="ml-4 pr-4 border-r border-gray-200 flex items-center flex-col">
+                  <div className="ml-4 pr-4 pb-4 lg:pb-0 border-b lg:border-r lg:border-b-0 border-gray-200 flex items-center flex-col">
                     <CardHeader className="pl-10 pr-10">
                       <CardTitle className="text-2xl flex items-center gap-2 text-[#615C5C]">
                         QUANTIDADE DE CRIANÇAS
