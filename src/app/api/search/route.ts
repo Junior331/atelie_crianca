@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
       .ilike("title", `%${searchTerm}%`);
 
     if (workshops) {
-      workshops.forEach((workshop) => {
+      workshops.forEach((workshop: any) => {
         results.push({
           id: workshop.id,
           title: workshop.title,
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
       .limit(5);
 
     if (workshopsByDesc) {
-      workshopsByDesc.forEach((workshop) => {
+      workshopsByDesc.forEach((workshop: any) => {
         // Avoid duplicates
         if (!results.find((r) => r.id === workshop.id && r.type === "workshop")) {
           results.push({
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
       .ilike("name", `%${searchTerm}%`);
 
     if (products) {
-      products.forEach((product) => {
+      products.forEach((product: any) => {
         results.push({
           id: product.id,
           title: product.name,
@@ -91,7 +92,7 @@ export async function GET(request: NextRequest) {
       .limit(5);
 
     if (productsByDesc) {
-      productsByDesc.forEach((product) => {
+      productsByDesc.forEach((product: any) => {
         // Avoid duplicates
         if (!results.find((r) => r.id === product.id && r.type === "product")) {
           results.push({
