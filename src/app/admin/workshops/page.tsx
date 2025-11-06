@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
@@ -257,7 +257,7 @@ export default function WorkshopsAdmin() {
 
     try {
       const workshop = workshops.find(w => w.id === workshopId);
-      let currentPosition = workshop ? workshop.workshop_images.length : 0;
+      const currentPosition = workshop ? workshop.workshop_images.length : 0;
 
       const imagesToInsert: { workshop_id: string; image_url: string; order_position: number }[] = [];
 
