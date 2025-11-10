@@ -104,7 +104,7 @@ const ProductImageCard = ({
               className={`w-full ${
                 isInCart
                   ? "bg-red-500 hover:bg-red-600 text-white"
-                  : "bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white"
+                  : "bg-[#FC3C80] text-white"
               } flex items-center justify-center gap-2`}
             >
               <Image
@@ -252,7 +252,7 @@ const ProductCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
+              className="w-full bg-[#FC3C80] text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
             >
               <Search size={20} />
               <span className="font-semibold">
@@ -505,7 +505,7 @@ const ProductCollection = () => {
                           clearAllFilters();
                           setSearchTerm("");
                         }}
-                        className="bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                        className="bg-[#FC3C80] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
                       >
                         Limpar Filtros e Busca
                       </Button>

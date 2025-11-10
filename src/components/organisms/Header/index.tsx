@@ -56,7 +56,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
         <div className="mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             <motion.div
-              className="flex-shrink-0 flex-1 flex items-center justify-center"
+              className="flex-shrink-0 flex-1 flex items-center justify-center custom_logo_header"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -89,7 +89,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
               </motion.div>
 
               {/* Favorites Icon */}
-              <Link href="/favorites" className="!mr-1">
+              <Link href="/favorites">
                 <Button
                   size="sm"
                   variant="ghost"
@@ -100,7 +100,6 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                     alt="Sacola"
                     width={16}
                     height={16}
-                    className="md:mr-1"
                   />
                   {favoritesCount > 0 && (
                     <span className="absolute -top-[3px] -right-1 bg-[#FC3C80] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
@@ -122,7 +121,6 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                     alt="Sacola"
                     width={16}
                     height={16}
-                    className="mr-1"
                   />
                   {items.length > 0 && (
                     <span className="absolute -top-[2px] -right-[2px] bg-[#FC3C80] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">

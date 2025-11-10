@@ -122,7 +122,7 @@ const ProductCard = ({
               className={`w-full ${
                 isInCart
                   ? "bg-red-500 hover:bg-red-600 text-white"
-                  : "bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white"
+                  : "bg-[#FC3C80] text-white"
               } flex items-center justify-center gap-2`}
             >
               <Image
@@ -308,7 +308,7 @@ const ProductCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#FC3C80]/85 hover:bg-[#FC3C80] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#FC3C80] text-white flex items-center justify-center gap-2"
             >
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}

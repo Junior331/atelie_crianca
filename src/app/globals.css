@@ -135,6 +135,14 @@ input:-webkit-autofill {
   }
 }
 
+@media (max-width: 480px) {
+  .custom_logo_header{
+    padding-right: 10% !important;
+    justify-content: right;
+  }
+}
+
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   /* display: none; <- Crashes Chrome on hover */

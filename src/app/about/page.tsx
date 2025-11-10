@@ -118,30 +118,26 @@ export default function Component() {
         >
           <Header />
           <div className=" bg-background">
-            <div className="">
-              <div className="relative w-full h-[600px]">
-                <Image
-                  fill
-                  src={bannerImage}
-                  alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
-                  className="object-cover"
-                />
+            <div className="flex flex-col md:flex-row w-full md:h-[600px]">
+              <Image
+                fill
+                src={bannerImage}
+                alt="Espaço infantil com piscina de bolinhas e brinquedos educativos"
+                className="object-cover !relative"
+              />
 
-                <div className="absolute inset-0 " />
-
-                <div className="absolute inset-0 flex items-center">
-                  <div className="max-w-2xl px-8 mission-card ml-6">
-                    <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                      QUEM SOMOS?
-                    </h2>
-                    <p className="text-lg text-gray-700 leading-relaxed">
-                      Há 7 anos, nossa empresa se destaca no mercado de
-                      entretenimento. Somos conhecidos por criar celebrações
-                      únicas e personalizadas. Nosso objetivo principal é trazer
-                      diversão e originalidade para cada evento, garantindo
-                      momentos inesqueciveis.
-                    </p>
-                  </div>
+              <div className="relative md:absolute inset-2 text-center md:text-start top-auto bottom-0 flex items-center -mt-[110px] md:mt-0 pr-4 md:pr-0">
+                <div className="max-w-2xl px-8 mission-card md:ml-6">
+                  <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                    QUEM SOMOS?
+                  </h2>
+                  <p className="text-lg text-gray-700 leading-relaxed">
+                    Há 7 anos, nossa empresa se destaca no mercado de
+                    entretenimento. Somos conhecidos por criar celebrações
+                    únicas e personalizadas. Nosso objetivo principal é trazer
+                    diversão e originalidade para cada evento, garantindo
+                    momentos inesqueciveis.
+                  </p>
                 </div>
               </div>
             </div>
@@ -182,9 +178,7 @@ export default function Component() {
             </div>
 
             {/* Mission Statement Section */}
-            <div
-              className="relative min-h-[500px] bg-cover bg-center bg-no-repeat"
-            >
+            <div className="relative min-h-[500px] bg-cover bg-center bg-no-repeat">
               <div className="relative z-10 flex items-center min-h-[500px] px-4">
                 <div className="container mx-auto flex items-center">
                   <div className="container mx-auto relative md:py-24">
