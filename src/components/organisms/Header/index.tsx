@@ -54,9 +54,9 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
       {/* Top bar with logo and icons */}
       <div>
         <div className="mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between md:gap-4">
             <motion.div
-              className="flex-shrink-0 flex-1 flex items-center justify-center custom_logo_header"
+              className="flex-shrink-0 flex-1 flex items-center justify-center"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -93,7 +93,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="text-[#8A8A8A] hover:text-[#FC3C80] p-2 relative"
+                  className="text-[#8A8A8A] hover:text-[#b42165] p-2 relative"
                 >
                   <Image
                     src="/images/coracao.png"
@@ -102,7 +102,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                     height={16}
                   />
                   {favoritesCount > 0 && (
-                    <span className="absolute -top-[3px] -right-1 bg-[#FC3C80] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="absolute -top-[3px] -right-1 bg-[#b42165] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {favoritesCount}
                     </span>
                   )}
@@ -114,7 +114,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="text-[#8A8A8A] hover:text-[#FC3C80] p-2 relative"
+                  className="text-[#8A8A8A] hover:text-[#b42165] p-2 relative"
                 >
                   <Image
                     src="/images/sacola.png"
@@ -123,7 +123,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                     height={16}
                   />
                   {items.length > 0 && (
-                    <span className="absolute -top-[2px] -right-[2px] bg-[#FC3C80] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="absolute -top-[2px] -right-[2px] bg-[#b42165] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {items.length}
                     </span>
                   )}
@@ -134,7 +134,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
               <Button
                 size="sm"
                 variant="ghost"
-                className="xl:hidden text-[#8A8A8A] hover:text-[#FC3C80] p-2"
+                className="xl:hidden text-[#8A8A8A] hover:text-[#b42165] p-2"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
@@ -160,7 +160,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
             >
               <Link
                 href={item.href}
-                className="text-[#8A8A8A] hover:text-[#FC3C80] transition-colors duration-200 font-medium text-sm uppercase tracking-wide"
+                className="text-[#8A8A8A] hover:text-[#b42165] transition-colors duration-200 font-medium text-sm uppercase tracking-wide"
               >
                 {item.name}
               </Link>
@@ -192,7 +192,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 >
                   <Link
                     href={item.href}
-                    className="text-[#8A8A8A] hover:text-[#FC3C80] transition-colors duration-200 font-medium py-2 block text-sm uppercase tracking-wide"
+                    className="text-[#8A8A8A] hover:text-[#b42165] transition-colors duration-200 font-medium py-2 block text-sm uppercase tracking-wide"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}

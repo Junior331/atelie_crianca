@@ -92,7 +92,7 @@ export default function FavoritesPage() {
                   Explore nossas oficinas e adicione suas favoritas!
                 </p>
                 <Link href="/workshops">
-                  <Button className="bg-[#FC3C80] text-white">
+                  <Button className="bg-[#b42165] text-white">
                     Explorar Oficinas
                   </Button>
                 </Link>
@@ -134,7 +134,7 @@ export default function FavoritesPage() {
                         onClick={() => handleRemoveFavorite(item.id)}
                         className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white flex items-center justify-center shadow-md transition-colors duration-200"
                       >
-                        <Trash2 className="w-4 h-4 text-[#FC3C80]" />
+                        <Trash2 className="w-4 h-4 text-[#b42165]" />
                       </button>
                     </div>
 
@@ -149,7 +149,7 @@ export default function FavoritesPage() {
                         }
                         className="block"
                       >
-                        <h3 className="font-semibold text-[#615C5C] mb-2 hover:text-[#FC3C80] transition-colors">
+                        <h3 className="font-semibold text-[#615C5C] mb-2 hover:text-[#b42165] transition-colors">
                           {item.name}
                         </h3>
                       </Link>
@@ -182,7 +182,7 @@ export default function FavoritesPage() {
                           className={`flex-1 text-white text-sm transition-all duration-300 ${
                             addedItems.has(item.id)
                               ? "bg-green-500 hover:bg-green-500"
-                              : "bg-[#FC3C80] hover:bg-[#e9c7ca]"
+                              : "bg-[#b42165] hover:bg-[#e9c7ca]"
                           }`}
                           size="sm"
                         >
@@ -225,7 +225,7 @@ export default function FavoritesPage() {
                           >
                             <Button
                               variant="outline"
-                              className="border-gray-300 text-[#8A8A8A] hover:border-[#FC3C80] hover:text-[#FC3C80] text-sm"
+                              className="border-gray-300 text-[#8A8A8A] hover:border-[#b42165] hover:text-[#b42165] text-sm"
                               size="sm"
                             >
                               Ver Detalhes

@@ -94,7 +94,7 @@ export const SearchBar = () => {
           }}
           onFocus={() => setIsOpen(true)}
           placeholder="Buscar no site..."
-          className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#FC3C80] focus:border-transparent text-sm"
+          className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#b42165] focus:border-transparent text-sm"
         />
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         {searchTerm && (

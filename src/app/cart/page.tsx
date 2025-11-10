@@ -111,7 +111,7 @@ Aguardo retorno para orçamento!`;
                 <h3 className="text-xl font-semibold text-[#8A8A8A] mb-2">Seu carrinho está vazio</h3>
                 <p className="text-[#8A8A8A] mb-6">Adicione algumas oficinas incríveis para começar!</p>
                 <Button
-                  className="bg-[#FC3C80] text-[#615C5C]"
+                  className="bg-[#b42165] text-[#615C5C]"
                   onClick={() => window.history.back()}
                 >
                   Voltar às Oficinas
@@ -166,7 +166,7 @@ Aguardo retorno para orçamento!`;
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => removeItem(item.id)}
-                                className="text-[#FC3C80] hover:text-[#B8005C] hover:bg-red-50 p-2"
+                                className="text-[#b42165] hover:text-[#B8005C] hover:bg-red-50 p-2"
                               >
                                 <Trash2 className="w-5 h-5" />
                               </Button>

@@ -213,7 +213,7 @@ export default function WorkshopDetailPage() {
                         onClick={() => setCurrentImageIndex(index)}
                         className={`relative aspect-square overflow-hidden border-2 ${
                           currentImageIndex === index
-                            ? "border-[#FC3C80]"
+                            ? "border-[#b42165]"
                             : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
@@ -265,7 +265,7 @@ export default function WorkshopDetailPage() {
                   <div className="flex gap-3">
                     <Button
                       onClick={handleAddToCart}
-                      className="flex-1 bg-[#FC3C80] py-3"
+                      className="flex-1 bg-[#b42165] py-3"
                     >
                       <span className="text-[#FFF] ">Adicionar à sacola</span>
                     </Button>
@@ -274,7 +274,7 @@ export default function WorkshopDetailPage() {
                       onClick={handleToggleFavorite}
                       className={`p-3 border-none ${
                         isWorkshopFavorite
-                          ? "text-[#FC3C80] border-[#FC3C80]"
+                          ? "text-[#b42165] border-[#b42165]"
                           : "text-[#8A8A8A]"
                       }`}
                     >
@@ -311,8 +311,8 @@ export default function WorkshopDetailPage() {
                       onClick={() => setCurrentImageIndex(index)}
                       className={`relative aspect-square overflow-hidden border-2 transition-all duration-300 ${
                         currentImageIndex === index
-                          ? "border-[#FC3C80] ring-2 ring-[#FC3C80]/20"
-                          : "border-gray-200 hover:border-[#FC3C80]/50"
+                          ? "border-[#b42165] ring-2 ring-[#b42165]/20"
+                          : "border-gray-200 hover:border-[#b42165]/50"
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -327,7 +327,7 @@ export default function WorkshopDetailPage() {
 
                       {/* Indicador atual */}
                       {currentImageIndex === index && (
-                        <div className="absolute top-2 right-2 bg-[#FC3C80] text-white text-xs px-2 py-1 font-semibold">
+                        <div className="absolute top-2 right-2 bg-[#b42165] text-white text-xs px-2 py-1 font-semibold">
                           Atual
                         </div>
                       )}

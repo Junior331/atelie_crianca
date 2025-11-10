@@ -104,7 +104,7 @@ const ProductImageCard = ({
               className={`w-full ${
                 isInCart
                   ? "bg-red-500 hover:bg-red-600 text-white"
-                  : "bg-[#FC3C80] text-white"
+                  : "bg-[#b42165] text-white"
               } flex items-center justify-center gap-2`}
             >
               <Image
@@ -252,7 +252,7 @@ const ProductCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#FC3C80] text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
+              className="w-full bg-[#b42165] text-white flex items-center justify-center gap-3 py-4 rounded-lg shadow-md hover:shadow-lg transition-all relative"
             >
               <Search size={20} />
               <span className="font-semibold">
@@ -261,7 +261,7 @@ const ProductCollection = () => {
                   : "Filtrar por Categoria"}
               </span>
               {selectedCategoryIds.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-white text-[#FC3C80] font-bold px-2.5 py-1 text-xs rounded-full shadow-md border-2 border-[#FC3C80]">
+                <span className="absolute -top-2 -right-2 bg-white text-[#b42165] font-bold px-2.5 py-1 text-xs rounded-full shadow-md border-2 border-[#b42165]">
                   {selectedCategoryIds.length}
                 </span>
               )}
@@ -311,8 +311,8 @@ const ProductCollection = () => {
                             key={category.id}
                             className={`flex items-center gap-3 py-3 px-4 cursor-pointer rounded-lg transition-all duration-200 border-2 ${
                               isSelected
-                                ? "bg-[#FC3C80] border-[#FC3C80] shadow-md"
-                                : "bg-white border-gray-200 hover:border-[#FC3C80] hover:bg-pink-50"
+                                ? "bg-[#b42165] border-[#b42165] shadow-md"
+                                : "bg-white border-gray-200 hover:border-[#b42165] hover:bg-pink-50"
                             }`}
                           >
                             <div className="flex items-center justify-center">
@@ -322,7 +322,7 @@ const ProductCollection = () => {
                                 onChange={() =>
                                   toggleCategoryFilter(category.id)
                                 }
-                                className="w-5 h-5 border-2 border-gray-300 text-[#FC3C80] focus:ring-2 focus:ring-[#FC3C80] focus:ring-offset-0 rounded cursor-pointer"
+                                className="w-5 h-5 border-2 border-gray-300 text-[#b42165] focus:ring-2 focus:ring-[#b42165] focus:ring-offset-0 rounded cursor-pointer"
                               />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -348,7 +348,7 @@ const ProductCollection = () => {
                             <div
                               className={`flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-bold ${
                                 isSelected
-                                  ? "bg-white text-[#FC3C80]"
+                                  ? "bg-white text-[#b42165]"
                                   : "bg-gray-100 text-[#615C5C]"
                               }`}
                             >
@@ -366,7 +366,7 @@ const ProductCollection = () => {
                       <Button
                         variant="ghost"
                         onClick={clearAllFilters}
-                        className="text-sm text-[#FC3C80] hover:text-white hover:bg-[#FC3C80] font-semibold w-full py-3 rounded-lg border-2 border-[#FC3C80] transition-all"
+                        className="text-sm text-[#b42165] hover:text-white hover:bg-[#b42165] font-semibold w-full py-3 rounded-lg border-2 border-[#b42165] transition-all"
                       >
                         Limpar Filtros ({selectedCategoryIds.length})
                       </Button>
@@ -420,7 +420,7 @@ const ProductCollection = () => {
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#FC3C80] text-white text-sm font-semibold rounded-full shadow-sm hover:shadow-md transition-all"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#b42165] text-white text-sm font-semibold rounded-full shadow-sm hover:shadow-md transition-all"
                       >
                         {category?.name}
                         <button
@@ -435,7 +435,7 @@ const ProductCollection = () => {
                   })}
                   <button
                     onClick={clearAllFilters}
-                    className="ml-auto text-sm text-[#FC3C80] hover:text-[#615C5C] font-semibold underline transition-colors"
+                    className="ml-auto text-sm text-[#b42165] hover:text-[#615C5C] font-semibold underline transition-colors"
                   >
                     Limpar tudo
                   </button>
@@ -474,7 +474,7 @@ const ProductCollection = () => {
               {loading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FC3C80] mb-4 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#b42165] mb-4 mx-auto"></div>
                     <p className="text-[#8A8A8A]">Carregando produtos...</p>
                   </div>
                 </div>
@@ -505,7 +505,7 @@ const ProductCollection = () => {
                           clearAllFilters();
                           setSearchTerm("");
                         }}
-                        className="bg-[#FC3C80] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                        className="bg-[#b42165] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
                       >
                         Limpar Filtros e Busca
                       </Button>

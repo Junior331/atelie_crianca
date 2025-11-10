@@ -679,7 +679,7 @@ const RentalCollection = () => {
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="w-full bg-[#FC3C80] text-white flex items-center justify-center gap-2"
+              className="w-full bg-[#b42165] text-white flex items-center justify-center gap-2"
             >
               <Search size={16} />
               {isFiltersOpen ? "Esconder Filtros" : "Mostrar Filtros"}
@@ -719,7 +719,7 @@ const RentalCollection = () => {
                       placeholder="Buscar oficinas..."
                       value={filterSearchTerm}
                       onChange={(e) => setFilterSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#FC3C80] focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:ring-2 focus:ring-[#b42165] focus:border-transparent"
                     />
                   </div>
 
@@ -757,7 +757,7 @@ const RentalCollection = () => {
                                   folder
                                 )}
                                 onChange={() => toggleAdvancedFilter(folder)}
-                                className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
+                                className="border-gray-300 text-[#b42165] focus:ring-[#b42165]"
                               />
                               <span className="text-sm text-[#615C5C] font-medium">
                                 {folder}
@@ -799,7 +799,7 @@ const RentalCollection = () => {
                                         `${folder}-${subfolder}`
                                       )
                                     }
-                                    className="border-gray-300 text-[#FC3C80] focus:ring-[#FC3C80]"
+                                    className="border-gray-300 text-[#b42165] focus:ring-[#b42165]"
                                   />
                                   <span className="text-sm text-[#8A8A8A]">
                                     {subfolder}
@@ -826,7 +826,7 @@ const RentalCollection = () => {
                       <Button
                         variant="ghost"
                         onClick={clearAllAdvancedFilters}
-                        className="text-sm text-[#FC3C80] hover:text-[#FC3C80] font-medium w-full"
+                        className="text-sm text-[#b42165] hover:text-[#b42165] font-medium w-full"
                       >
                         Limpar todos os filtros
                       </Button>
@@ -873,12 +873,12 @@ const RentalCollection = () => {
                   {selectedWorkshopFilters.map((filter) => (
                     <span
                       key={filter}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#FC3C80] text-black text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#b42165] text-black text-sm"
                     >
                       {filter}
                       <button
                         onClick={() => toggleAdvancedFilter(filter)}
-                        className="hover:bg-[#FC3C80] p-0.5"
+                        className="hover:bg-[#b42165] p-0.5"
                       >
                         <X size={12} />
                       </button>
