@@ -126,7 +126,7 @@ export default function Component() {
                 className="object-cover !relative"
               />
 
-              <div className="relative md:absolute inset-2 text-center md:text-start top-auto bottom-0 flex items-center -mt-[110px] md:mt-0 pr-4 md:pr-0">
+              <div className="relative md:!absolute inset-2 text-center md:text-start top-auto bottom-0 md:top-0 flex items-center -mt-[110px] md:mt-0 pr-4 md:pr-0">
                 <div className="max-w-2xl px-8 mission-card md:ml-6">
                   <h2 className="text-4xl font-bold text-gray-900 mb-6">
                     QUEM SOMOS?
