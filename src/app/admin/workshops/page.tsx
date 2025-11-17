@@ -79,13 +79,14 @@ export default function WorkshopsAdmin() {
             .select("category_id, workshop_categories(*)")
             .eq("workshop_id", workshop.id);
 
+           
           const categories = relations?.map((rel: any) => rel.workshop_categories).filter(Boolean) || [];
 
           return {
             ...workshop,
             workshop_images: workshop.workshop_images.sort((a, b) => a.order_position - b.order_position),
             workshop_categories: categories,
-          };
+          } as WorkshopWithImages;
         })
       );
 
@@ -138,7 +139,8 @@ export default function WorkshopsAdmin() {
       .select("category_id")
       .eq("workshop_id", workshop.id);
 
-    const categoryIds = relations?.map(rel => rel.category_id) || [];
+     
+    const categoryIds = relations?.map((rel: any) => rel.category_id) || [];
 
     setFormData({
       title: workshop.title,
@@ -215,7 +217,8 @@ export default function WorkshopsAdmin() {
           .single();
 
         if (error) throw error;
-        workshopId = data.id;
+         
+        workshopId = (data as any).id;
       }
 
       // Atualizar relações de categorias

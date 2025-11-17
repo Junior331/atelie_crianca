@@ -5,7 +5,8 @@
       "Bash(npm run lint)",
       "Bash(git log:*)",
       "Bash(cat:*)",
-      "Bash(npx supabase:*)"
+      "Bash(npx supabase:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
