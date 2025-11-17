@@ -77,7 +77,7 @@ Aguardo retorno para orçamento! 😊`;
   };
 
   const handleReserve = () => {
-    const whatsappNumber = "5521969927151";
+    const whatsappNumber = "5521982533717";
     const message = generateWhatsAppMessage();
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
