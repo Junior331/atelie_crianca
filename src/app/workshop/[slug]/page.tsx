@@ -296,43 +296,42 @@ export default function WorkshopDetailPage() {
             </div>
           </div>
 
-          {/* Seção de Items Similares */}
-          {imageCount > 1 && (
-            <div className="py-2">
+          {/* Seção de Outras Oficinas */}
+          {workshops.filter(w => w.id !== workshop.id).length > 0 && (
+            <div className="py-8 bg-gray-50">
               <div className="container px-4">
-                <h2 className="text-2xl font-bold text-[#8A8A8A] mb-8 text-center">
+                <h2 className="text-2xl font-bold text-[#615C5C] mb-8 text-center">
                   Veja também
                 </h2>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                  {workshop.workshop_images.map((image, index) => (
-                    <motion.button
-                      key={image.id}
-                      onClick={() => setCurrentImageIndex(index)}
-                      className={`relative aspect-square overflow-hidden border-2 transition-all duration-300 ${
-                        currentImageIndex === index
-                          ? "border-[#b42165] ring-2 ring-[#b42165]/20"
-                          : "border-gray-200 hover:border-[#b42165]/50"
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Image
-                        src={image.image_url}
-                        alt={`${workshop.title} - Opção ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                      />
+                  {workshops
+                    .filter(w => w.id !== workshop.id)
+                    .slice(0, 5)
+                    .map((otherWorkshop) => (
+                      <motion.button
+                        key={otherWorkshop.id}
+                        onClick={() => router.push(`/workshop/${otherWorkshop.slug}`)}
+                        className="relative aspect-square overflow-hidden border-2 border-gray-200 hover:border-[#b42165] transition-all duration-300 group"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Image
+                          src={otherWorkshop.workshop_images[0]?.image_url || "/images/fallback.png"}
+                          alt={otherWorkshop.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                        />
 
-                      {/* Indicador atual */}
-                      {currentImageIndex === index && (
-                        <div className="absolute top-2 right-2 bg-[#b42165] text-white text-xs px-2 py-1 font-semibold">
-                          Atual
+                        {/* Overlay com título */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                          <p className="text-white text-sm font-semibold line-clamp-2">
+                            {otherWorkshop.title}
+                          </p>
                         </div>
-                      )}
-                    </motion.button>
-                  ))}
+                      </motion.button>
+                    ))}
                 </div>
               </div>
             </div>

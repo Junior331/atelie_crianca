@@ -25,6 +25,7 @@ export default function WorkshopsAdmin() {
     slug: "",
     description: "",
     category_id: "",
+    category_ids: [] as string[], // Múltiplas categorias
     is_active: true,
     order_position: 0,
   });
@@ -70,13 +71,25 @@ export default function WorkshopsAdmin() {
 
       if (error) throw error;
 
-      // Ordenar imagens de cada workshop
-      const workshopsWithSortedImages = (data as WorkshopWithImages[]).map(workshop => ({
-        ...workshop,
-        workshop_images: workshop.workshop_images.sort((a, b) => a.order_position - b.order_position)
-      }));
+      // Carregar categorias para cada workshop
+      const workshopsWithCategories = await Promise.all(
+        (data as WorkshopWithImages[]).map(async (workshop) => {
+          const { data: relations } = await supabase
+            .from("workshop_category_relations")
+            .select("category_id, workshop_categories(*)")
+            .eq("workshop_id", workshop.id);
 
-      setWorkshops(workshopsWithSortedImages);
+          const categories = relations?.map((rel: any) => rel.workshop_categories).filter(Boolean) || [];
+
+          return {
+            ...workshop,
+            workshop_images: workshop.workshop_images.sort((a, b) => a.order_position - b.order_position),
+            workshop_categories: categories,
+          };
+        })
+      );
+
+      setWorkshops(workshopsWithCategories);
     } catch (error) {
       console.error("Erro ao carregar oficinas:", error);
       alert("Erro ao carregar oficinas");
@@ -109,19 +122,30 @@ export default function WorkshopsAdmin() {
       slug: "",
       description: "",
       category_id: "",
+      category_ids: [],
       is_active: true,
       order_position: workshops.length,
     });
     setIsModalOpen(true);
   };
 
-  const openEditModal = (workshop: WorkshopWithImages) => {
+  const openEditModal = async (workshop: WorkshopWithImages) => {
     setEditingWorkshop(workshop);
+
+    // Carregar categorias selecionadas
+    const { data: relations } = await supabase
+      .from("workshop_category_relations")
+      .select("category_id")
+      .eq("workshop_id", workshop.id);
+
+    const categoryIds = relations?.map(rel => rel.category_id) || [];
+
     setFormData({
       title: workshop.title,
       slug: workshop.slug,
       description: workshop.description || "",
       category_id: workshop.category_id || "",
+      category_ids: categoryIds,
       is_active: workshop.is_active,
       order_position: workshop.order_position,
     });
@@ -155,6 +179,8 @@ export default function WorkshopsAdmin() {
     }
 
     try {
+      let workshopId: string;
+
       if (editingWorkshop) {
         // Atualizar
         const { error } = await supabase
@@ -171,10 +197,10 @@ export default function WorkshopsAdmin() {
           .eq("id", editingWorkshop.id);
 
         if (error) throw error;
-        alert("Oficina atualizada com sucesso!");
+        workshopId = editingWorkshop.id;
       } else {
         // Criar
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("workshops")
           // @ts-expect-error - Supabase types not inferring correctly
           .insert({
@@ -184,12 +210,37 @@ export default function WorkshopsAdmin() {
             category_id: formData.category_id || null,
             is_active: formData.is_active,
             order_position: formData.order_position,
-          });
+          })
+          .select()
+          .single();
 
         if (error) throw error;
-        alert("Oficina criada com sucesso!");
+        workshopId = data.id;
       }
 
+      // Atualizar relações de categorias
+      // Deletar relações existentes
+      await supabase
+        .from("workshop_category_relations")
+        .delete()
+        .eq("workshop_id", workshopId);
+
+      // Inserir novas relações
+      if (formData.category_ids.length > 0) {
+        const relations = formData.category_ids.map(categoryId => ({
+          workshop_id: workshopId,
+          category_id: categoryId,
+        }));
+
+        const { error: relError } = await supabase
+          .from("workshop_category_relations")
+          // @ts-expect-error - Supabase types not inferring correctly
+          .insert(relations);
+
+        if (relError) throw relError;
+      }
+
+      alert(editingWorkshop ? "Oficina atualizada com sucesso!" : "Oficina criada com sucesso!");
       closeModal();
       loadWorkshops();
     } catch (error: any) {
@@ -488,13 +539,17 @@ export default function WorkshopsAdmin() {
 
                       <p className="text-gray-600 mb-4">{workshop.description || "Sem descrição"}</p>
 
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 flex-wrap">
                         <span>📸 {workshop.workshop_images.length} {workshop.workshop_images.length === 1 ? "imagem" : "imagens"}</span>
                         <span>📍 Posição: {workshop.order_position + 1}</span>
-                        {workshop.workshop_category && (
-                          <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium">
-                            {workshop.workshop_category.name}
-                          </span>
+                        {workshop.workshop_categories && workshop.workshop_categories.length > 0 && (
+                          <div className="flex gap-1 flex-wrap">
+                            {workshop.workshop_categories.map((category) => (
+                              <span key={category.id} className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium">
+                                {category.name}
+                              </span>
+                            ))}
+                          </div>
                         )}
                       </div>
 
@@ -640,7 +695,7 @@ export default function WorkshopsAdmin() {
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-sm font-medium text-gray-700">
-                      Categoria
+                      Categorias (selecione uma ou mais)
                     </label>
                     <Link
                       href="/admin/categories"
@@ -653,20 +708,35 @@ export default function WorkshopsAdmin() {
                       Gerenciar Categorias
                     </Link>
                   </div>
-                  <select
-                    value={formData.category_id}
-                    onChange={(e) => handleFormChange("category_id", e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  >
-                    <option value="">Sem categoria</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="border border-gray-300 rounded-md p-3 max-h-48 overflow-y-auto space-y-2">
+                    {categories.length === 0 ? (
+                      <p className="text-sm text-gray-500 text-center py-2">
+                        Nenhuma categoria disponível
+                      </p>
+                    ) : (
+                      categories.map((category) => (
+                        <label
+                          key={category.id}
+                          className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.category_ids.includes(category.id)}
+                            onChange={(e) => {
+                              const newCategoryIds = e.target.checked
+                                ? [...formData.category_ids, category.id]
+                                : formData.category_ids.filter(id => id !== category.id);
+                              handleFormChange("category_ids", newCategoryIds);
+                            }}
+                            className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                          />
+                          <span className="text-sm text-gray-700">{category.name}</span>
+                        </label>
+                      ))
+                    )}
+                  </div>
                   <p className="text-xs text-gray-500 mt-1">
-                    As categorias são usadas para filtrar as oficinas na página pública
+                    A oficina aparecerá nos filtros de todas as categorias selecionadas
                   </p>
                 </div>
 

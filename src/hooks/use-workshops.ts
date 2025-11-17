@@ -28,15 +28,28 @@ export const useWorkshops = () => {
 
       if (fetchError) throw fetchError;
 
-      // Ordenar imagens de cada workshop
-      const workshopsWithSortedImages = (data as WorkshopWithImages[]).map(workshop => ({
-        ...workshop,
-        workshop_images: workshop.workshop_images
-          .filter(img => img.is_active)
-          .sort((a, b) => a.order_position - b.order_position)
-      }));
+      // Carregar categorias para cada workshop
+      const workshopsWithCategories = await Promise.all(
+        (data as WorkshopWithImages[]).map(async (workshop) => {
+          const { data: relations } = await supabase
+            .from("workshop_category_relations")
+            .select("category_id, workshop_categories(*)")
+            .eq("workshop_id", workshop.id);
 
-      setWorkshops(workshopsWithSortedImages);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const categories = relations?.map((rel: any) => rel.workshop_categories).filter(Boolean) || [];
+
+          return {
+            ...workshop,
+            workshop_images: workshop.workshop_images
+              .filter(img => img.is_active)
+              .sort((a, b) => a.order_position - b.order_position),
+            workshop_categories: categories,
+          };
+        })
+      );
+
+      setWorkshops(workshopsWithCategories);
     } catch (err) {
       console.error("Erro ao carregar oficinas:", err);
       setError("Erro ao carregar oficinas");

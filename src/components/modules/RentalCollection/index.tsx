@@ -181,8 +181,14 @@ const RentalCollection = () => {
   const categories = useMemo(() => {
     const categoryMap = new Map();
     workshops.forEach((workshop) => {
+      // Suportar tanto a categoria única (antiga) quanto múltiplas categorias (nova)
       if (workshop.workshop_category) {
         categoryMap.set(workshop.workshop_category.id, workshop.workshop_category);
+      }
+      if (workshop.workshop_categories) {
+        workshop.workshop_categories.forEach(category => {
+          categoryMap.set(category.id, category);
+        });
       }
     });
     return Array.from(categoryMap.values()).sort((a, b) => a.order_position - b.order_position);
@@ -200,11 +206,17 @@ const RentalCollection = () => {
       );
     }
 
-    // Aplicar filtros de categoria
+    // Aplicar filtros de categoria (suporta múltiplas categorias)
     if (selectedCategoryIds.length > 0) {
-      filtered = filtered.filter((workshop) =>
-        workshop.category_id && selectedCategoryIds.includes(workshop.category_id)
-      );
+      filtered = filtered.filter((workshop) => {
+        // Verificar se a oficina tem alguma das categorias selecionadas
+        const workshopCategoryIds = workshop.workshop_categories?.map(c => c.id) || [];
+        // Também incluir a categoria única antiga para compatibilidade
+        if (workshop.category_id) {
+          workshopCategoryIds.push(workshop.category_id);
+        }
+        return workshopCategoryIds.some(catId => selectedCategoryIds.includes(catId));
+      });
     }
 
     return filtered;
@@ -304,9 +316,11 @@ const RentalCollection = () => {
                       </div>
                     ) : (
                       categories.map((category) => {
-                        const workshopsInCategory = workshops.filter(
-                          (w) => w.category_id === category.id
-                        ).length;
+                        const workshopsInCategory = workshops.filter((w) => {
+                          const categoryIds = w.workshop_categories?.map(c => c.id) || [];
+                          if (w.category_id) categoryIds.push(w.category_id);
+                          return categoryIds.includes(category.id);
+                        }).length;
                         const isSelected = selectedCategoryIds.includes(category.id);
 
                         return (

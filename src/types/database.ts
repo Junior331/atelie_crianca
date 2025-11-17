@@ -40,9 +40,17 @@ export interface WorkshopImage {
   created_at: string;
 }
 
+export interface WorkshopCategoryRelation {
+  id: string;
+  workshop_id: string;
+  category_id: string;
+  created_at: string;
+}
+
 export interface WorkshopWithImages extends Workshop {
   workshop_images: WorkshopImage[];
   workshop_category?: WorkshopCategory;
+  workshop_categories?: WorkshopCategory[]; // Múltiplas categorias
 }
 
 export interface ProductCategory {
