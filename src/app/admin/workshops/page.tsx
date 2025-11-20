@@ -217,18 +217,19 @@ export default function WorkshopsAdmin() {
             const workshopsToUpdate: Array<{id: string, newPos: number}> = [];
 
             // Remover a oficina editada da lista
-            const otherWorkshops = allWorkshops.filter(w => w.id !== editingWorkshop.id);
+            const otherWorkshops = allWorkshops.filter((w: any) => w.id !== editingWorkshop.id);
 
             // Encontrar onde inserir a oficina editada
             let currentPos = 0;
             for (let i = 0; i < otherWorkshops.length; i++) {
+              const workshop = otherWorkshops[i] as any;
               if (currentPos === newPosition) {
                 currentPos++; // Pular a posição da oficina editada
               }
 
-              if (otherWorkshops[i].order_position !== currentPos) {
+              if (workshop.order_position !== currentPos) {
                 workshopsToUpdate.push({
-                  id: otherWorkshops[i].id,
+                  id: workshop.id,
                   newPos: currentPos
                 });
               }
@@ -237,9 +238,9 @@ export default function WorkshopsAdmin() {
 
             // Atualizar todas as oficinas que precisam
             for (const update of workshopsToUpdate) {
-              // @ts-expect-error - Supabase types not inferring correctly
               await supabase
                 .from("workshops")
+                // @ts-expect-error - Supabase types not inferring correctly
                 .update({ order_position: update.newPos })
                 .eq("id", update.id);
             }
