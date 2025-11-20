@@ -380,7 +380,7 @@ const HeroSection = () => {
         {/* Hero Banner */}
 
         {/* Portfolio Carousel Section */}
-        <div className="bg-white  mt-[100px]">
+        <div className="bg-white mt-[70px] md:mt-[100px]">
           <div className="container max-w-none md:pt-8">
             <motion.div
               className="mb-6"
