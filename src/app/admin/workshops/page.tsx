@@ -184,7 +184,10 @@ export default function WorkshopsAdmin() {
       let workshopId: string;
 
       if (editingWorkshop) {
-        // Atualizar
+        const oldPosition = editingWorkshop.order_position;
+        const newPosition = formData.order_position;
+
+        // Atualizar a oficina atual primeiro
         const { error } = await supabase
           .from("workshops")
           // @ts-expect-error - Supabase types not inferring correctly
@@ -194,12 +197,54 @@ export default function WorkshopsAdmin() {
             description: formData.description,
             category_id: formData.category_id || null,
             is_active: formData.is_active,
-            order_position: formData.order_position,
+            order_position: newPosition,
           })
           .eq("id", editingWorkshop.id);
 
         if (error) throw error;
         workshopId = editingWorkshop.id;
+
+        // Se a posição mudou, reorganizar todas as oficinas para evitar duplicatas
+        if (oldPosition !== newPosition) {
+          // Buscar todas as oficinas ordenadas
+          const { data: allWorkshops } = await supabase
+            .from("workshops")
+            .select("id, order_position")
+            .order("order_position", { ascending: true });
+
+          if (allWorkshops) {
+            // Criar array com as posições corretas
+            const workshopsToUpdate: Array<{id: string, newPos: number}> = [];
+
+            // Remover a oficina editada da lista
+            const otherWorkshops = allWorkshops.filter(w => w.id !== editingWorkshop.id);
+
+            // Encontrar onde inserir a oficina editada
+            let currentPos = 0;
+            for (let i = 0; i < otherWorkshops.length; i++) {
+              if (currentPos === newPosition) {
+                currentPos++; // Pular a posição da oficina editada
+              }
+
+              if (otherWorkshops[i].order_position !== currentPos) {
+                workshopsToUpdate.push({
+                  id: otherWorkshops[i].id,
+                  newPos: currentPos
+                });
+              }
+              currentPos++;
+            }
+
+            // Atualizar todas as oficinas que precisam
+            for (const update of workshopsToUpdate) {
+              // @ts-expect-error - Supabase types not inferring correctly
+              await supabase
+                .from("workshops")
+                .update({ order_position: update.newPos })
+                .eq("id", update.id);
+            }
+          }
+        }
       } else {
         // Criar
         const { data, error } = await supabase
@@ -740,6 +785,23 @@ export default function WorkshopsAdmin() {
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
                     A oficina aparecerá nos filtros de todas as categorias selecionadas
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Posição de Exibição
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={formData.order_position + 1}
+                    onChange={(e) => handleFormChange("order_position", (parseInt(e.target.value) || 1) - 1)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    placeholder="1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Menor número = maior prioridade (aparece primeiro no site)
                   </p>
                 </div>
 

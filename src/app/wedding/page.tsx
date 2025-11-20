@@ -38,20 +38,33 @@ export default function Component() {
 
       if (data && data.length > 0) {
         const imageMap: { [key: string]: string } = {};
+        const carouselImages: PortfolioItem[] = [];
+
         (data as PageImage[]).forEach((img) => {
           imageMap[img.key] = img.image_url;
+
+          // Se a chave começa com "wedding_carousel_", adicionar ao carrossel
+          if (img.key.startsWith("wedding_carousel_")) {
+            carouselImages.push({
+              id: img.key,
+              category: "weddings",
+              image: img.image_url,
+            });
+          }
         });
 
         if (imageMap["wedding_banner"]) {
           setBannerImage(imageMap["wedding_banner"]);
         }
 
-        setPortfolioItems((prev) =>
-          prev.map((item, index) => {
-            const key = `wedding_carousel_${String(index + 1).padStart(2, "0")}`;
-            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
-          })
-        );
+        // Ordenar imagens do carrossel pela posição
+        carouselImages.sort((a, b) => {
+          const numA = parseInt(a.id.replace("wedding_carousel_", "")) || 0;
+          const numB = parseInt(b.id.replace("wedding_carousel_", "")) || 0;
+          return numA - numB;
+        });
+
+        setPortfolioItems(carouselImages);
       }
     } catch (error) {
       console.error("Erro ao carregar imagens:", error);
@@ -66,22 +79,26 @@ export default function Component() {
     {
       icon: "/images/entertainment.png",
       title: "ENTRETENIMENTO",
-      description: "Levamos entretenimento para as crianças enquanto seus pais curtem a festa.",
+      description:
+        "Levamos entretenimento para as crianças enquanto seus pais curtem a festa.",
     },
     {
       icon: "/images/trained-team.png",
       title: "EQUIPE TREINADA",
-      description: "Nossos monitores são treinados para lidar com situações adversas.",
+      description:
+        "Nossos monitores são treinados para lidar com situações adversas.",
     },
     {
       icon: "/images/nap-space.png",
       title: "ESPAÇO SONINHO",
-      description: "Temos um espaço dedicado a soneca dos bebês e das crianças.",
+      description:
+        "Temos um espaço dedicado a soneca dos bebês e das crianças.",
     },
     {
       icon: "/images/lamp.png",
       title: "SUA IDEIA",
-      description: "Personalizamos as oficinas para refletir as suas ideias e o estilo do evento.",
+      description:
+        "Personalizamos as oficinas para refletir as suas ideias e o estilo do evento.",
     },
     {
       icon: "/images/turtle.png",
@@ -93,17 +110,9 @@ export default function Component() {
       title: "MONITOR BILÍNGUE",
       description: "Temos o adicional de monitor bilíngue.",
     },
-   
   ];
 
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([
-    { id: "1", category: "weddings", image: getImage("fallback").src },
-    { id: "2", category: "weddings", image: getImage("fallback").src },
-    { id: "3", category: "weddings", image: getImage("fallback").src },
-    { id: "4", category: "weddings", image: getImage("fallback").src },
-    { id: "5", category: "weddings", image: getImage("fallback").src },
-    { id: "6", category: "weddings", image: getImage("fallback").src },
-  ]);
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
 
   const PortfolioCarousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -115,7 +124,9 @@ export default function Component() {
     }, []);
 
     const prevSlide = useCallback(() => {
-      setCurrentIndex((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length);
+      setCurrentIndex(
+        (prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length
+      );
     }, []);
 
     const goToSlide = useCallback((index: number) => {
@@ -143,25 +154,27 @@ export default function Component() {
         onMouseLeave={() => setIsAutoPlay(true)}
       >
         {/* Main Image */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={portfolioItems[currentIndex].image}
-              alt={`imagem demonstrativa`}
-              fill
-              className="object-cover"
-              priority={currentIndex === 0}
-            />
-            <div className="absolute inset-0 bg-black/20" />
-          </motion.div>
-        </AnimatePresence>
+        {portfolioItems.length > 0 && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={portfolioItems[currentIndex].image}
+                alt={`imagem demonstrativa`}
+                fill
+                className="object-cover"
+                priority={currentIndex === 0}
+              />
+              <div className="absolute inset-0 bg-black/20" />
+            </motion.div>
+          </AnimatePresence>
+        )}
 
         {/* Navigation Arrows */}
         <button
@@ -179,17 +192,21 @@ export default function Component() {
         </button>
 
         {/* Dots Indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
-          {portfolioItems.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                currentIndex === index ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"
-              }`}
-            />
-          ))}
-        </div>
+        {portfolioItems.length > 0 && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
+            {portfolioItems.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  currentIndex === index
+                    ? "bg-white w-8"
+                    : "bg-white/50 hover:bg-white/75"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -221,7 +238,39 @@ export default function Component() {
                   />
                 </div>
               </div>
-              <div className="pt-[100px]">
+
+              <div className="flex items-center justify-center flex-col gap-2 ml-4 mt-8">
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Há 8 anos no mercado, somos especialistas em levar um toque
+                  lúdico e criativo às celebrações através de oficinas infantis,
+                  recreação e brinquedotecas personalizadas. Com a missão de
+                  “personalizar o mundo” oferecemos soluções sob medida para
+                  tornar eventos ainda mais acolhedores, permitindo que os
+                  pequenos participem da festa com alegria e interação.
+                </p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Já entregamos mais de 1.000 eventos e temos um acervo gigante
+                  para o Espaço Infantil ornar com a sua decoração.
+                </p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Casamentos são celebrações de amor e união, e quando há
+                  crianças entre os convidados, contar com um espaço infantil
+                  bem planejado é um entretenimento que faz toda a diferença.
+                  Além de oferecer segurança e diversão, esse cuidado permite
+                  que os pais aproveitem o evento com tranquilidade, enquanto os
+                  pequenos vivem momentos de alegria e criatividade.
+                </p>
+                <a
+                  className="shadow-md rounded-full py-4 px-8 text-blue-600 mt-2 w-fit"
+                  href="https://www.instagram.com/ateliedecrianca.casamentos/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  @ateliedecrianca.casamentos
+                </a>
+              </div>
+
+              <div className="pt-8">
                 <div className="container mx-auto max-w-6xl">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
                     {featuresData.map((feature, index) => {
@@ -243,8 +292,12 @@ export default function Component() {
                               className="object-contain"
                             />
                           </div>
-                          <h3 className="text-lg font-medium text-gray-800  capitalize">{feature.title}</h3>
-                          <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                          <h3 className="text-lg font-medium text-gray-800  capitalize">
+                            {feature.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 leading-relaxed">
+                            {feature.description}
+                          </p>
                         </motion.div>
                       );
                     })}

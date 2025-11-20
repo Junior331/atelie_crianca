@@ -157,7 +157,10 @@ export default function ProductsAdmin() {
 
     try {
       if (editingProduct) {
-        // Atualizar
+        const oldPosition = editingProduct.order_position;
+        const newPosition = formData.order_position;
+
+        // Atualizar o produto atual primeiro
         const { error } = await supabase
           .from("products")
           // @ts-expect-error - Supabase types not inferring correctly
@@ -167,11 +170,54 @@ export default function ProductsAdmin() {
             description: formData.description,
             category_id: formData.category_id || null,
             is_active: formData.is_active,
-            order_position: formData.order_position,
+            order_position: newPosition,
           })
           .eq("id", editingProduct.id);
 
         if (error) throw error;
+
+        // Se a posição mudou, reorganizar todos os produtos para evitar duplicatas
+        if (oldPosition !== newPosition) {
+          // Buscar todos os produtos ordenados
+          const { data: allProducts } = await supabase
+            .from("products")
+            .select("id, order_position")
+            .order("order_position", { ascending: true });
+
+          if (allProducts) {
+            // Criar array com as posições corretas
+            const productsToUpdate: Array<{id: string, newPos: number}> = [];
+
+            // Remover o produto editado da lista
+            const otherProducts = allProducts.filter(p => p.id !== editingProduct.id);
+
+            // Encontrar onde inserir o produto editado
+            let currentPos = 0;
+            for (let i = 0; i < otherProducts.length; i++) {
+              if (currentPos === newPosition) {
+                currentPos++; // Pular a posição do produto editado
+              }
+
+              if (otherProducts[i].order_position !== currentPos) {
+                productsToUpdate.push({
+                  id: otherProducts[i].id,
+                  newPos: currentPos
+                });
+              }
+              currentPos++;
+            }
+
+            // Atualizar todos os produtos que precisam
+            for (const update of productsToUpdate) {
+              // @ts-expect-error - Supabase types not inferring correctly
+              await supabase
+                .from("products")
+                .update({ order_position: update.newPos })
+                .eq("id", update.id);
+            }
+          }
+        }
+
         alert("Produto atualizado com sucesso!");
       } else {
         // Criar
@@ -675,6 +721,23 @@ export default function ProductsAdmin() {
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
                     As categorias são usadas para filtrar os produtos na página pública
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Posição de Exibição
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={formData.order_position + 1}
+                    onChange={(e) => handleFormChange("order_position", (parseInt(e.target.value) || 1) - 1)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    placeholder="1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Menor número = maior prioridade (aparece primeiro no site)
                   </p>
                 </div>
 

@@ -250,7 +250,7 @@ Aguardo retorno para orçamento! 😊`;
                       onChange={(e) =>
                         handleInputChange("location", e.target.value)
                       }
-                      placeholder="Rua, número, bairro, cidade..."
+                      placeholder="Ex: Buffet ABC, Salão de festas, Residência..."
                       className="mt-1 text-white"
                       rows={2}
                     />

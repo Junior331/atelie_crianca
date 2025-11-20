@@ -23,7 +23,7 @@ const WEDDING_STRUCTURE: ImageSlot[] = [
     currentImage: getImage("fallback").src,
     title: "Banner Principal",
   },
-  ...Array.from({ length: 6 }, (_, i) => ({
+  ...Array.from({ length: 13 }, (_, i) => ({
     id: `carousel_${i + 1}`,
     key: `wedding_carousel_${String(i + 1).padStart(2, "0")}`,
     currentImage: getImage("fallback").src,

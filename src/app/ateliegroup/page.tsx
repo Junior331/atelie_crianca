@@ -96,6 +96,16 @@ export default function Component() {
               </div>
             </div>
 
+            <p className="text-lg text-gray-700 mb-8 max-w-6xl m-auto text-center">
+              Nosso grupo ateliê conta com 4 frentes da empresa, são elas:
+              Ateliê de Criança com a parte das oficinas e recreação para
+              eventos infantis; Ateliê de Criança Brinquedoteca com a parte
+              aluguéis de brinquedotecas itinerantes e personalizadas; Ateliê de
+              Criança Produtos com a parte de lembranças e fantasias; Ateliê de
+              Criança Casamentos com a parte de eventos sociais como casamentos
+              e corporativos. Uma empresa completa e personalizada para você.
+            </p>
+
             {/* Grid de serviços */}
             <div className="container mx-auto px-6 py-12">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

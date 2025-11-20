@@ -40,7 +40,7 @@ export default function CartPage() {
 %0A
 *OFICINAS SELECIONADAS:*%0A${itemsList}
 %0A%0A
-*DADOS DO EVENTO:*%0A• Quantidade de crianças: ${formData.childrenCount}%0A• Horas de evento: ${formData.eventHours}%0A• Bairro: ${formData.location}
+*DADOS DO EVENTO:*%0A• Quantidade de crianças: ${formData.childrenCount}%0A• Horas de evento: ${formData.eventHours}%0A• Local da festa: ${formData.location}
 %0A%0A
 Aguardo retorno para orçamento!`;
 
@@ -66,7 +66,7 @@ Aguardo retorno para orçamento!`;
   };
 
   const isFormValid = () => {
-    // Validação completa: itens, quantidade de crianças, horas de evento e bairro
+    // Validação completa: itens, quantidade de crianças, horas de evento e local da festa
     return (
       items.length > 0 &&
       formData.childrenCount > 0 &&
@@ -111,7 +111,7 @@ Aguardo retorno para orçamento!`;
                 <h3 className="text-xl font-semibold text-[#8A8A8A] mb-2">Seu carrinho está vazio</h3>
                 <p className="text-[#8A8A8A] mb-6">Adicione algumas oficinas incríveis para começar!</p>
                 <Button
-                  className="bg-[#b42165] text-[#615C5C]"
+                  className="bg-[#b42165] text-white"
                   onClick={() => window.history.back()}
                 >
                   Voltar às Oficinas
@@ -286,11 +286,11 @@ Aguardo retorno para orçamento!`;
                     </div>
                      <div className="mt-[50px]">
                         <label className="text-sm text-[#615C5C] font-medium mb-1 block text-start">
-                          Bairro
+                          Local da festa
                         </label>
                         <input
                           type="text"
-                          placeholder="Ex: Copacabana, Ipanema..."
+                          placeholder="Ex: Buffet ABC, Salão de festas, Residência..."
                           value={formData.location}
                           onChange={(e) =>
                             setFormData((prev) => ({
@@ -368,7 +368,7 @@ Aguardo retorno para orçamento!`;
                           <ul className="text-xs mt-1 space-y-1">
                             {formData.childrenCount === 0 && <li>• Quantidade de crianças</li>}
                             {formData.eventHours === 0 && <li>• Horas de evento</li>}
-                            {formData.location.trim() === "" && <li>• Bairro</li>}
+                            {formData.location.trim() === "" && <li>• Local da festa</li>}
                           </ul>
                         </div>
                       )}

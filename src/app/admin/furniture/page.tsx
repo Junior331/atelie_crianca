@@ -378,7 +378,7 @@ export default function FurnitureAdmin() {
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             NOSSO MOBILIÁRIO
           </h2>
-          <p className="text-lg text-gray-700 mb-8">DIVERSAS CORES</p>
+          <p className="text-lg text-gray-700 mb-8">Contamos com um mobiliário extenso, são mais de: 350 cadeiras, 9 mesas grandes, 20 mesas pequenas piqueniques, 50 cavaletes e 3 mesas diversificadas.</p>
 
           <div className="space-y-12 mb-16">
             {[0, 2, 4].map((startIndex) => (
