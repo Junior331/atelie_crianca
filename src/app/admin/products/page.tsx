@@ -189,7 +189,7 @@ export default function ProductsAdmin() {
             const productsToUpdate: Array<{id: string, newPos: number}> = [];
 
             // Remover o produto editado da lista
-            const otherProducts = allProducts.filter((p: any) => p.id !== editingProduct.id);
+            const otherProducts: any = allProducts.filter((p: any) => p.id !== editingProduct.id);
 
             // Encontrar onde inserir o produto editado
             let currentPos = 0;
