@@ -189,7 +189,7 @@ export default function ProductsAdmin() {
             const productsToUpdate: Array<{id: string, newPos: number}> = [];
 
             // Remover o produto editado da lista
-            const otherProducts = allProducts.filter(p => p.id !== editingProduct.id);
+            const otherProducts = allProducts.filter((p: any) => p.id !== editingProduct.id);
 
             // Encontrar onde inserir o produto editado
             let currentPos = 0;
@@ -209,9 +209,9 @@ export default function ProductsAdmin() {
 
             // Atualizar todos os produtos que precisam
             for (const update of productsToUpdate) {
-              // @ts-expect-error - Supabase types not inferring correctly
               await supabase
                 .from("products")
+                // @ts-expect-error - Supabase types not inferring correctly
                 .update({ order_position: update.newPos })
                 .eq("id", update.id);
             }
