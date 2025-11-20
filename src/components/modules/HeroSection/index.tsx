@@ -213,7 +213,7 @@ const PortfolioCarousel = ({
 
   return (
     <div
-      className="relative w-full  md:h-[500px] overflow-hidden bg-gray-100 group"
+      className="relative w-full h-[300px] md:h-[500px] overflow-hidden bg-gray-100 group"
       onMouseEnter={() => setIsAutoPlay(false)}
       onMouseLeave={() => setIsAutoPlay(true)}
     >
