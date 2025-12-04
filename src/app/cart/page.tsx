@@ -37,6 +37,7 @@ export default function CartPage() {
     if (shareId) {
       loadSharedCart(shareId);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const generateWhatsAppMessage = () => {

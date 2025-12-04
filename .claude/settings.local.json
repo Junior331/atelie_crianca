@@ -13,7 +13,9 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nfix: resolve TypeScript errors in ProductsAdmin by adding explicit type annotations\n\nFixed type safety issues with Supabase query results by adding explicit ''any'' type annotation to filter callback parameter and correctly positioning ts-expect-error comment.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsx:*)"
     ],
     "deny": [],
     "ask": []

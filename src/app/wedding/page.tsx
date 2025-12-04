@@ -6,11 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/organisms";
 import { LoadingSpinner } from "@/components/atoms";
 import { Footer } from "@/components/modules";
-import { supabase } from "@/lib/supabase";
 import { getImage } from "@/assets/images";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PageImage } from "@/types/database";
+import { loadPageImages, debugImageUrls } from "@/utils/image-loader";
 
 type PortfolioItem = {
   id: string;
@@ -28,44 +27,36 @@ export default function Component() {
 
   const loadImages = async () => {
     try {
-      const { data, error } = await supabase
-        .from("page_images")
-        .select("*")
-        .eq("page", "wedding")
-        .order("position");
+      const imageMap = await loadPageImages("wedding");
 
-      if (error) throw error;
+      // Debug: mostrar todas as URLs carregadas
+      debugImageUrls(imageMap, "wedding");
 
-      if (data && data.length > 0) {
-        const imageMap: { [key: string]: string } = {};
-        const carouselImages: PortfolioItem[] = [];
+      const carouselImages: PortfolioItem[] = [];
 
-        (data as PageImage[]).forEach((img) => {
-          imageMap[img.key] = img.image_url;
-
-          // Se a chave começa com "wedding_carousel_", adicionar ao carrossel
-          if (img.key.startsWith("wedding_carousel_")) {
-            carouselImages.push({
-              id: img.key,
-              category: "weddings",
-              image: img.image_url,
-            });
-          }
-        });
-
-        if (imageMap["wedding_banner"]) {
-          setBannerImage(imageMap["wedding_banner"]);
+      Object.entries(imageMap).forEach(([key, url]) => {
+        // Se a chave começa com "wedding_carousel_", adicionar ao carrossel
+        if (key.startsWith("wedding_carousel_")) {
+          carouselImages.push({
+            id: key,
+            category: "weddings",
+            image: url,
+          });
         }
+      });
 
-        // Ordenar imagens do carrossel pela posição
-        carouselImages.sort((a, b) => {
-          const numA = parseInt(a.id.replace("wedding_carousel_", "")) || 0;
-          const numB = parseInt(b.id.replace("wedding_carousel_", "")) || 0;
-          return numA - numB;
-        });
-
-        setPortfolioItems(carouselImages);
+      if (imageMap["wedding_banner"]) {
+        setBannerImage(imageMap["wedding_banner"]);
       }
+
+      // Ordenar imagens do carrossel pela posição
+      carouselImages.sort((a, b) => {
+        const numA = parseInt(a.id.replace("wedding_carousel_", "")) || 0;
+        const numB = parseInt(b.id.replace("wedding_carousel_", "")) || 0;
+        return numA - numB;
+      });
+
+      setPortfolioItems(carouselImages);
     } catch (error) {
       console.error("Erro ao carregar imagens:", error);
     } finally {
