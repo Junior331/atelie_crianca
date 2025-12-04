@@ -97,12 +97,10 @@ Aguardo retorno para orçamento!`;
       const data = await response.json();
 
       if (data.success && data.cartData) {
-        // Clear current cart first
         clearCart();
 
-        // Small delay to ensure cart is cleared
         setTimeout(() => {
-          // Load shared items
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           data.cartData.items.forEach((item: any) => {
             // Add each item with its original quantity
             for (let i = 0; i < (item.quantity || 1); i++) {
@@ -110,7 +108,6 @@ Aguardo retorno para orçamento!`;
             }
           });
 
-          // Load shared form data
           if (data.cartData.formData) {
             setFormData(data.cartData.formData);
           }
