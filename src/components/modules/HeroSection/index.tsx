@@ -14,6 +14,7 @@ import { getImage } from "@/assets/images";
 import { Header } from "@/components/organisms";
 import { CardContent } from "@/components/organisms/Card";
 import { PageImage } from "@/types/database";
+import { debugStorageUrl } from "@/utils/storage-helpers";
 
 type PortfolioItem = {
   id: string;
@@ -340,6 +341,7 @@ const HeroSection = () => {
         const imageMap: { [key: string]: string } = {};
         (data as PageImage[]).forEach((img) => {
           imageMap[img.key] = img.image_url;
+          debugStorageUrl(img.image_url, img.key);
         });
 
         setPortfolioItems((prev) =>
