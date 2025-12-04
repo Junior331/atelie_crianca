@@ -109,7 +109,7 @@ const ProductImageCard = ({
             >
               <Image
                 src="/images/sacola branca.png"
-                alt="Sacola"
+                alt="Carrinho"
                 width={16}
                 height={16}
                 className="mr-1"

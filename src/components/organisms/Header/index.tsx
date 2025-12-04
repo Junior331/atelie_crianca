@@ -97,7 +97,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 >
                   <Image
                     src="/images/coracao.png"
-                    alt="Sacola"
+                    alt="Favoritos"
                     width={16}
                     height={16}
                   />
@@ -118,7 +118,7 @@ const Header = ({ isSecundary = true }: HeaderProps) => {
                 >
                   <Image
                     src="/images/sacola.png"
-                    alt="Sacola"
+                    alt="Carrinho"
                     width={16}
                     height={16}
                   />

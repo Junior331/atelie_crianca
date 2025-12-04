@@ -158,23 +158,6 @@ export default function FavoritesPage() {
                         {item.description}
                       </p>
 
-                      {(item.duration || item.ageRange) && (
-                        <div className="space-y-2 mb-4">
-                          {item.duration && (
-                            <div className="flex items-center text-xs text-[#8A8A8A]">
-                              <span className="font-medium">Duração:</span>
-                              <span className="ml-1">{item.duration}</span>
-                            </div>
-                          )}
-                          {item.ageRange && (
-                            <div className="flex items-center text-xs text-[#8A8A8A]">
-                              <span className="font-medium">Idade:</span>
-                              <span className="ml-1">{item.ageRange}</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
                       <div className="flex gap-2 mt-auto">
                         <Button
                           onClick={() => handleAddToCart(item)}
@@ -207,7 +190,7 @@ export default function FavoritesPage() {
                             <>
                               <Image
                                 src="/images/sacola branca.png"
-                                alt="Sacola"
+                                alt="Carrinho"
                                 width={16}
                                 height={16}
                                 className="mr-1"

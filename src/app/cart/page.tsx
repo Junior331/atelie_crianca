@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, ShoppingCart as ShoppingCartIcon } from "lucide-react";
+import { Trash2, ShoppingCart as ShoppingCartIcon, Share2, Check } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 import { Header } from "@/components/organisms/Header";
 import { Footer } from "@/components/modules";
@@ -14,8 +15,11 @@ import { getImage } from "@/assets/images";
 import { getIcon } from "@/assets/icons";
 
 export default function CartPage() {
-  const { items, removeItem, clearCart } = useCart();
+  const { items, removeItem, clearCart, addItem } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [shareSuccess, setShareSuccess] = useState(false);
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     eventDate: "",
     startTime: "",
@@ -26,6 +30,14 @@ export default function CartPage() {
     isReturningClient: "",
     additionalInfo: "",
   });
+
+  // Load shared cart on mount
+  useEffect(() => {
+    const shareId = searchParams.get('share');
+    if (shareId) {
+      loadSharedCart(shareId);
+    }
+  }, [searchParams]);
 
   const generateWhatsAppMessage = () => {
     const itemsList = items
@@ -79,6 +91,66 @@ Aguardo retorno para orçamento!`;
     window.location.href = "/workshops";
   };
 
+  const loadSharedCart = async (shareId: string) => {
+    try {
+      const response = await fetch(`/api/share-cart?id=${shareId}`);
+      const data = await response.json();
+
+      if (data.success && data.cartData) {
+        // Clear current cart first
+        clearCart();
+
+        // Small delay to ensure cart is cleared
+        setTimeout(() => {
+          // Load shared items
+          data.cartData.items.forEach((item: any) => {
+            // Add each item with its original quantity
+            for (let i = 0; i < (item.quantity || 1); i++) {
+              addItem(item);
+            }
+          });
+
+          // Load shared form data
+          if (data.cartData.formData) {
+            setFormData(data.cartData.formData);
+          }
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Error loading shared cart:', error);
+    }
+  };
+
+  const handleShareCart = async () => {
+    if (items.length === 0) return;
+
+    setIsSharing(true);
+    try {
+      const response = await fetch('/api/share-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, formData })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const shareUrl = `${window.location.origin}/cart?share=${data.shareId}`;
+
+        // Copy to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+
+        setShareSuccess(true);
+        setTimeout(() => setShareSuccess(false), 3000);
+      }
+    } catch (error) {
+      console.error('Error sharing cart:', error);
+      alert('Erro ao gerar link de compartilhamento');
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   return (
     <AnimatePresence mode="wait">
       <motion.main
@@ -97,7 +169,28 @@ Aguardo retorno para orçamento!`;
               transition={{ duration: 0.6 }}
               className="text-center mb-12"
             >
-              <h1 className="text-4xl font-medium  text-[#615C5C] mb-4">SACOLA DE OFICINAS</h1>
+              <div className="flex items-center justify-center gap-4">
+                <h1 className="text-4xl font-medium  text-[#615C5C] mb-4">CARRINHO</h1>
+                {items.length > 0 && (
+                  <Button
+                    onClick={handleShareCart}
+                    disabled={isSharing}
+                    className="mb-4 bg-[#615C5C] hover:bg-[#4a4040] text-white flex items-center gap-2"
+                  >
+                    {shareSuccess ? (
+                      <>
+                        <Check className="w-4 h-4" />
+                        Link Copiado!
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-4 h-4" />
+                        {isSharing ? 'Gerando...' : 'Compartilhar'}
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
             </motion.div>
 
             {items.length === 0 ? (
@@ -109,12 +202,12 @@ Aguardo retorno para orçamento!`;
               >
                 <ShoppingCartIcon className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <h3 className="text-xl font-semibold text-[#8A8A8A] mb-2">Seu carrinho está vazio</h3>
-                <p className="text-[#8A8A8A] mb-6">Adicione algumas oficinas incríveis para começar!</p>
+                <p className="text-[#8A8A8A] mb-6">Adicione oficinas ou produtos para começar!</p>
                 <Button
                   className="bg-[#b42165] text-white"
                   onClick={() => window.history.back()}
                 >
-                  Voltar às Oficinas
+                  Continuar Comprando
                 </Button>
               </motion.div>
             ) : (
@@ -127,7 +220,7 @@ Aguardo retorno para orçamento!`;
                   transition={{ duration: 0.6, delay: 0.1 }}
                 >
                   <div className=" h-full p-4  border-b lg:border-r lg:border-b-0 border-gray-200">
-                    <h3 className="font-semibold text-2xl flex items-center gap-2 text-[#615C5C] mb-6">Oficinas</h3>
+                    <h3 className="font-semibold text-2xl flex items-center gap-2 text-[#615C5C] mb-6">Itens</h3>
 
                     <div className="space-y-4">
                       {items.map((item, index) => (
