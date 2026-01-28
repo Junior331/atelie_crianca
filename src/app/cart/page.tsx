@@ -20,8 +20,23 @@ function CartContent() {
   const [isSharing, setIsSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
   const searchParams = useSearchParams();
+  
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatDateToDDMMYYYY = (dateString: string) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const [formData, setFormData] = useState({
-    eventDate: "",
+    eventDate: getTodayDate(),
     startTime: "",
     endTime: "",
     location: "",
@@ -53,7 +68,7 @@ function CartContent() {
 %0A
 *OFICINAS SELECIONADAS:*%0A${itemsList}
 %0A%0A
-*DADOS DO EVENTO:*%0A• Quantidade de crianças: ${formData.childrenCount}%0A• Horas de evento: ${formData.eventHours}%0A• Local da festa: ${formData.location}
+*DADOS DO EVENTO:*%0A• Data: ${formatDateToDDMMYYYY(formData.eventDate)}%0A• Quantidade de crianças: ${formData.childrenCount}%0A• Horas de evento: ${formData.eventHours}%0A• Bairro: ${formData.location}
 %0A%0A
 Aguardo retorno para orçamento!`;
 
@@ -79,11 +94,12 @@ Aguardo retorno para orçamento!`;
   };
 
   const isFormValid = () => {
-    // Validação completa: itens, quantidade de crianças, horas de evento e local da festa
+    // Validação completa: itens, quantidade de crianças, horas de evento, data e bairro
     return (
       items.length > 0 &&
       formData.childrenCount > 0 &&
       formData.eventHours > 0 &&
+      formData.eventDate.trim() !== "" &&
       formData.location.trim() !== ""
     );
   };
@@ -110,7 +126,23 @@ Aguardo retorno para orçamento!`;
           });
 
           if (data.cartData.formData) {
-            setFormData(data.cartData.formData);
+            setFormData({
+              ...data.cartData.formData,
+              // Se não houver data salva, usar data atual
+              eventDate: data.cartData.formData.eventDate || getTodayDate(),
+            });
+          } else {
+            // Se não houver formData, inicializar com data atual
+            setFormData({
+              eventDate: getTodayDate(),
+              startTime: "",
+              endTime: "",
+              location: "",
+              childrenCount: 0,
+              eventHours: 0,
+              isReturningClient: "",
+              additionalInfo: "",
+            });
           }
         }, 100);
       }
@@ -377,11 +409,31 @@ Aguardo retorno para orçamento!`;
                     </div>
                      <div className="mt-[50px]">
                         <label className="text-sm text-[#615C5C] font-medium mb-1 block text-start">
-                          Local da festa
+                          Data do Evento
+                        </label>
+                        <input
+                          type="date"
+                          value={formData.eventDate}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              eventDate: e.target.value,
+                            }))
+                          }
+                          className={`w-[300px] h-9 p-[5px] border text-[#615C5C] rounded-sm focus:outline-none focus:ring-2 transition-all ${
+                            formData.eventDate.trim() === "" && items.length > 0
+                              ? "border-red-300 focus:ring-red-200"
+                              : "border-gray-300 focus:ring-blue-200"
+                          }`}
+                        />
+                      </div>
+                     <div className="mt-[20px]">
+                        <label className="text-sm text-[#615C5C] font-medium mb-1 block text-start">
+                          Bairro
                         </label>
                         <input
                           type="text"
-                          placeholder="Ex: Buffet ABC, Salão de festas, Residência..."
+                          placeholder="Ex: Copacabana, Barra da Tijuca, Ipanema..."
                           value={formData.location}
                           onChange={(e) =>
                             setFormData((prev) => ({
@@ -459,7 +511,8 @@ Aguardo retorno para orçamento!`;
                           <ul className="text-xs mt-1 space-y-1">
                             {formData.childrenCount === 0 && <li>• Quantidade de crianças</li>}
                             {formData.eventHours === 0 && <li>• Horas de evento</li>}
-                            {formData.location.trim() === "" && <li>• Local da festa</li>}
+                            {formData.eventDate.trim() === "" && <li>• Data do evento</li>}
+                            {formData.location.trim() === "" && <li>• Bairro</li>}
                           </ul>
                         </div>
                       )}

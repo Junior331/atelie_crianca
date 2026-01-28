@@ -37,8 +37,23 @@ interface CartSheetProps {
 
 export function CartSheet({ isOpen, onClose }: CartSheetProps) {
   const { items, removeItem, clearCart } = useCart();
+  
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatDateToDDMMYYYY = (dateString: string) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const [formData, setFormData] = useState({
-    eventDate: "",
+    eventDate: getTodayDate(),
     startTime: "",
     endTime: "",
     location: "",
@@ -60,9 +75,9 @@ export function CartSheet({ isOpen, onClose }: CartSheetProps) {
 ${itemsList}
 
 📅 *DADOS DO EVENTO:*
-• Data: ${formData.eventDate}
+• Data: ${formatDateToDDMMYYYY(formData.eventDate)}
 • Horário: ${formData.startTime} às ${formData.endTime}
-• Local: ${formData.location}
+• Bairro: ${formData.location}
 • Quantidade de crianças: ${formData.childrenCount}
 
 👥 *CLIENTE:*
@@ -242,17 +257,16 @@ Aguardo retorno para orçamento! 😊`;
                       className="flex items-center gap-2 text-white"
                     >
                       <MapPin className="w-4 h-4 text-white" />
-                      Local (endereço completo) *
+                      Bairro *
                     </Label>
-                    <Textarea
+                    <Input
                       id="location"
                       value={formData.location}
                       onChange={(e) =>
                         handleInputChange("location", e.target.value)
                       }
-                      placeholder="Ex: Buffet ABC, Salão de festas, Residência..."
+                      placeholder="Ex: Copacabana, Barra da Tijuca, Ipanema..."
                       className="mt-1 text-white"
-                      rows={2}
                     />
                   </div>
 
