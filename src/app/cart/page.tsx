@@ -414,12 +414,17 @@ Aguardo retorno para orçamento!`;
                         <input
                           type="date"
                           value={formData.eventDate}
-                          onChange={(e) =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              eventDate: e.target.value,
-                            }))
-                          }
+                          min={getTodayDate()}
+                          onChange={(e) => {
+                            const selectedDate = e.target.value;
+                            // Validar se a data selecionada não é menor que a data atual
+                            if (selectedDate >= getTodayDate()) {
+                              setFormData((prev) => ({
+                                ...prev,
+                                eventDate: selectedDate,
+                              }));
+                            }
+                          }}
                           className={`w-[300px] h-9 p-[5px] border text-[#615C5C] rounded-sm focus:outline-none focus:ring-2 transition-all ${
                             formData.eventDate.trim() === "" && items.length > 0
                               ? "border-red-300 focus:ring-red-200"

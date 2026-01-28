@@ -205,9 +205,14 @@ Aguardo retorno para orçamento! 😊`;
                       id="eventDate"
                       type="date"
                       value={formData.eventDate}
-                      onChange={(e) =>
-                        handleInputChange("eventDate", e.target.value)
-                      }
+                      min={getTodayDate()}
+                      onChange={(e) => {
+                        const selectedDate = e.target.value;
+                        // Validar se a data selecionada não é menor que a data atual
+                        if (selectedDate >= getTodayDate()) {
+                          handleInputChange("eventDate", selectedDate);
+                        }
+                      }}
                       className="mt-1 text-white"
                     />
                   </div>
