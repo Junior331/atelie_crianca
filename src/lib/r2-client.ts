@@ -22,12 +22,19 @@ export async function uploadToR2(
   path: string,
   contentType?: string
 ): Promise<string> {
-  const buffer = file instanceof File ? await file.arrayBuffer() : file;
+  let body: Buffer;
+
+  if (file instanceof File) {
+    const arrayBuffer = await file.arrayBuffer();
+    body = Buffer.from(arrayBuffer);
+  } else {
+    body = file;
+  }
 
   const command = new PutObjectCommand({
     Bucket: BUCKET_NAME,
     Key: path,
-    Body: Buffer.from(buffer),
+    Body: body,
     ContentType: contentType || (file instanceof File ? file.type : 'application/octet-stream'),
   });
 
