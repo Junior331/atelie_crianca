@@ -9,12 +9,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Footer } from "../Footer";
 import { getIcon } from "@/assets/icons";
-import { supabase } from "@/lib/supabase";
 import { getImage } from "@/assets/images";
 import { Header } from "@/components/organisms";
 import { CardContent } from "@/components/organisms/Card";
-import { PageImage } from "@/types/database";
-import { debugStorageUrl } from "@/utils/storage-helpers";
+import { R2_IMAGES } from "@/utils/r2-images";
 
 type PortfolioItem = {
   id: string;
@@ -279,101 +277,52 @@ const HeroSection = () => {
       title: "RECEPÇÃO DE CASAMENTO",
       subtitle: "Elegante celebração noturna",
       category: "weddings",
-      image: getImage("fallback").src,
+      image: R2_IMAGES.carousel1,
     },
     {
       id: "2",
       title: "JANTAR DE GALA CORPORATIVO",
       subtitle: "Gala anual da empresa",
       category: "corporate",
-      image: getImage("fallback").src,
+      image: R2_IMAGES.carousel2,
     },
     {
       id: "3",
       title: "CASAMENTO AO AR LIVRE",
       subtitle: "Preparação da cerimónia no jardim",
       category: "weddings",
-      image: getImage("fallback").src,
+      image: R2_IMAGES.carousel3,
     },
     {
       id: "4",
       title: "FESTA DE ANIVERSÁRIO",
       subtitle: "Celebração doce",
       category: "birthdays",
-      image: getImage("fallback").src,
+      image: R2_IMAGES.carousel4,
     },
   ]);
 
   const [cardsData, setCardsData] = useState([
-    { href: "/about", title: "QUEM SOMOS", image: getImage("fallback").src },
-    { href: "/workshops", title: "OFICINAS", image: getImage("fallback").src },
+    { href: "/about", title: "QUEM SOMOS", image: R2_IMAGES.about },
+    { href: "/workshops", title: "OFICINAS", image: R2_IMAGES.oficinas },
     {
       href: "/playroom",
       title: "BRINQUEDOTECA",
-      image: getImage("fallback").src,
+      image: R2_IMAGES.toyLibrary,
     },
-    { href: "/wedding", title: "CASAMENTOS", image: getImage("fallback").src },
-    { href: "/products", title: "PRODUTOS", image: getImage("fallback").src },
+    { href: "/wedding", title: "CASAMENTOS", image: R2_IMAGES.wedding },
+    { href: "/products", title: "PRODUTOS", image: R2_IMAGES.customized1 },
     {
       href: "/souvenirstable",
       title: "MESA DE LANCHINHO",
-      image: getImage("fallback").src,
+      image: R2_IMAGES.snackTable,
     },
   ]);
 
-  const [missionImage, setMissionImage] = useState(getImage("fallback").src);
+  const [missionImage, setMissionImage] = useState(R2_IMAGES.mission);
 
-  useEffect(() => {
-    loadImages();
-  }, []);
-
-  const loadImages = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("page_images")
-        .select("*")
-        .eq("page", "home")
-        .order("position");
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        const imageMap: { [key: string]: string } = {};
-        (data as PageImage[]).forEach((img) => {
-          imageMap[img.key] = img.image_url;
-          debugStorageUrl(img.image_url, img.key);
-        });
-
-        setPortfolioItems((prev) =>
-          prev.map((item, index) => {
-            const key = `home_carousel_${String(index + 1).padStart(2, "0")}`;
-            return imageMap[key] ? { ...item, image: imageMap[key] } : item;
-          })
-        );
-
-        const cardKeys = [
-          "quem_somos",
-          "oficinas",
-          "brinquedoteca",
-          "casamento",
-          "produtos",
-          "mesa_lanchinho",
-        ];
-        setCardsData((prev) =>
-          prev.map((card, index) => {
-            const key = `home_card_${cardKeys[index]}`;
-            return imageMap[key] ? { ...card, image: imageMap[key] } : card;
-          })
-        );
-
-        if (imageMap["home_mission_image"]) {
-          setMissionImage(imageMap["home_mission_image"]);
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao carregar imagens:", error);
-    }
-  };
+  // Removido useEffect que carregava imagens do Supabase
+  // Agora usamos imagens direto do R2 (definidas nos estados acima)
 
   return (
     <>

@@ -1,11 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from '@/lib/supabase';
 
+const R2_PUBLIC_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || 'https://pub-d50114600aa44bf0a236f33f64195f03.r2.dev';
+const USE_R2 = process.env.NEXT_PUBLIC_USE_R2_STORAGE === 'true';
+
 /**
- * Carrega e valida URLs de imagens do Supabase Storage
- * Trata erros e fornece fallback automático
+ * Fallback: Retorna URLs de imagens do R2 quando Supabase está bloqueado
+ */
+function getR2ImageFallback(page: string): { [key: string]: string } {
+  console.warn(`[Image Loader] Using R2 fallback for page "${page}"`);
+
+  // Mapeamento básico de imagens conhecidas
+  const commonImages: { [key: string]: string } = {
+    'banner1': `${R2_PUBLIC_URL}/images/banner_01.jpeg`,
+    'banner2': `${R2_PUBLIC_URL}/images/banner_02.jpeg`,
+    'carousel1': `${R2_PUBLIC_URL}/images/carousel-image.jpeg`,
+    'carousel2': `${R2_PUBLIC_URL}/images/carousel-image2.jpeg`,
+    'carousel3': `${R2_PUBLIC_URL}/images/carousel-image3.jpeg`,
+    'carousel4': `${R2_PUBLIC_URL}/images/carousel-image4.jpeg`,
+    'about': `${R2_PUBLIC_URL}/images/about.jpeg`,
+    'mission': `${R2_PUBLIC_URL}/images/mission-bg2.jpeg`,
+    'who-we-are': `${R2_PUBLIC_URL}/images/who-we-are.jpeg`,
+  };
+
+  return commonImages;
+}
+
+/**
+ * Carrega e valida URLs de imagens
+ * Usa R2 como fallback quando Supabase está bloqueado
  */
 export async function loadPageImages(page: string) {
+  // Se R2 está ativado, usar diretamente
+  if (USE_R2) {
+    return getR2ImageFallback(page);
+  }
+
   try {
     const { data, error } = await supabase
       .from("page_images")
@@ -13,14 +43,21 @@ export async function loadPageImages(page: string) {
       .eq("page", page)
       .order("position");
 
+    // Se erro 402 (Supabase bloqueado), usar R2
+    if (error && (error as any).code === '402') {
+      console.warn(`[Image Loader] Supabase blocked (402), using R2 fallback`);
+      return getR2ImageFallback(page);
+    }
+
     if (error) {
       console.error(`[Image Loader] Error loading images for page "${page}":`, error);
-      throw error;
+      // Qualquer erro: usar R2 como fallback
+      return getR2ImageFallback(page);
     }
 
     if (!data || data.length === 0) {
-      console.warn(`[Image Loader] No images found for page "${page}"`);
-      return {};
+      console.warn(`[Image Loader] No images found for page "${page}", using R2 fallback`);
+      return getR2ImageFallback(page);
     }
 
     const imageMap: { [key: string]: string } = {};
@@ -28,23 +65,7 @@ export async function loadPageImages(page: string) {
     data.forEach((img: any) => {
       const url = img.image_url;
 
-      // Validar URL
       if (!url || url.trim() === '') {
-        console.warn(`[Image Loader] Empty URL for key "${img.key}"`);
-        return;
-      }
-
-      // Verificar se é uma URL válida do Supabase
-      const isValidSupabaseUrl = /^https:\/\/[a-z]+\.supabase\.co\/storage\/v1\/object\/public\//i.test(url);
-
-      if (!isValidSupabaseUrl) {
-        console.warn(`[Image Loader] Invalid Supabase URL for key "${img.key}":`, url);
-        // Tentar reconstruir a URL correta
-        const fixedUrl = fixSupabaseUrl(url, img.key);
-        if (fixedUrl) {
-          imageMap[img.key] = fixedUrl;
-          console.log(`[Image Loader] Fixed URL for key "${img.key}":`, fixedUrl);
-        }
         return;
       }
 
@@ -56,7 +77,7 @@ export async function loadPageImages(page: string) {
 
   } catch (error) {
     console.error(`[Image Loader] Fatal error loading images for page "${page}":`, error);
-    return {};
+    return getR2ImageFallback(page);
   }
 }
 

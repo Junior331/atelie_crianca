@@ -25,19 +25,28 @@ export async function GET() {
 
     if (error) {
       console.error("Error fetching feature flags:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch feature flags", details: error.message },
-        { status: 500 }
-      );
+
+      // Fallback: retornar feature flags padrão quando Supabase está bloqueado
+      const defaultFlags = [
+        { id: '1', name: 'use_database_products', is_enabled: false, description: 'Use database for products' },
+        { id: '2', name: 'use_database_workshops', is_enabled: false, description: 'Use database for workshops' },
+      ];
+
+      console.warn("Using default feature flags (Supabase blocked)");
+      return NextResponse.json(defaultFlags);
     }
 
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+
+    // Fallback em caso de erro
+    const defaultFlags = [
+      { id: '1', name: 'use_database_products', is_enabled: false },
+      { id: '2', name: 'use_database_workshops', is_enabled: false },
+    ];
+
+    return NextResponse.json(defaultFlags);
   }
 }
 

@@ -7,9 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "convert-heic": "node scripts/convert-heic.js"
+    "convert-heic": "node scripts/convert-heic.js",
+    "migrate:r2": "tsx scripts/migrate-to-r2.ts",
+    "migrate:r2:dry-run": "tsx scripts/migrate-to-r2.ts --dry-run",
+    "upload:r2": "tsx scripts/upload-local-to-r2.ts",
+    "upload:r2:dry-run": "tsx scripts/upload-local-to-r2.ts --dry-run"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1014.0",
+    "@aws-sdk/s3-request-presigner": "^3.1014.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",

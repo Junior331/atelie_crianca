@@ -1,23 +1,40 @@
 import { supabase } from '@/lib/supabase';
+import { getPublicUrl as getR2PublicUrl } from '@/lib/r2-client';
 
 /**
  * Garante que a URL do storage seja válida e pública
- * Supabase storage público usa o formato:
- * https://[PROJECT_REF].supabase.co/storage/v1/object/public/[BUCKET]/[PATH]
+ * Agora usa Cloudflare R2 ao invés de Supabase Storage
  */
 export function getPublicStorageUrl(bucket: string, path: string): string {
+  // Se estiver migrando, ainda suporta Supabase
+  const useR2 = process.env.NEXT_PUBLIC_USE_R2_STORAGE === 'true';
+
+  if (useR2) {
+    // R2 usa path direto sem bucket separado
+    const fullPath = bucket ? `${bucket}/${path}` : path;
+    return getR2PublicUrl(fullPath);
+  }
+
+  // Fallback para Supabase durante migração
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
 }
 
 /**
- * Valida se uma URL é do formato correto do Supabase Storage
+ * Valida se uma URL é do formato correto do Storage (Supabase ou R2)
  */
 export function isValidStorageUrl(url: string): boolean {
   if (!url) return false;
 
   const supabasePattern = /^https:\/\/[a-z]+\.supabase\.co\/storage\/v1\/object\/public\//;
-  return supabasePattern.test(url);
+  const r2Pattern = /^https:\/\/[a-z0-9-]+\.r2\.dev\//;
+  const customDomainPattern = process.env.R2_PUBLIC_URL
+    ? new RegExp(`^${process.env.R2_PUBLIC_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+    : null;
+
+  return supabasePattern.test(url) ||
+         r2Pattern.test(url) ||
+         (customDomainPattern ? customDomainPattern.test(url) : false);
 }
 
 /**
