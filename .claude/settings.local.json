@@ -15,7 +15,16 @@
       "Bash(git commit:*)",
       "Bash(npm run dev:*)",
       "Bash(npm install:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(test -f \"c:\\Users\\qualq\\Desktop\\atelie_crianca\\.env.local\")",
+      "Bash(npm run migrate:r2:dry-run)",
+      "Bash(node -r dotenv/config scripts/migrate-to-r2.ts --dry-run)",
+      "Bash(npm run upload:r2:dry-run)",
+      "Bash(npm run upload:r2)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(curl -I \"https://pub-d50114600aa44bf0a236f33f64195f03.r2.dev/images/carousel-image.jpeg\")",
+      "Bash(curl -I \"https://pub-d50114600aa44bf0a236f33f64195f03.r2.dev/images/about.jpeg\")",
+      "Bash(findstr \"HTTP\")"
     ],
     "deny": [],
     "ask": []

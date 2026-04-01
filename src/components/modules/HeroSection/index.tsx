@@ -9,7 +9,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Footer } from "../Footer";
 import { getIcon } from "@/assets/icons";
-import { getImage } from "@/assets/images";
 import { Header } from "@/components/organisms";
 import { CardContent } from "@/components/organisms/Card";
 import { R2_IMAGES } from "@/utils/r2-images";
@@ -271,7 +270,7 @@ const PortfolioCarousel = ({
 };
 
 const HeroSection = () => {
-  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([
+  const portfolioItems: PortfolioItem[] = [
     {
       id: "1",
       title: "RECEPÇÃO DE CASAMENTO",
@@ -300,9 +299,9 @@ const HeroSection = () => {
       category: "birthdays",
       image: R2_IMAGES.carousel4,
     },
-  ]);
+  ];
 
-  const [cardsData, setCardsData] = useState([
+  const cardsData = [
     { href: "/about", title: "QUEM SOMOS", image: R2_IMAGES.about },
     { href: "/workshops", title: "OFICINAS", image: R2_IMAGES.oficinas },
     {
@@ -317,12 +316,12 @@ const HeroSection = () => {
       title: "MESA DE LANCHINHO",
       image: R2_IMAGES.snackTable,
     },
-  ]);
+  ];
 
-  const [missionImage, setMissionImage] = useState(R2_IMAGES.mission);
+  const missionImage = R2_IMAGES.mission;
 
   // Removido useEffect que carregava imagens do Supabase
-  // Agora usamos imagens direto do R2 (definidas nos estados acima)
+  // Agora usamos imagens direto do R2
 
   return (
     <>
