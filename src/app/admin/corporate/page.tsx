@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
 import type { PageImage } from "@/types/database";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteImageFromStorage } from "@/utils/storage-helpers";
 
 interface ImageSlot {
   id: string;
@@ -136,21 +138,19 @@ export default function CorporateAdmin() {
 
       const existing = existingImage as PageImage | null;
 
-      // Upload para o Supabase Storage
+      // Upload para o storage
       const fileExt = file.name.split(".").pop();
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `corporate/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url: publicUrl, error: uploadError } = await uploadFile(
+        file,
+        "images",
+        filePath
+      );
 
       if (uploadError) throw uploadError;
-
-      // Pegar URL pública
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("images").getPublicUrl(filePath);
+      if (!publicUrl) throw new Error("URL não retornada após upload");
 
       // Salvar ou atualizar no banco de dados
       type PageImageUpsert = { page: string; key: string; image_url: string; position: number };
@@ -169,13 +169,11 @@ export default function CorporateAdmin() {
       if (dbError) throw dbError;
 
       // Deletar imagem antiga do storage (se existir e não for imagem padrão)
-      if (
-        existing?.image_url &&
-        existing.image_url.includes("corporate/")
-      ) {
-        const oldPath = existing.image_url.split("/corporate/")[1];
-        if (oldPath) {
-          await supabase.storage.from("images").remove([`corporate/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "corporate");
+        } catch (error) {
+          console.warn("Erro ao deletar imagem antiga:", error);
         }
       }
 
@@ -221,13 +219,11 @@ export default function CorporateAdmin() {
       if (dbError) throw dbError;
 
       // Deletar do storage (se não for imagem padrão)
-      if (
-        existing?.image_url &&
-        existing.image_url.includes("corporate/")
-      ) {
-        const oldPath = existing.image_url.split("/corporate/")[1];
-        if (oldPath) {
-          await supabase.storage.from("images").remove([`corporate/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "corporate");
+        } catch (error) {
+          console.warn("Erro ao deletar imagem do storage:", error);
         }
       }
 

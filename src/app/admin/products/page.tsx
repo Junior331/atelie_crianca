@@ -4,6 +4,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteFromR2 } from "@/lib/r2-client";
 import Image from "next/image";
 import Link from "next/link";
 import type { ProductWithImages, ProductImage } from "@/types/database";
@@ -255,11 +257,15 @@ export default function ProductsAdmin() {
     }
 
     try {
-      // Deletar imagens do storage
+      // Deletar imagens do storage (R2 ou Supabase)
       for (const img of product.product_images) {
-        if (img.image_url.includes("/products/")) {
-          const path = img.image_url.split("/products/")[1];
-          await supabase.storage.from("images").remove([`products/${path}`]);
+        try {
+          const urlParts = img.image_url.split('/');
+          const filename = urlParts[urlParts.length - 1];
+          const path = `images/products/${filename}`;
+          await deleteFromR2(path);
+        } catch (deleteError) {
+          console.warn("Erro ao deletar imagem do storage:", deleteError);
         }
       }
 
@@ -305,17 +311,10 @@ export default function ProductsAdmin() {
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${productId}-${Date.now()}.${fileExt}`;
-      const filePath = `products/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url, error: uploadError } = await uploadFile(file, "images", `products/${fileName}`);
 
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("images")
-        .getPublicUrl(filePath);
+      if (uploadError) throw new Error(uploadError);
 
       // Obter a próxima posição
       const product = products.find(p => p.id === productId);
@@ -326,7 +325,7 @@ export default function ProductsAdmin() {
         // @ts-expect-error - Supabase types not inferring correctly
         .insert({
           product_id: productId,
-          image_url: publicUrl,
+          image_url: url,
           order_position: nextPosition,
         });
 
@@ -350,9 +349,14 @@ export default function ProductsAdmin() {
     if (!confirm("Tem certeza que deseja remover esta imagem?")) return;
 
     try {
-      if (image.image_url.includes("/products/")) {
-        const path = image.image_url.split("/products/")[1];
-        await supabase.storage.from("images").remove([`products/${path}`]);
+      // Deletar do storage (R2 ou Supabase)
+      try {
+        const urlParts = image.image_url.split('/');
+        const filename = urlParts[urlParts.length - 1];
+        const path = `images/products/${filename}`;
+        await deleteFromR2(path);
+      } catch (deleteError) {
+        console.warn("Erro ao deletar imagem do storage:", deleteError);
       }
 
       const { error } = await supabase

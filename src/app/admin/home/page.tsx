@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
 import type { PageImage } from "@/types/database";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteImageFromStorage } from "@/utils/storage-helpers";
 
 interface ImageSlot {
   id: string;
@@ -143,13 +145,9 @@ export default function HomeAdmin() {
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `home/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url: publicUrl, error: uploadError } = await uploadFile(file, "images", filePath);
 
       if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage.from("images").getPublicUrl(filePath);
 
       const { error: dbError } = await (supabase.from("page_images") as any).upsert(
         {
@@ -163,9 +161,12 @@ export default function HomeAdmin() {
 
       if (dbError) throw dbError;
 
-      if (existing?.image_url && existing.image_url.includes("home/")) {
-        const oldPath = existing.image_url.split("/home/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`home/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "home");
+        } catch (deleteError) {
+          console.warn("Erro ao deletar imagem antiga:", deleteError);
+        }
       }
 
       setImageSlots((prev) =>
@@ -198,9 +199,12 @@ export default function HomeAdmin() {
 
       await supabase.from("page_images").delete().eq("page", "home").eq("key", slot.key);
 
-      if (existing?.image_url && existing.image_url.includes("home/")) {
-        const oldPath = existing.image_url.split("/home/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`home/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "home");
+        } catch (deleteError) {
+          console.warn("Erro ao deletar imagem:", deleteError);
+        }
       }
 
       setImageSlots((prev) =>

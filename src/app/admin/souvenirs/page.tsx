@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
 import type { PageImage } from "@/types/database";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteImageFromStorage } from "@/utils/storage-helpers";
 
 interface ImageSlot {
   id: string;
@@ -142,16 +144,13 @@ export default function SouvenirsAdmin() {
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `souvenirs/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url: publicUrl, error: uploadError } = await uploadFile(
+        file,
+        "images",
+        filePath
+      );
 
       if (uploadError) throw uploadError;
-
-      // Pegar URL pública
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("images").getPublicUrl(filePath);
 
       // Salvar ou atualizar no banco de dados
       const { error: dbError } = await (supabase.from("page_images") as any).upsert(
@@ -169,15 +168,11 @@ export default function SouvenirsAdmin() {
       if (dbError) throw dbError;
 
       // Deletar imagem antiga do storage (se existir e não for imagem padrão)
-      if (
-        existing?.image_url &&
-        existing.image_url.includes("souvenirs/")
-      ) {
-        const oldPath = existing.image_url.split("/souvenirs/")[1];
-        if (oldPath) {
-          await supabase.storage
-            .from("images")
-            .remove([`souvenirs/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "souvenirs");
+        } catch (error) {
+          console.warn("Erro ao deletar imagem antiga:", error);
         }
       }
 
@@ -223,15 +218,11 @@ export default function SouvenirsAdmin() {
       if (dbError) throw dbError;
 
       // Deletar do storage (se não for imagem padrão)
-      if (
-        existing?.image_url &&
-        existing.image_url.includes("souvenirs/")
-      ) {
-        const oldPath = existing.image_url.split("/souvenirs/")[1];
-        if (oldPath) {
-          await supabase.storage
-            .from("images")
-            .remove([`souvenirs/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "souvenirs");
+        } catch (error) {
+          console.warn("Erro ao deletar imagem:", error);
         }
       }
 

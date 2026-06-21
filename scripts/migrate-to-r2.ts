@@ -134,6 +134,24 @@ async function getAllImageUrls(): Promise<ImageRecord[]> {
     });
   }
 
+  // 4. workshop_images
+  const { data: workshopImages } = await supabase
+    .from('workshop_images')
+    .select('id, image_url');
+
+  if (workshopImages) {
+    workshopImages.forEach(img => {
+      if (img.image_url && img.image_url.includes('supabase.co')) {
+        images.push({
+          id: img.id,
+          table_name: 'workshop_images',
+          column_name: 'image_url',
+          old_url: img.image_url,
+        });
+      }
+    });
+  }
+
   console.log(`✅ Encontradas ${images.length} imagens para migrar\n`);
   return images;
 }

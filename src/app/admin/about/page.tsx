@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
 import type { PageImage } from "@/types/database";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteImageFromStorage } from "@/utils/storage-helpers";
 
 interface ImageSlot {
   id: string;
@@ -100,13 +102,9 @@ export default function AboutAdmin() {
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `about/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url: publicUrl, error: uploadError } = await uploadFile(file, "images", filePath);
 
       if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage.from("images").getPublicUrl(filePath);
 
       type PageImageUpsert = { page: string; key: string; image_url: string; position: number };
       const values: PageImageUpsert[] = [
@@ -124,9 +122,12 @@ export default function AboutAdmin() {
 
       if (dbError) throw dbError;
 
-      if (existing?.image_url && existing.image_url.includes("about/")) {
-        const oldPath = existing.image_url.split("/about/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`about/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "about");
+        } catch (error) {
+          console.warn("Failed to delete old image:", error);
+        }
       }
 
       setImageSlots((prev) =>
@@ -159,9 +160,12 @@ export default function AboutAdmin() {
 
       await supabase.from("page_images").delete().eq("page", "about").eq("key", slot.key);
 
-      if (existing?.image_url && existing.image_url.includes("about/")) {
-        const oldPath = existing.image_url.split("/about/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`about/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "about");
+        } catch (error) {
+          console.warn("Failed to delete image from storage:", error);
+        }
       }
 
       setImageSlots((prev) =>

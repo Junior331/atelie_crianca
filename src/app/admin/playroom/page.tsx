@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
 import type { PageImage } from "@/types/database";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteImageFromStorage } from "@/utils/storage-helpers";
 
 interface ImageSlot {
   id: string;
@@ -130,13 +132,9 @@ export default function PlayroomAdmin() {
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
       const filePath = `playroom/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url: publicUrl, error: uploadError } = await uploadFile(file, "images", filePath);
 
       if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage.from("images").getPublicUrl(filePath);
 
       const { error: dbError } = await (supabase.from("page_images") as any).upsert(
         {
@@ -150,9 +148,12 @@ export default function PlayroomAdmin() {
 
       if (dbError) throw dbError;
 
-      if (existing?.image_url && existing.image_url.includes("playroom/")) {
-        const oldPath = existing.image_url.split("/playroom/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`playroom/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "playroom");
+        } catch (error) {
+          console.warn("Erro ao deletar imagem antiga:", error);
+        }
       }
 
       setImageSlots((prev) =>
@@ -185,9 +186,12 @@ export default function PlayroomAdmin() {
 
       await supabase.from("page_images").delete().eq("page", "playroom").eq("key", slot.key);
 
-      if (existing?.image_url && existing.image_url.includes("playroom/")) {
-        const oldPath = existing.image_url.split("/playroom/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`playroom/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "playroom");
+        } catch (error) {
+          console.warn("Erro ao deletar imagem ao remover:", error);
+        }
       }
 
       setImageSlots((prev) =>

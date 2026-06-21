@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { uploadFile } from "@/utils/upload-helpers";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -76,16 +77,13 @@ export default function UploadPage() {
         .substring(7)}.${fileExt}`;
       const filePath = `${selectedCategory}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url, error: uploadError } = await uploadFile(
+        file,
+        "images",
+        filePath
+      );
 
       if (uploadError) throw uploadError;
-
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("images").getPublicUrl(filePath);
 
       // Insert into database
       type ImageInsert = {
@@ -102,7 +100,7 @@ export default function UploadPage() {
           category_id: selectedCategory,
           title,
           description: description || null,
-          image_url: publicUrl,
+          image_url: url,
           storage_path: filePath,
           order_position: orderPosition,
           is_active: true,

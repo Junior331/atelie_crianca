@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { getPublicUrl as getR2PublicUrl } from '@/lib/r2-client';
+import { getPublicUrl as getR2PublicUrl, deleteFromR2 } from '@/lib/r2-client';
 
 /**
  * Garante que a URL do storage seja válida e pública
@@ -54,4 +54,34 @@ export function debugStorageUrl(url: string, context?: string): void {
     isValid: isValidStorageUrl(url),
     path: getPathFromStorageUrl(url),
   });
+}
+
+/**
+ * Extrai o path do storage a partir de uma URL
+ * Funciona tanto para Supabase quanto R2
+ */
+export function extractStoragePath(imageUrl: string, folder: string): string {
+  const urlParts = imageUrl.split('/');
+  const filename = urlParts[urlParts.length - 1];
+  return `images/${folder}/${filename}`;
+}
+
+/**
+ * Deleta uma imagem do storage (R2 ou Supabase)
+ * Usa feature flag para determinar qual storage usar
+ */
+export async function deleteImageFromStorage(imageUrl: string, folder: string): Promise<void> {
+  const useR2 = process.env.NEXT_PUBLIC_USE_R2_STORAGE === 'true';
+
+  if (useR2) {
+    // Deletar do R2
+    const path = extractStoragePath(imageUrl, folder);
+    await deleteFromR2(path);
+  } else {
+    // Deletar do Supabase
+    if (imageUrl.includes(`/${folder}/`)) {
+      const path = imageUrl.split(`/${folder}/`)[1];
+      await supabase.storage.from("images").remove([`${folder}/${path}`]);
+    }
+  }
 }

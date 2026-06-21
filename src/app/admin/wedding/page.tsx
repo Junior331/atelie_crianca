@@ -4,6 +4,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteImageFromStorage } from "@/utils/storage-helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { getImage } from "@/assets/images";
@@ -96,21 +98,16 @@ export default function WeddingAdmin() {
 
       const fileExt = file.name.split(".").pop();
       const fileName = `${slot.key}-${Date.now()}.${fileExt}`;
-      const filePath = `wedding/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(filePath, file);
+      const { url, error: uploadError } = await uploadFile(file, "images", `wedding/${fileName}`);
 
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage.from("images").getPublicUrl(filePath);
+      if (uploadError) throw new Error(uploadError);
 
       const { error: dbError } = await (supabase.from("page_images") as any).upsert(
         {
           page: "wedding",
           key: slot.key,
-          image_url: publicUrl,
+          image_url: url,
           position: imageSlots.findIndex((s) => s.id === slot.id),
         },
         { onConflict: "page,key" }
@@ -118,13 +115,16 @@ export default function WeddingAdmin() {
 
       if (dbError) throw dbError;
 
-      if (existing?.image_url && existing.image_url.includes("wedding/")) {
-        const oldPath = existing.image_url.split("/wedding/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`wedding/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "wedding");
+        } catch (deleteError) {
+          console.warn("Erro ao deletar imagem antiga:", deleteError);
+        }
       }
 
       setImageSlots((prev) =>
-        prev.map((s) => (s.id === slot.id ? { ...s, currentImage: publicUrl } : s))
+        prev.map((s) => (s.id === slot.id ? { ...s, currentImage: url } : s))
       );
 
       alert("Imagem atualizada com sucesso!");
@@ -153,9 +153,12 @@ export default function WeddingAdmin() {
 
       await supabase.from("page_images").delete().eq("page", "wedding").eq("key", slot.key);
 
-      if (existing?.image_url && existing.image_url.includes("wedding/")) {
-        const oldPath = existing.image_url.split("/wedding/")[1];
-        if (oldPath) await supabase.storage.from("images").remove([`wedding/${oldPath}`]);
+      if (existing?.image_url) {
+        try {
+          await deleteImageFromStorage(existing.image_url, "wedding");
+        } catch (deleteError) {
+          console.warn("Erro ao deletar imagem:", deleteError);
+        }
       }
 
       setImageSlots((prev) =>

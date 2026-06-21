@@ -4,6 +4,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { uploadFile } from "@/utils/upload-helpers";
+import { deleteFromR2 } from "@/lib/r2-client";
 import Image from "next/image";
 import Link from "next/link";
 import type { Workshop, WorkshopImage, WorkshopWithImages } from "@/types/database";
@@ -308,11 +310,17 @@ export default function WorkshopsAdmin() {
     }
 
     try {
-      // Deletar imagens do storage
+      // Deletar imagens do storage (R2 ou Supabase)
       for (const img of workshop.workshop_images) {
-        if (img.image_url.includes("/workshops/")) {
-          const path = img.image_url.split("/workshops/")[1];
-          await supabase.storage.from("images").remove([`workshops/${path}`]);
+        try {
+          // Extrair path da URL
+          const urlParts = img.image_url.split('/');
+          const filename = urlParts[urlParts.length - 1];
+          const path = `images/workshops/${filename}`;
+          await deleteFromR2(path);
+        } catch (deleteError) {
+          console.warn("Erro ao deletar imagem do storage:", deleteError);
+          // Continua mesmo se falhar - imagem pode já ter sido deletada
         }
       }
 
@@ -361,29 +369,22 @@ export default function WorkshopsAdmin() {
 
       const imagesToInsert: { workshop_id: string; image_url: string; order_position: number }[] = [];
 
-      // Upload de todas as imagens
+      // Upload de todas as imagens usando helper
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileExt = file.name.split(".").pop();
         const fileName = `${workshopId}-${Date.now()}-${i}.${fileExt}`;
-        const filePath = `workshops/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from("images")
-          .upload(filePath, file);
+        const { url, error } = await uploadFile(file, "images", `workshops/${fileName}`);
 
-        if (uploadError) {
-          console.error(`Erro ao fazer upload de ${file.name}:`, uploadError);
+        if (error) {
+          console.error(`Erro ao fazer upload de ${file.name}:`, error);
           continue; // Continua com os próximos arquivos
         }
 
-        const { data: { publicUrl } } = supabase.storage
-          .from("images")
-          .getPublicUrl(filePath);
-
         imagesToInsert.push({
           workshop_id: workshopId,
-          image_url: publicUrl,
+          image_url: url,
           order_position: currentPosition + i,
         });
       }
@@ -423,11 +424,17 @@ export default function WorkshopsAdmin() {
     if (!confirm("Tem certeza que deseja remover esta imagem?")) return;
 
     try {
-      if (image.image_url.includes("/workshops/")) {
-        const path = image.image_url.split("/workshops/")[1];
-        await supabase.storage.from("images").remove([`workshops/${path}`]);
+      // Deletar do storage (R2 ou Supabase)
+      try {
+        const urlParts = image.image_url.split('/');
+        const filename = urlParts[urlParts.length - 1];
+        const path = `images/workshops/${filename}`;
+        await deleteFromR2(path);
+      } catch (deleteError) {
+        console.warn("Erro ao deletar imagem do storage:", deleteError);
       }
 
+      // Deletar do banco
       const { error } = await supabase
         .from("workshop_images")
         .delete()
