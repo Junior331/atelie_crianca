@@ -11,10 +11,11 @@ on:
   schedule:
     # Producao: a cada 2 dias (margem confortavel do limite de 7 dias).
     - cron: "0 6 */2 * *"
-    # TESTE: o minimo do GitHub e 5 minutos (3 min NAO funciona).
-    # Para observar disparos automaticos, descomente a linha abaixo,
-    # commite, espere alguns ciclos e DEPOIS volte a comentar.
-    # - cron: "*/5 * * * *"
+    # ATIVO PARA TESTE: a cada 5 min (minimo do GitHub; pode atrasar 5-15 min).
+    # ATENCAO: em repo PRIVADO isso consome a cota de 2000 min/mes do Actions
+    # em ~1 semana (cada run e cobrado como 1 min). Volte a comentar esta
+    # linha apos confirmar que os disparos automaticos funcionam.
+    - cron: "*/5 * * * *"
 
 jobs:
   ping:
