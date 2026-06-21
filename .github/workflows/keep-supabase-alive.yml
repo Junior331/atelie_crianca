@@ -9,12 +9,12 @@ name: keep-supabase-alive
 on:
   workflow_dispatch: {}          # disparo manual (use isto para testar)
   schedule:
-    # Producao: a cada 2 dias (margem confortavel do limite de 7 dias).
-    - cron: "0 6 */2 * *"
-    # ATIVO PARA TESTE: a cada 5 min (minimo do GitHub; pode atrasar 5-15 min).
-    # ATENCAO: em repo PRIVADO isso consome a cota de 2000 min/mes do Actions
-    # em ~1 semana (cada run e cobrado como 1 min). Volte a comentar esta
-    # linha apos confirmar que os disparos automaticos funcionam.
+    # Producao: 2x por dia (00:00 e 12:00 UTC = 21:00 e 09:00 no horario de
+    # Brasilia). Folgadissimo para o limite de pausa de 7 dias.
+    - cron: "0 */12 * * *"
+    # SO PARA TESTE: a cada 5 min (minimo do GitHub; pode atrasar 5-15 min).
+    # Apos confirmar os disparos automaticos, COMENTE esta linha (deixe so a
+    # de 12h acima). Cada run e cobrado como 1 min da cota do Actions.
     - cron: "*/5 * * * *"
 
 jobs:
