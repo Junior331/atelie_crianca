@@ -81,39 +81,6 @@ export async function loadPageImages(page: string) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function fixSupabaseUrl(url: string, _key: string): string | null {
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-
-    if (!supabaseUrl) {
-      console.error('[Image Loader] NEXT_PUBLIC_SUPABASE_URL not defined');
-      return null;
-    }
-
-    // Se a URL já é válida, retornar
-    if (url.startsWith('https://') && url.includes('supabase.co')) {
-      return url;
-    }
-
-    // Extrair o path do arquivo
-    let filePath = url;
-
-    // Remover prefixos inválidos
-    if (url.includes('/storage/v1/object/public/')) {
-      filePath = url.split('/storage/v1/object/public/')[1];
-    }
-
-    // Reconstruir URL correta
-    const { data } = supabase.storage.from('images').getPublicUrl(filePath);
-    return data.publicUrl;
-
-  } catch (error) {
-    console.error('[Image Loader] Error fixing URL:', error);
-    return null;
-  }
-}
-
 /**
  * Valida se uma URL de imagem está acessível
  */

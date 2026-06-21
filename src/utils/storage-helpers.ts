@@ -38,25 +38,6 @@ export function isValidStorageUrl(url: string): boolean {
 }
 
 /**
- * Extrai o path do arquivo de uma URL do storage
- */
-export function getPathFromStorageUrl(url: string): string | null {
-  const match = url.match(/\/storage\/v1\/object\/public\/[^/]+\/(.+)$/);
-  return match ? match[1] : null;
-}
-
-/**
- * Debug helper - loga informações sobre a URL do storage
- */
-export function debugStorageUrl(url: string, context?: string): void {
-  console.log(`[Storage URL Debug${context ? ` - ${context}` : ''}]`, {
-    url,
-    isValid: isValidStorageUrl(url),
-    path: getPathFromStorageUrl(url),
-  });
-}
-
-/**
  * Extrai o path do storage a partir de uma URL
  * Funciona tanto para Supabase quanto R2
  */
