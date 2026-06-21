@@ -25,7 +25,9 @@
       "Bash(curl -I \"https://pub-d50114600aa44bf0a236f33f64195f03.r2.dev/images/carousel-image.jpeg\")",
       "Bash(curl -I \"https://pub-d50114600aa44bf0a236f33f64195f03.r2.dev/images/about.jpeg\")",
       "Bash(findstr \"HTTP\")",
-      "Bash(curl -s \"https://fulbaxplriohotozocfr.supabase.co/rest/v1/workshops?select=id,title,workshop_images(image_url)&limit=3\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1bGJheHBscmlvaG90b3pvY2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NTk5NTMsImV4cCI6MjA3NzQzNTk1M30.v7HFVMK3EdmF_GWF-9Exj7Bk8iBVJXafOxCETdmwTR8\")"
+      "Bash(curl -s \"https://fulbaxplriohotozocfr.supabase.co/rest/v1/workshops?select=id,title,workshop_images(image_url)&limit=3\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1bGJheHBscmlvaG90b3pvY2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NTk5NTMsImV4cCI6MjA3NzQzNTk1M30.v7HFVMK3EdmF_GWF-9Exj7Bk8iBVJXafOxCETdmwTR8\")",
+      "Bash(npm run migrate:r2)",
+      "Bash(curl -s \"https://fulbaxplriohotozocfr.supabase.co/rest/v1/workshops?select=id,title,workshop_images(image_url)&limit=2\" -H \"apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1bGJheHBscmlvaG90b3pvY2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NTk5NTMsImV4cCI6MjA3NzQzNTk1M30.v7HFVMK3EdmF_GWF-9Exj7Bk8iBVJXafOxCETdmwTR8\")"
     ],
     "deny": [],
     "ask": []
